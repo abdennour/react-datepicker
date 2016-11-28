@@ -1,6 +1,6 @@
 import React from 'react'
 import YearDropdownOptions from './year_dropdown_options'
-
+import {minYear, maxYear} from './date_utils.js';
 var YearDropdown = React.createClass({
   displayName: 'YearDropdown',
 
@@ -20,8 +20,8 @@ var YearDropdown = React.createClass({
   },
 
   renderSelectOptions () {
-    const minYear = this.props.minDate ? this.props.minDate.year() : 1900
-    const maxYear = this.props.maxDate ? this.props.maxDate.year() : 2100
+    const minYear = minYear(this.props.minDate, this.props.calendar );
+    const maxYear = maxYear(this.props.minDate, this.props.calendar );
 
     const options = []
     for (let i = minYear; i <= maxYear; i++) {

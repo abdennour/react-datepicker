@@ -5,7 +5,7 @@ import defer from 'lodash/defer'
 import TetherComponent from './tether_component'
 import classnames from 'classnames'
 import { isSameDay } from './date_utils'
-import moment from 'moment'
+import moment from 'moment-hijri'
 
 var outsideClickIgnoreClass = 'react-datepicker-ignore-onclickoutside'
 

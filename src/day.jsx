@@ -1,7 +1,7 @@
-import moment from 'moment'
+import moment from 'moment-hijri'
 import React from 'react'
 import classnames from 'classnames'
-import { isSameDay, isDayDisabled, isDayInRange } from './date_utils'
+import { isSameDay, isDayDisabled, isDayInRange, methodByCalendar } from './date_utils'
 
 var Day = React.createClass({
   displayName: 'Day',
@@ -127,7 +127,7 @@ var Day = React.createClass({
 
   isOutsideMonth () {
     return this.props.month !== undefined &&
-      this.props.month !== this.props.day.month()
+      this.props.month !== this.props.day[methodByCalendar('month',this.props.calendar)]()
   },
 
   getClassNames () {
@@ -153,9 +153,9 @@ var Day = React.createClass({
           className={this.getClassNames()}
           onClick={this.handleClick}
           onMouseEnter={this.handleMouseEnter}
-          aria-label={`day-${this.props.day.date()}`}
+          aria-label={`day-${this.props.day[methodByCalendar('date', this.props.calendar)]()}`}
           role="option">
-          {this.props.day.date()}
+          {this.props.day[methodByCalendar('date',this.props.calendar)]()}
       </div>
     )
   }

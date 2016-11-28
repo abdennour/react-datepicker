@@ -87,6 +87,7 @@
   "dependencies": {
     "classnames": "^2.2.5",
     "moment": "^2.13.0",
+    "moment-hijri": "^2.0.1",
     "react-onclickoutside": "^4.8.0",
     "tether": "^1.3.2"
   },

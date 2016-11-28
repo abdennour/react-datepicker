@@ -1,4 +1,8 @@
-import moment from 'moment'
+import moment from 'moment-hijri'
+
+const capitalize = (string = "") => [...string].map(    //convert to array with each item is a char of string by using spread operator (...)
+    (char, index) => index ? char : char.toUpperCase()  // index true means not equal 0 , so (!index) is the first char which is capitalized by `toUpperCase()` method
+ ).join('');                                             //return back to string
 
 export function isSameDay (moment1, moment2) {
   if (moment1 && moment2) {
@@ -55,4 +59,24 @@ export function getEffectiveMaxDate ({ maxDate, includeDates }) {
   } else {
     return maxDate
   }
+}
+
+function defaultYearsRange(calendar) {
+ return (calendar === 'hijri') ? ({min: 1300, max: 1500}):({min: 1900, max: 2100});
+}
+/**
+* @param defaultMethod is on of 'date', 'month' or 'year'
+* @param calendar is "hijri" or something else
+*
+* @retrun 'iDate','iMonth','iYear' if calendar='hijri'
+*/
+export function methodByCalendar(defaultMethod, calendar) {
+  retrun (calendar==='hijri')? `i${capitalize(defaultMethod)}` : defaultMethod;
+}
+export function minYear(minDate, calendar) {
+  return  minDate ? minDate[methodByCalendar('year', calendar)]() : defaultYearsRange().min;
+}
+
+export function maxYear(maxDate, calendar) {
+  return  maxDate ? maxDate[methodByCalendar('year', calendar)]() : defaultYearsRange().max;
 }

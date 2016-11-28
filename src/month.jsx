@@ -1,7 +1,7 @@
 import React from 'react'
 import classnames from 'classnames'
 import Week from './week'
-
+import {methodByCalendar} from './date_utils.js';
 const FIXED_HEIGHT_STANDARD_WEEK_COUNT = 6
 
 var Month = React.createClass({
@@ -50,6 +50,7 @@ var Month = React.createClass({
 
   isWeekInMonth (startOfWeek) {
     const day = this.props.day
+
     const endOfWeek = startOfWeek.clone().add(6, 'days')
     return startOfWeek.isSame(day, 'month') || endOfWeek.isSame(day, 'month')
   },
@@ -65,7 +66,7 @@ var Month = React.createClass({
       weeks.push(<Week
           key={i}
           day={currentWeekStart}
-          month={this.props.day.month()}
+          month={this.props.day[methodByCalendar('month',this.props.calendar)]()}
           onDayClick={this.handleDayClick}
           onDayMouseEnter={this.handleDayMouseEnter}
           minDate={this.props.minDate}

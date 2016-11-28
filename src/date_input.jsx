@@ -1,4 +1,4 @@
-import moment from 'moment'
+import moment from 'moment-hijri'
 import React from 'react'
 import { isSameDay, isDayDisabled } from './date_utils'
 
@@ -69,7 +69,7 @@ var DateInput = React.createClass({
 
   safeDateFormat (props) {
     return props.date && props.date.clone()
-      .locale(props.locale || moment.locale())
+      .locale(props.locale || moment.locale() || 'en')
       .format(Array.isArray(props.dateFormat) ? props.dateFormat[0] : props.dateFormat) || ''
   },
 
