@@ -62,7 +62,7 @@ export function getEffectiveMaxDate ({ maxDate, includeDates }) {
 }
 
 function defaultYearsRange (calendar) {
-  return (calendar === 'hijri' ) ? ({min: 1300, max: 1500}):({min: 1900, max: 2100})
+  return (calendar === 'hijri') ? ({min: 1300, max: 1500}) : ({min: 1900, max: 2100})
 }
 /**
 * @param defaultMethod is on of 'date', 'month' or 'year'
@@ -71,7 +71,7 @@ function defaultYearsRange (calendar) {
 * @return 'iDate','iMonth','iYear' if calendar='hijri'
 */
 export function methodByCalendar (defaultMethod, calendar) {
-  return ( calendar === 'hijri' ) ? `i${capitalize(defaultMethod)}` : defaultMethod
+  return (calendar === 'hijri') ? `i${capitalize(defaultMethod)}` : defaultMethod
 }
 
 export function minYearByCalendar (minDate, calendar) {

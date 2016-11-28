@@ -10,7 +10,8 @@ var YearDropdown = React.createClass({
     minDate: React.PropTypes.object,
     onChange: React.PropTypes.func.isRequired,
     scrollableYearDropdown: React.PropTypes.bool,
-    year: React.PropTypes.number.isRequired
+    year: React.PropTypes.number.isRequired,
+    calendar: React.PropTypes.string
   },
 
   getInitialState () {
@@ -20,8 +21,8 @@ var YearDropdown = React.createClass({
   },
 
   renderSelectOptions () {
-    const minYear = minYearByCalendar(this.props.minDate, this.props.calendar );
-    const maxYear = maxYearByCalendar(this.props.minDate, this.props.calendar );
+    const minYear = minYearByCalendar(this.props.minDate, this.props.calendar)
+    const maxYear = maxYearByCalendar(this.props.minDate, this.props.calendar)
 
     const options = []
     for (let i = minYear; i <= maxYear; i++) {
