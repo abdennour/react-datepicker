@@ -1,5 +1,5 @@
 import React from 'react'
-import moment from 'moment'
+import moment from 'moment-hijri'
 import Month from '../src/month'
 import Day from '../src/day'
 import range from 'lodash/range'

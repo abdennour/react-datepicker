@@ -1,6 +1,6 @@
 import React from 'react'
 import range from 'lodash/range'
-import moment from 'moment'
+import moment from 'moment-hijri'
 import YearDropdown from '../src/year_dropdown.jsx'
 import YearDropdownOptions from '../src/year_dropdown_options.jsx'
 import { mount } from 'enzyme'

@@ -7,7 +7,7 @@ import {
   getEffectiveMinDate,
   getEffectiveMaxDate
 } from '../src/date_utils'
-import moment from 'moment'
+import moment from 'moment-hijri'
 
 describe('date_utils', function () {
   describe('capitalize', function () {

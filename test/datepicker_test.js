@@ -6,7 +6,7 @@ import defer from 'lodash/defer'
 import DatePicker from '../src/datepicker.jsx'
 import Day from '../src/day'
 import TetherComponent from '../src/tether_component.jsx'
-import moment from 'moment'
+import moment from 'moment-hijri'
 
 describe('DatePicker', () => {
   it('should show the calendar when focusing on the date input', () => {

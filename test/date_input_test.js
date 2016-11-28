@@ -1,5 +1,5 @@
 import React from 'react'
-import moment from 'moment'
+import moment from 'moment-hijri'
 import DateInput from '../src/date_input.jsx'
 import { shallow } from 'enzyme'
 

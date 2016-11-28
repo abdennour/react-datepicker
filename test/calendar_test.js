@@ -1,11 +1,13 @@
 import React from 'react'
-import moment from 'moment'
+import moment from 'moment-hijri'
 import Calendar from '../src/calendar'
 import Month from '../src/month'
 import Day from '../src/day'
 import YearDropdown from '../src/year_dropdown'
 import MonthDropdown from '../src/month_dropdown'
 import { shallow, mount } from 'enzyme'
+
+moment.locale('en')
 
 describe('Calendar', function () {
   var dateFormat = 'MMMM YYYY'
@@ -250,7 +252,7 @@ describe('Calendar', function () {
       var firstDateOfWeek = localized.clone().startOf('week')
       var firstWeekDayMin = firstDateOfWeek.localeData().weekdaysMin(firstDateOfWeek)
       var firstHeader = calendar.find('.react-datepicker__day-name').at(0)
-      expect(firstHeader.text()).to.equal(firstWeekDayMin)
+      expect(firstHeader.text().toLowerCase()).to.equal(firstWeekDayMin.toLowerCase())
     }
 
     it('should use the globally-defined locale by default', function () {
