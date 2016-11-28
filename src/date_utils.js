@@ -68,10 +68,10 @@ function defaultYearsRange(calendar) {
 * @param defaultMethod is on of 'date', 'month' or 'year'
 * @param calendar is "hijri" or something else
 *
-* @retrun 'iDate','iMonth','iYear' if calendar='hijri'
+* @return 'iDate','iMonth','iYear' if calendar='hijri'
 */
 export function methodByCalendar(defaultMethod, calendar) {
-  retrun (calendar==='hijri')? `i${capitalize(defaultMethod)}` : defaultMethod;
+  return (calendar==='hijri')? `i${capitalize(defaultMethod)}` : defaultMethod;
 }
 export function minYear(minDate, calendar) {
   return  minDate ? minDate[methodByCalendar('year', calendar)]() : defaultYearsRange().min;

@@ -17,6 +17,7 @@ var DatePicker = React.createClass({
   displayName: 'DatePicker',
 
   propTypes: {
+    calendar: React.PropTypes.string,
     autoComplete: React.PropTypes.string,
     autoFocus: React.PropTypes.bool,
     className: React.PropTypes.string,
@@ -71,7 +72,9 @@ var DatePicker = React.createClass({
 
   getDefaultProps () {
     return {
-      dateFormatCalendar: 'MMMM YYYY',
+      calendar: 'hijri',
+      dateFormatCalendar: 'iMMMM iYYYY',
+      dateFormat: 'iYYYY-iMM-iDD',
       onChange () {},
       disabled: false,
       dropdownMode: 'scroll',
@@ -235,7 +238,8 @@ var DatePicker = React.createClass({
         outsideClickIgnoreClass={outsideClickIgnoreClass}
         fixedHeight={this.props.fixedHeight}
         monthsShown={this.props.monthsShown}
-        onDropdownFocus={this.handleDropdownFocus}/>
+        onDropdownFocus={this.handleDropdownFocus}
+        calendar={this.props.calendar}/>
   },
 
   renderDateInput () {
@@ -268,7 +272,8 @@ var DatePicker = React.createClass({
         readOnly={this.props.readOnly}
         required={this.props.required}
         tabIndex={this.props.tabIndex}
-        customInput={this.props.customInput} />
+        customInput={this.props.customInput}
+        calendar={this.props.calendar} />
   },
 
   renderClearButton () {
@@ -292,7 +297,8 @@ var DatePicker = React.createClass({
             targetAttachment={this.props.popoverTargetAttachment}
             targetOffset={this.props.popoverTargetOffset}
             renderElementTo={this.props.renderCalendarTo}
-            constraints={this.props.tetherConstraints}>
+            constraints={this.props.tetherConstraints}
+            calendar={this.props.calendar}>
           <div className="react-datepicker__input-container">
             {this.renderDateInput()}
             {this.renderClearButton()}

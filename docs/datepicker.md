@@ -6,6 +6,12 @@ General datepicker component.
 Props
 -----
 
+### `calendar`
+
+type: `string`
+defaultValue: `'hijri'`
+
+
 ### `autoComplete`
 
 type: `string`
@@ -34,7 +40,7 @@ type: `union(string|array)`
 ### `dateFormatCalendar`
 
 type: `string`
-defaultValue: `'MMMM YYYY'`
+defaultValue: `'iMMMM iYYYY'`
 
 
 ### `disabled`
@@ -256,4 +262,3 @@ type: `string`
 
 type: `number`
 defaultValue: `moment.utc().utcOffset()`
-

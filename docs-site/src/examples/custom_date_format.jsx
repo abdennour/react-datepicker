@@ -2,7 +2,6 @@ import React from 'react'
 import DatePicker from 'react-datepicker'
 import moment from 'moment-hijri'
 
-
 export default React.createClass({
   displayName: 'CustomDateFormat',
 
@@ -32,7 +31,6 @@ export default React.createClass({
         <DatePicker
             dateFormat="iYYYY/iMM/iDD"
             dateFormatCalendar="iMMMM iYYYY"
-            locale="ar"
             selected={this.state.startDate}
             onChange={this.handleChange} />
       </div>

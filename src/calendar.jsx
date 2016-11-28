@@ -265,7 +265,7 @@ var Calendar = React.createClass({
 
     var monthList = []
     for (var i = 0; i < this.props.monthsShown; ++i) {
-      var monthDate = this.state.date.clone().add(i, 'iM');
+      var monthDate = this.state.date.clone().add(i, this.props.calendar === 'hijri' ? 'iM' : 'M');
       var monthKey = `month-${i}`;
       monthList.push(
           <div key={monthKey} className="react-datepicker__month-container">

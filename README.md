@@ -59,7 +59,7 @@ The most basic use of the DatePicker can be described with:
 <DatePicker selected={this.state.date} onChange={this.handleChange} />
 ```
 
-See [here](https://github.com/Hacker0x01/react-datepicker/blob/master/docs/datepicker.md) for a full list of props that may be passed to the component. Examples are given on the [main website](https://hacker0x01.github.io/react-datepicker).
+See [here](https://github.com/abdennour/react-datepicker/blob/master/docs/datepicker.md) for a full list of props that may be passed to the component. Examples are given on the [main website](https://hacker0x01.github.io/react-datepicker).
 
 ### Localization
 
