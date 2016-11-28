@@ -22,15 +22,13 @@ export default React.createClass({
       <pre className="column example__code">
         <code className="jsx">
           {'<DatePicker'}<br />
-              <strong>{'dateFormat="iYYYY/iMM/iDD"'}</strong><br />
+              <strong>{'dateFormat="YYYY/MM/DD"'}</strong><br />
               {'selected={this.state.startDate}'}<br />
               {'onChange={this.handleChange} />'}
         </code>
       </pre>
       <div className="column">
         <DatePicker
-            dateFormat="iYYYY/iMM/iDD"
-            dateFormatCalendar="iMMMM iYYYY"
             selected={this.state.startDate}
             onChange={this.handleChange} />
       </div>

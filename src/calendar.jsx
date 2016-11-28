@@ -1,21 +1,16 @@
-import moment from 'moment-hijri';
-//import moment from 'moment';
+import moment from 'moment-hijri'
 import find from 'lodash/find'
 import YearDropdown from './year_dropdown'
 import MonthDropdown from './month_dropdown'
 import Month from './month'
 import React from 'react'
-
-
-
-import { isSameDay, allDaysDisabledBefore, allDaysDisabledAfter, getEffectiveMinDate, getEffectiveMaxDate, methodByCalendar } from './date_utils';
+import { isSameDay, allDaysDisabledBefore, allDaysDisabledAfter, getEffectiveMinDate, getEffectiveMaxDate, methodByCalendar } from './date_utils'
 
 const DROPDOWN_FOCUS_CLASSNAMES = [
   'react-datepicker__year-select',
   'react-datepicker__month-select'
 ]
-//window.moment = moment;
-//window.hmoment=hmoment;
+
 const isDropdownSelect = (element = {}) => {
   const classNames = (element.className || '').split(/\s+/)
   return !!find(DROPDOWN_FOCUS_CLASSNAMES, (testClassname) => {
@@ -56,7 +51,8 @@ var Calendar = React.createClass({
     showYearDropdown: React.PropTypes.bool,
     startDate: React.PropTypes.object,
     todayButton: React.PropTypes.string,
-    utcOffset: React.PropTypes.number
+    utcOffset: React.PropTypes.number,
+    calendar: React.PropTypes.string
   },
 
   mixins: [require('react-onclickoutside')],
@@ -131,14 +127,12 @@ var Calendar = React.createClass({
   },
 
   increaseMonth () {
-
     this.setState({
       date: this.state.date.clone().add(1, 'month')
     })
   },
 
   decreaseMonth () {
-
     this.setState({
       date: this.state.date.clone().subtract(1, 'month')
     })
@@ -157,21 +151,18 @@ var Calendar = React.createClass({
   },
 
   changeYear (year) {
-
     this.setState({
       date: this.state.date.clone().set('year', year)
     })
   },
 
   changeMonth (month) {
-
     this.setState({
       date: this.state.date.clone().set('month', month)
     })
   },
 
   header (date = this.state.date) {
-
     const startOfWeek = date.clone().startOf('week')
     const dayNames = []
     if (this.props.showWeekNumbers) {
@@ -232,7 +223,7 @@ var Calendar = React.createClass({
           onChange={this.changeYear}
           minDate={this.props.minDate}
           maxDate={this.props.maxDate}
-          year={this.state.date[methodByCalendar('year',this.props.calendar)]()}
+          year={this.state.date[methodByCalendar('year', this.props.calendar)]()}
           scrollableYearDropdown={this.props.scrollableYearDropdown} />
     )
   },
@@ -246,7 +237,7 @@ var Calendar = React.createClass({
           dropdownMode={this.props.dropdownMode}
           locale={this.props.locale}
           onChange={this.changeMonth}
-          month={this.state.date[methodByCalendar('month',this.props.calendar)]()} />
+          month={this.state.date[methodByCalendar('month', this.props.calendar)]()} />
     )
   },
 
@@ -262,11 +253,10 @@ var Calendar = React.createClass({
   },
 
   renderMonths () {
-
     var monthList = []
     for (var i = 0; i < this.props.monthsShown; ++i) {
-      var monthDate = this.state.date.clone().add(i, this.props.calendar === 'hijri' ? 'iM' : 'M');
-      var monthKey = `month-${i}`;
+      var monthDate = this.state.date.clone().add(i, this.props.calendar === 'hijri' ? 'iM' : 'M')
+      var monthKey = `month-${i}`
       monthList.push(
           <div key={monthKey} className="react-datepicker__month-container">
             <div className="react-datepicker__header">

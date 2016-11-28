@@ -23,7 +23,8 @@ var Day = React.createClass({
     selectsEnd: React.PropTypes.bool,
     selectsStart: React.PropTypes.bool,
     startDate: React.PropTypes.object,
-    utcOffset: React.PropTypes.number
+    utcOffset: React.PropTypes.number,
+    calendar: React.PropTypes.number
   },
   getDefaultProps () {
     return {
@@ -127,7 +128,7 @@ var Day = React.createClass({
 
   isOutsideMonth () {
     return this.props.month !== undefined &&
-      this.props.month !== this.props.day[methodByCalendar('month',this.props.calendar)]()
+      this.props.month !== this.props.day[methodByCalendar('month', this.props.calendar)]()
   },
 
   getClassNames () {
@@ -155,7 +156,7 @@ var Day = React.createClass({
           onMouseEnter={this.handleMouseEnter}
           aria-label={`day-${this.props.day[methodByCalendar('date', this.props.calendar)]()}`}
           role="option">
-          {this.props.day[methodByCalendar('date',this.props.calendar)]()}
+          {this.props.day[methodByCalendar('date', this.props.calendar)]()}
       </div>
     )
   }

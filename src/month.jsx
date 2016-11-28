@@ -1,7 +1,7 @@
 import React from 'react'
 import classnames from 'classnames'
 import Week from './week'
-import {methodByCalendar} from './date_utils.js';
+import {methodByCalendar} from './date_utils.js'
 const FIXED_HEIGHT_STANDARD_WEEK_COUNT = 6
 
 var Month = React.createClass({
@@ -27,7 +27,8 @@ var Month = React.createClass({
     selectsStart: React.PropTypes.bool,
     showWeekNumbers: React.PropTypes.bool,
     startDate: React.PropTypes.object,
-    utcOffset: React.PropTypes.number
+    utcOffset: React.PropTypes.number,
+    calendar: React.PropTypes.string
   },
 
   handleDayClick (day, event) {
@@ -66,7 +67,7 @@ var Month = React.createClass({
       weeks.push(<Week
           key={i}
           day={currentWeekStart}
-          month={this.props.day[methodByCalendar('month',this.props.calendar)]()}
+          month={this.props.day[methodByCalendar('month', this.props.calendar)]()}
           onDayClick={this.handleDayClick}
           onDayMouseEnter={this.handleDayMouseEnter}
           minDate={this.props.minDate}

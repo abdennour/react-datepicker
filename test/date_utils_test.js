@@ -12,10 +12,10 @@ import moment from 'moment'
 describe('date_utils', function () {
   describe('capitalize', function () {
     it(`makes the first character capital`, () => {
-      expect(capitalize(`abc`)).to.equal(`Abc`);
-    });
-    it(`returns empty string if no arguments`);
-  });
+      expect(capitalize(`abc`)).to.equal(`Abc`)
+    })
+    it(`returns empty string if no arguments`)
+  })
   describe('isSameDay', function () {
     it('should return true for null dates', function () {
       expect(isSameDay(null, null)).to.be.true
@@ -202,5 +202,4 @@ describe('date_utils', function () {
       assert(getEffectiveMaxDate({ maxDate, includeDates }).isSame(date1))
     })
   })
-
 })

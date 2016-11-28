@@ -21,7 +21,8 @@ var DateInput = React.createClass({
     minDate: React.PropTypes.object,
     onBlur: React.PropTypes.func,
     onChange: React.PropTypes.func,
-    onChangeDate: React.PropTypes.func
+    onChangeDate: React.PropTypes.func,
+    calendar: React.PropTypes.string
   },
 
   getDefaultProps () {
@@ -87,7 +88,7 @@ var DateInput = React.createClass({
   },
 
   render () {
-    const { customInput, date, locale, minDate, maxDate, excludeDates, includeDates, filterDate, dateFormat, onChangeDate, calendar,  ...rest } = this.props // eslint-disable-line no-unused-vars
+    const { customInput, date, locale, minDate, maxDate, excludeDates, includeDates, filterDate, dateFormat, onChangeDate, calendar, ...rest } = this.props // eslint-disable-line no-unused-vars
 
     if (customInput) {
       return React.cloneElement(customInput, {

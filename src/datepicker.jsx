@@ -72,9 +72,7 @@ var DatePicker = React.createClass({
 
   getDefaultProps () {
     return {
-      calendar: 'hijri',
-      dateFormatCalendar: 'iMMMM iYYYY',
-      dateFormat: 'iYYYY-iMM-iDD',
+      dateFormatCalendar: 'MMMM YYYY',
       onChange () {},
       disabled: false,
       dropdownMode: 'scroll',
