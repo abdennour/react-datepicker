@@ -1,10 +1,10 @@
 {
-  "author": "HackerOne",
-  "name": "react-datepicker",
-  "description": "A simple and reusable datepicker component for React",
-  "version": "0.34.0",
+  "author": "Abdennour TOUMI <http://abdennoor.com>",
+  "name": "react-hijri",
+  "description": "React DatePicker accepts Hijri & gregorian calendars  (fork from @react-datepicker but with adding Hijri Calendar)",
+  "version": "0.2.0",
   "license": "MIT",
-  "homepage": "https://github.com/Hacker0x01/react-datepicker",
+  "homepage": "https://github.com/abdennour/react-datepicker",
   "main": "dist/react-datepicker.min.js",
   "style": "dist/react-datepicker.min.css",
   "files": [
@@ -17,14 +17,17 @@
     "datepicker",
     "calendar",
     "date",
-    "react-component"
+    "react-component",
+    "hijri",
+    "moment-hijri",
+    "Umm-al-Qura"
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/Hacker0x01/react-datepicker.git"
+    "url": "git://github.com/abdennour/react-datepicker.git"
   },
   "bugs": {
-    "url": "https://github.com/Hacker0x01/react-datepicker/issues"
+    "url": "https://github.com/abdennour/react-datepicker/issues"
   },
   "devDependencies": {
     "babel-core": "^6.8.0",

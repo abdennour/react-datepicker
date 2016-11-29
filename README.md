@@ -1,10 +1,10 @@
 # React Date Picker
 
-[![Join the chat at https://gitter.im/Hacker0x01/react-datepicker](https://badges.gitter.im/Hacker0x01/react-datepicker.svg)](https://gitter.im/Hacker0x01/react-datepicker?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Join the chat at https://gitter.im/abdennour/react-datepicker](https://badges.gitter.im/abdennour/react-datepicker.svg)](https://gitter.im/abdennour/react-datepicker?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![npm version](https://badge.fury.io/js/react-datepicker.svg)](https://badge.fury.io/js/react-datepicker)
-[![Build Status](https://travis-ci.org/Hacker0x01/react-datepicker.svg?branch=master)](https://travis-ci.org/Hacker0x01/react-datepicker)
-[![Dependency Status](https://david-dm.org/Hacker0x01/react-datepicker.svg)](https://david-dm.org/Hacker0x01/react-datepicker)
-[![codecov](https://codecov.io/gh/Hacker0x01/react-datepicker/branch/master/graph/badge.svg)](https://codecov.io/gh/Hacker0x01/react-datepicker)
+[![Build Status](https://travis-ci.org/abdennour/react-datepicker.svg?branch=master)](https://travis-ci.org/abdennour/react-datepicker)
+[![Dependency Status](https://david-dm.org/abdennour/react-datepicker.svg)](https://david-dm.org/abdennour/react-datepicker)
+[![codecov](https://codecov.io/gh/abdennour/react-datepicker/branch/master/graph/badge.svg)](https://codecov.io/gh/abdennour/react-datepicker)
 [![Downloads](http://img.shields.io/npm/dm/react-datepicker.svg)](https://npmjs.org/package/react-datepicker)
 
 A simple and reusable Datepicker component for React ([Demo](https://hacker0x01.github.io/react-datepicker/))
@@ -19,14 +19,14 @@ The package can be installed via NPM:
 npm install react-datepicker --save
 ```
 
-You’ll need to install React and Moment.js separately since those dependencies aren’t included in the package. Below is a simple example on how to use the Datepicker in a React view. You will also need to require the css file from this package (or provide your own). The example below shows how to include the css from this package if your build system supports requiring css files (webpack is one that does).
+You’ll need to install `React` and `Moment-Hijri` separately since those dependencies aren’t included in the package. Below is a simple example on how to use the Datepicker in a React view. You will also need to require the css file from this package (or provide your own). The example below shows how to include the css from this package if your build system supports requiring css files (webpack is one that does).
 
 ```js
 var React = require('react');
-var DatePicker = require('react-datepicker');
-var moment = require('moment');
+var DatePicker = require('react-hijri');
+var moment = require('moment-hijri');
 
-require('react-datepicker/dist/react-datepicker.css');
+require('react-hijri/dist/react-datepicker.css');
 
 var Example = React.createClass({
   displayName: 'Example',
@@ -46,7 +46,11 @@ var Example = React.createClass({
   render: function() {
     return <DatePicker
         selected={this.state.startDate}
-        onChange={this.handleChange} />;
+        onChange={this.handleChange}
+        calendar="hijri"
+        dateFormat="iYYYY/iMM/iDD"
+        dateFormatCalendar="iMMMM iYYYY"  
+         />;
   }
 });
 ```
@@ -59,7 +63,7 @@ The most basic use of the DatePicker can be described with:
 <DatePicker selected={this.state.date} onChange={this.handleChange} />
 ```
 
-See [here](https://github.com/abdennour/react-datepicker/blob/master/docs/datepicker.md) for a full list of props that may be passed to the component. Examples are given on the [main website](https://hacker0x01.github.io/react-datepicker).
+See [here](https://github.com/abdennour/react-datepicker/blob/master/docs/datepicker.md) for a full list of props that may be passed to the component. Examples are given on the [main website](https://abdennour.github.io/react-datepicker).
 
 ### Localization
 
