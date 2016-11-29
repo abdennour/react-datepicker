@@ -2,7 +2,7 @@
   "author": "Abdennour TOUMI <http://abdennoor.com>",
   "name": "react-hijri",
   "description": "React DatePicker accepts Hijri & gregorian calendars  (fork from @react-datepicker but with adding Hijri Calendar)",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "license": "MIT",
   "homepage": "https://github.com/abdennour/react-datepicker",
   "main": "dist/react-datepicker.min.js",

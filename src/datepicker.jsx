@@ -4,7 +4,7 @@ import React from 'react'
 import defer from 'lodash/defer'
 import TetherComponent from './tether_component'
 import classnames from 'classnames'
-import { isSameDay } from './date_utils'
+import { isSameDay, formatByCalendar } from './date_utils'
 import moment from 'moment-hijri'
 
 var outsideClickIgnoreClass = 'react-datepicker-ignore-onclickoutside'
@@ -207,10 +207,12 @@ var DatePicker = React.createClass({
     if (!this.props.inline && (!this.state.open || this.props.disabled)) {
       return null
     }
+    const {dateFormat, dateFormatCalendar, calendar, ...rest} = this.props;
+
     return <Calendar
         ref="calendar"
         locale={this.props.locale}
-        dateFormat={this.props.dateFormatCalendar}
+        dateFormat={formatByCalendar(dateFormatCalendar, calendar)}
         dropdownMode={this.props.dropdownMode}
         selected={this.props.selected}
         onSelect={this.handleSelect}
@@ -256,7 +258,7 @@ var DatePicker = React.createClass({
         excludeDates={this.props.excludeDates}
         includeDates={this.props.includeDates}
         filterDate={this.props.filterDate}
-        dateFormat={this.props.dateFormat}
+        dateFormat={formatByCalendar(this.props.dateFormat, this.props.calendar)}
         onFocus={this.handleFocus}
         onBlur={this.handleBlur}
         onClick={this.onInputClick}

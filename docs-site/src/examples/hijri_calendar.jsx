@@ -22,14 +22,13 @@ class HijriCalendar extends React.Component {
          <code className="jsx">
            {'<DatePicker'}<br />
                <strong>{'calendar="hijri"'}</strong><br />
-               <strong>{'dateFormat="iYYYY/iMM/iDD"'}</strong><br />
-               <strong>{'dateFormatCalendar="iMMMM iYYYY"'}</strong><br />
+               <strong>{'dateFormat="YYYY/MM/DD"'}</strong><br />
                {'selected={this.state.startDate}'}<br />
                {'onChange={this.handleChange} />'}
          </code>
        </pre>
       <div className="column">
-        <DatePicker calendar="hijri" dateFormat="iYYYY/iMM/iDD" dateFormatCalendar="iMMMM iYYYY" selected={this.state.startDate}
+        <DatePicker calendar="hijri" dateFormat="YYYY/MM/DD"  selected={this.state.startDate}
             onChange={this.handleChange}/>
       </div>
     </div>

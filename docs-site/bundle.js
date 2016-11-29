@@ -20041,6 +20041,9 @@
 	    title: 'Default',
 	    component: _react2.default.createElement(_default2.default, null)
 	  }, {
+	    title: 'Hijri Calendar :based on Umm al-Qura calculations',
+	    component: _react2.default.createElement(_hijri_calendar2.default, null)
+	  }, {
 	    title: 'Custom date format',
 	    component: _react2.default.createElement(_custom_date_format2.default, null)
 	  }, {
@@ -20118,9 +20121,6 @@
 	  }, {
 	    title: 'Multiple months with year dropdown',
 	    component: _react2.default.createElement(_multi_month_drp2.default, null)
-	  }, {
-	    title: 'Hijri Calendar :based on Umm al-Qura calculations',
-	    component: _react2.default.createElement(_hijri_calendar2.default, null)
 	  }],
 
 	  renderExamples: function renderExamples() {
@@ -36724,6 +36724,8 @@
 
 	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
 	var outsideClickIgnoreClass = 'react-datepicker-ignore-onclickoutside';
 
 	/**
@@ -36910,10 +36912,17 @@
 	    if (!this.props.inline && (!this.state.open || this.props.disabled)) {
 	      return null;
 	    }
+
+	    var _props = this.props,
+	        dateFormat = _props.dateFormat,
+	        dateFormatCalendar = _props.dateFormatCalendar,
+	        calendar = _props.calendar,
+	        rest = _objectWithoutProperties(_props, ['dateFormat', 'dateFormatCalendar', 'calendar']);
+
 	    return _react2.default.createElement(_calendar2.default, {
 	      ref: 'calendar',
 	      locale: this.props.locale,
-	      dateFormat: this.props.dateFormatCalendar,
+	      dateFormat: (0, _date_utils.formatByCalendar)(dateFormatCalendar, calendar),
 	      dropdownMode: this.props.dropdownMode,
 	      selected: this.props.selected,
 	      onSelect: this.handleSelect,
@@ -36956,7 +36965,7 @@
 	      excludeDates: this.props.excludeDates,
 	      includeDates: this.props.includeDates,
 	      filterDate: this.props.filterDate,
-	      dateFormat: this.props.dateFormat,
+	      dateFormat: (0, _date_utils.formatByCalendar)(this.props.dateFormat, this.props.calendar),
 	      onFocus: this.handleFocus,
 	      onBlur: this.handleBlur,
 	      onClick: this.onInputClick,
@@ -53032,6 +53041,7 @@
 	exports.methodByCalendar = methodByCalendar;
 	exports.minYearByCalendar = minYearByCalendar;
 	exports.maxYearByCalendar = maxYearByCalendar;
+	exports.formatByCalendar = formatByCalendar;
 
 	var _momentHijri = __webpack_require__(342);
 
@@ -53150,6 +53160,20 @@
 
 	function maxYearByCalendar(maxDate, calendar) {
 	  return maxDate ? maxDate[methodByCalendar('year', calendar)]() : defaultYearsRange().max;
+	}
+
+	function formatByCalendar(dateFormat, calendar) {
+	  var _this = this;
+
+	  if (calendar === 'hijri') {
+	    if (dateFormat === 'L' || dateFormat === 'MM/DD/YYYY') return 'iMM/iDD/iYYYY';
+	    if (typeof dateFormat === 'string') return dateFormat.replace('Y', 'iY').replace('M', 'iM').replace('D', 'iD');
+	    if (Array.isArray(dateFormat)) return dateFormat.map(function (chunck) {
+	      return _this.formatByCalendar(chunck, calendar);
+	    });
+	  } else {
+	    return dateFormat;
+	  }
 	}
 
 /***/ },
@@ -62834,13 +62858,7 @@
 	            _react2.default.createElement(
 	              'strong',
 	              null,
-	              'dateFormat="iYYYY/iMM/iDD"'
-	            ),
-	            _react2.default.createElement('br', null),
-	            _react2.default.createElement(
-	              'strong',
-	              null,
-	              'dateFormatCalendar="iMMMM iYYYY"'
+	              'dateFormat="YYYY/MM/DD"'
 	            ),
 	            _react2.default.createElement('br', null),
 	            'selected={this.state.startDate}',
@@ -62851,7 +62869,7 @@
 	        _react2.default.createElement(
 	          'div',
 	          { className: 'column' },
-	          _react2.default.createElement(_reactDatepicker2.default, { calendar: 'hijri', dateFormat: 'iYYYY/iMM/iDD', dateFormatCalendar: 'iMMMM iYYYY', selected: this.state.startDate,
+	          _react2.default.createElement(_reactDatepicker2.default, { calendar: 'hijri', dateFormat: 'YYYY/MM/DD', selected: this.state.startDate,
 	            onChange: this.handleChange })
 	        )
 	      );

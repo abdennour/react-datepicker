@@ -54,8 +54,8 @@ var Example = React.createClass({
         selected={this.state.startDate}
         onChange={this.handleChange}
         calendar="hijri"
-        dateFormat="iYYYY/iMM/iDD"
-        dateFormatCalendar="iMMMM iYYYY"  
+        dateFormat="YYYY/MM/DD"
+        dateFormatCalendar="MMMM YYYY"  
          />;
   }
 });

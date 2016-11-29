@@ -81,3 +81,15 @@ export function minYearByCalendar (minDate, calendar) {
 export function maxYearByCalendar (maxDate, calendar) {
   return maxDate ? maxDate[methodByCalendar('year', calendar)]() : defaultYearsRange().max
 }
+
+export function formatByCalendar(dateFormat, calendar) {
+  if (calendar === 'hijri') {
+    if (dateFormat === 'L' || dateFormat === 'MM/DD/YYYY') return 'iMM/iDD/iYYYY';
+    if (typeof dateFormat === 'string')
+      return dateFormat.replace(`Y`, `iY`).replace(`M`, 'iM').replace(`D`, 'iD');
+    if (Array.isArray(dateFormat))
+      return dateFormat.map((chunck) => this.formatByCalendar(chunck, calendar));
+  } else {
+    return dateFormat;
+  }
+}
