@@ -27,6 +27,6 @@ app.listen(8080, 'localhost', function (err) {
     console.log(err)
     return
   }
-
-  console.log('Listening at http://localhost:8080')
+  console.log(`...running 🏃🏿 🏃🏻 `);
+  console.log('🌏 Listening at http://localhost:8080  👏 👏 👌 ');
 })

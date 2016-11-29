@@ -30,6 +30,8 @@ var React = require('react');
 var DatePicker = require('react-hijri');
 var moment = require('moment-hijri');
 
+moment.locale(`ar`);
+
 require('react-hijri/dist/react-datepicker.css');
 
 var Example = React.createClass({
