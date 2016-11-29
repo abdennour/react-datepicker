@@ -1,9 +1,10 @@
 # React Hijri Datepicker:
 
+
 أوّل  مكوّن رياكت في العالم للتاريخ الهجري
 
 [![Join the chat at https://gitter.im/abdennour/react-datepicker](https://badges.gitter.im/abdennour/react-datepicker.svg)](https://gitter.im/abdennour/react-datepicker?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![npm version](https://badge.fury.io/js/react-datepicker.svg)](https://badge.fury.io/js/react-datepicker)
+[![npm version](https://badge.fury.io/js/react-hijri.svg)](https://badge.fury.io/js/react-hijri)
 [![Build Status](https://travis-ci.org/abdennour/react-datepicker.svg?branch=master)](https://travis-ci.org/abdennour/react-datepicker)
 [![Dependency Status](https://david-dm.org/abdennour/react-datepicker.svg)](https://david-dm.org/abdennour/react-datepicker)
 [![codecov](https://codecov.io/gh/abdennour/react-datepicker/branch/master/graph/badge.svg)](https://codecov.io/gh/abdennour/react-datepicker)
@@ -13,16 +14,13 @@
 A simple and reusable Datepicker component for React .
 It is a fork from [@react-datepicker repo](https://github.com/Hacker0x01/react-datepicker) however, we add calendars managements including `Hijri` calendar.
 
- ([Demo](https://abdennour.github.io/react-datepicker/))
-
-![](https://cloud.githubusercontent.com/assets/1412392/5339491/c40de124-7ee1-11e4-9f07-9276e2545f27.png)
 
 ## Installation
 
 The package can be installed via NPM:
 
 ```
-npm install react-datepicker --save
+npm install react-hijri --save
 ```
 
 You’ll need to install `React` and `Moment-Hijri` separately since those dependencies aren’t included in the package. Below is a simple example on how to use the Datepicker in a React view. You will also need to require the css file from this package (or provide your own). The example below shows how to include the css from this package if your build system supports requiring css files (webpack is one that does).
