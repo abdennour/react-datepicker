@@ -65,14 +65,14 @@
 	return modules;
 }([
 /* 0 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__(1);
 
 
-/***/ },
+/***/ }),
 /* 1 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -80,11 +80,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDom = __webpack_require__(29);
+	var _reactDom = __webpack_require__(32);
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
-	var _root = __webpack_require__(167);
+	var _root = __webpack_require__(171);
 
 	var _root2 = _interopRequireDefault(_root);
 
@@ -92,26 +92,24 @@
 
 	_reactDom2.default.render(_react2.default.createElement(_root2.default, null), document.getElementById('app'));
 
-/***/ },
+/***/ }),
 /* 2 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	module.exports = __webpack_require__(3);
 
 
-/***/ },
+/***/ }),
 /* 3 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
@@ -119,42 +117,52 @@
 
 	var _assign = __webpack_require__(4);
 
-	var ReactChildren = __webpack_require__(5);
-	var ReactComponent = __webpack_require__(18);
-	var ReactPureComponent = __webpack_require__(21);
-	var ReactClass = __webpack_require__(22);
-	var ReactDOMFactories = __webpack_require__(24);
-	var ReactElement = __webpack_require__(9);
-	var ReactPropTypes = __webpack_require__(25);
-	var ReactVersion = __webpack_require__(27);
+	var ReactBaseClasses = __webpack_require__(5);
+	var ReactChildren = __webpack_require__(14);
+	var ReactDOMFactories = __webpack_require__(22);
+	var ReactElement = __webpack_require__(16);
+	var ReactPropTypes = __webpack_require__(23);
+	var ReactVersion = __webpack_require__(28);
 
-	var onlyChild = __webpack_require__(28);
-	var warning = __webpack_require__(11);
+	var createReactClass = __webpack_require__(29);
+	var onlyChild = __webpack_require__(31);
 
 	var createElement = ReactElement.createElement;
 	var createFactory = ReactElement.createFactory;
 	var cloneElement = ReactElement.cloneElement;
 
 	if (false) {
+	  var lowPriorityWarning = require('./lowPriorityWarning');
+	  var canDefineProperty = require('./canDefineProperty');
 	  var ReactElementValidator = require('./ReactElementValidator');
+	  var didWarnPropTypesDeprecated = false;
 	  createElement = ReactElementValidator.createElement;
 	  createFactory = ReactElementValidator.createFactory;
 	  cloneElement = ReactElementValidator.cloneElement;
 	}
 
 	var __spread = _assign;
+	var createMixin = function (mixin) {
+	  return mixin;
+	};
 
 	if (false) {
-	  var warned = false;
+	  var warnedForSpread = false;
+	  var warnedForCreateMixin = false;
 	  __spread = function () {
-	    process.env.NODE_ENV !== 'production' ? warning(warned, 'React.__spread is deprecated and should not be used. Use ' + 'Object.assign directly or another helper function with similar ' + 'semantics. You may be seeing this warning due to your compiler. ' + 'See https://fb.me/react-spread-deprecation for more details.') : void 0;
-	    warned = true;
+	    lowPriorityWarning(warnedForSpread, 'React.__spread is deprecated and should not be used. Use ' + 'Object.assign directly or another helper function with similar ' + 'semantics. You may be seeing this warning due to your compiler. ' + 'See https://fb.me/react-spread-deprecation for more details.');
+	    warnedForSpread = true;
 	    return _assign.apply(null, arguments);
+	  };
+
+	  createMixin = function (mixin) {
+	    lowPriorityWarning(warnedForCreateMixin, 'React.createMixin is deprecated and should not be used. ' + 'In React v16.0, it will be removed. ' + 'You can use this mixin directly instead. ' + 'See https://fb.me/createmixin-was-never-implemented for more info.');
+	    warnedForCreateMixin = true;
+	    return mixin;
 	  };
 	}
 
 	var React = {
-
 	  // Modern
 
 	  Children: {
@@ -165,8 +173,8 @@
 	    only: onlyChild
 	  },
 
-	  Component: ReactComponent,
-	  PureComponent: ReactPureComponent,
+	  Component: ReactBaseClasses.Component,
+	  PureComponent: ReactBaseClasses.PureComponent,
 
 	  createElement: createElement,
 	  cloneElement: cloneElement,
@@ -175,12 +183,9 @@
 	  // Classic
 
 	  PropTypes: ReactPropTypes,
-	  createClass: ReactClass.createClass,
+	  createClass: createReactClass,
 	  createFactory: createFactory,
-	  createMixin: function (mixin) {
-	    // Currently a noop. Will be used to validate and trace mixins.
-	    return mixin;
-	  },
+	  createMixin: createMixin,
 
 	  // This looks DOM specific but these are actually isomorphic helpers
 	  // since they are just generating DOM strings.
@@ -192,14 +197,57 @@
 	  __spread: __spread
 	};
 
+	if (false) {
+	  var warnedForCreateClass = false;
+	  if (canDefineProperty) {
+	    Object.defineProperty(React, 'PropTypes', {
+	      get: function () {
+	        lowPriorityWarning(didWarnPropTypesDeprecated, 'Accessing PropTypes via the main React package is deprecated,' + ' and will be removed in  React v16.0.' + ' Use the latest available v15.* prop-types package from npm instead.' + ' For info on usage, compatibility, migration and more, see ' + 'https://fb.me/prop-types-docs');
+	        didWarnPropTypesDeprecated = true;
+	        return ReactPropTypes;
+	      }
+	    });
+
+	    Object.defineProperty(React, 'createClass', {
+	      get: function () {
+	        lowPriorityWarning(warnedForCreateClass, 'Accessing createClass via the main React package is deprecated,' + ' and will be removed in React v16.0.' + " Use a plain JavaScript class instead. If you're not yet " + 'ready to migrate, create-react-class v15.* is available ' + 'on npm as a temporary, drop-in replacement. ' + 'For more info see https://fb.me/react-create-class');
+	        warnedForCreateClass = true;
+	        return createReactClass;
+	      }
+	    });
+	  }
+
+	  // React.DOM factories are deprecated. Wrap these methods so that
+	  // invocations of the React.DOM namespace and alert users to switch
+	  // to the `react-dom-factories` package.
+	  React.DOM = {};
+	  var warnedForFactories = false;
+	  Object.keys(ReactDOMFactories).forEach(function (factory) {
+	    React.DOM[factory] = function () {
+	      if (!warnedForFactories) {
+	        lowPriorityWarning(false, 'Accessing factories like React.DOM.%s has been deprecated ' + 'and will be removed in v16.0+. Use the ' + 'react-dom-factories package instead. ' + ' Version 1.0 provides a drop-in replacement.' + ' For more info, see https://fb.me/react-dom-factories', factory);
+	        warnedForFactories = true;
+	      }
+	      return ReactDOMFactories[factory].apply(ReactDOMFactories, arguments);
+	    };
+	  });
+	}
+
 	module.exports = React;
 
-/***/ },
+/***/ }),
 /* 4 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
+
+	/*
+	object-assign
+	(c) Sindre Sorhus
+	@license MIT
+	*/
 
 	'use strict';
 	/* eslint-disable no-unused-vars */
+	var getOwnPropertySymbols = Object.getOwnPropertySymbols;
 	var hasOwnProperty = Object.prototype.hasOwnProperty;
 	var propIsEnumerable = Object.prototype.propertyIsEnumerable;
 
@@ -220,7 +268,7 @@
 			// Detect buggy property enumeration order in older V8 versions.
 
 			// https://bugs.chromium.org/p/v8/issues/detail?id=4118
-			var test1 = new String('abc');  // eslint-disable-line
+			var test1 = new String('abc');  // eslint-disable-line no-new-wrappers
 			test1[5] = 'de';
 			if (Object.getOwnPropertyNames(test1)[0] === '5') {
 				return false;
@@ -249,7 +297,7 @@
 			}
 
 			return true;
-		} catch (e) {
+		} catch (err) {
 			// We don't expect any of the above to throw, but better to be safe.
 			return false;
 		}
@@ -269,8 +317,8 @@
 				}
 			}
 
-			if (Object.getOwnPropertySymbols) {
-				symbols = Object.getOwnPropertySymbols(from);
+			if (getOwnPropertySymbols) {
+				symbols = getOwnPropertySymbols(from);
 				for (var i = 0; i < symbols.length; i++) {
 					if (propIsEnumerable.call(from, symbols[i])) {
 						to[symbols[i]] = from[symbols[i]];
@@ -283,27 +331,591 @@
 	};
 
 
-/***/ },
+/***/ }),
 /* 5 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var PooledClass = __webpack_require__(6);
-	var ReactElement = __webpack_require__(9);
+	var _prodInvariant = __webpack_require__(6),
+	    _assign = __webpack_require__(4);
 
-	var emptyFunction = __webpack_require__(12);
-	var traverseAllChildren = __webpack_require__(15);
+	var ReactNoopUpdateQueue = __webpack_require__(7);
+
+	var canDefineProperty = __webpack_require__(10);
+	var emptyObject = __webpack_require__(11);
+	var invariant = __webpack_require__(12);
+	var lowPriorityWarning = __webpack_require__(13);
+
+	/**
+	 * Base class helpers for the updating state of a component.
+	 */
+	function ReactComponent(props, context, updater) {
+	  this.props = props;
+	  this.context = context;
+	  this.refs = emptyObject;
+	  // We initialize the default updater but the real one gets injected by the
+	  // renderer.
+	  this.updater = updater || ReactNoopUpdateQueue;
+	}
+
+	ReactComponent.prototype.isReactComponent = {};
+
+	/**
+	 * Sets a subset of the state. Always use this to mutate
+	 * state. You should treat `this.state` as immutable.
+	 *
+	 * There is no guarantee that `this.state` will be immediately updated, so
+	 * accessing `this.state` after calling this method may return the old value.
+	 *
+	 * There is no guarantee that calls to `setState` will run synchronously,
+	 * as they may eventually be batched together.  You can provide an optional
+	 * callback that will be executed when the call to setState is actually
+	 * completed.
+	 *
+	 * When a function is provided to setState, it will be called at some point in
+	 * the future (not synchronously). It will be called with the up to date
+	 * component arguments (state, props, context). These values can be different
+	 * from this.* because your function may be called after receiveProps but before
+	 * shouldComponentUpdate, and this new state, props, and context will not yet be
+	 * assigned to this.
+	 *
+	 * @param {object|function} partialState Next partial state or function to
+	 *        produce next partial state to be merged with current state.
+	 * @param {?function} callback Called after state is updated.
+	 * @final
+	 * @protected
+	 */
+	ReactComponent.prototype.setState = function (partialState, callback) {
+	  !(typeof partialState === 'object' || typeof partialState === 'function' || partialState == null) ?  false ? invariant(false, 'setState(...): takes an object of state variables to update or a function which returns an object of state variables.') : _prodInvariant('85') : void 0;
+	  this.updater.enqueueSetState(this, partialState);
+	  if (callback) {
+	    this.updater.enqueueCallback(this, callback, 'setState');
+	  }
+	};
+
+	/**
+	 * Forces an update. This should only be invoked when it is known with
+	 * certainty that we are **not** in a DOM transaction.
+	 *
+	 * You may want to call this when you know that some deeper aspect of the
+	 * component's state has changed but `setState` was not called.
+	 *
+	 * This will not invoke `shouldComponentUpdate`, but it will invoke
+	 * `componentWillUpdate` and `componentDidUpdate`.
+	 *
+	 * @param {?function} callback Called after update is complete.
+	 * @final
+	 * @protected
+	 */
+	ReactComponent.prototype.forceUpdate = function (callback) {
+	  this.updater.enqueueForceUpdate(this);
+	  if (callback) {
+	    this.updater.enqueueCallback(this, callback, 'forceUpdate');
+	  }
+	};
+
+	/**
+	 * Deprecated APIs. These APIs used to exist on classic React classes but since
+	 * we would like to deprecate them, we're not going to move them over to this
+	 * modern base class. Instead, we define a getter that warns if it's accessed.
+	 */
+	if (false) {
+	  var deprecatedAPIs = {
+	    isMounted: ['isMounted', 'Instead, make sure to clean up subscriptions and pending requests in ' + 'componentWillUnmount to prevent memory leaks.'],
+	    replaceState: ['replaceState', 'Refactor your code to use setState instead (see ' + 'https://github.com/facebook/react/issues/3236).']
+	  };
+	  var defineDeprecationWarning = function (methodName, info) {
+	    if (canDefineProperty) {
+	      Object.defineProperty(ReactComponent.prototype, methodName, {
+	        get: function () {
+	          lowPriorityWarning(false, '%s(...) is deprecated in plain JavaScript React classes. %s', info[0], info[1]);
+	          return undefined;
+	        }
+	      });
+	    }
+	  };
+	  for (var fnName in deprecatedAPIs) {
+	    if (deprecatedAPIs.hasOwnProperty(fnName)) {
+	      defineDeprecationWarning(fnName, deprecatedAPIs[fnName]);
+	    }
+	  }
+	}
+
+	/**
+	 * Base class helpers for the updating state of a component.
+	 */
+	function ReactPureComponent(props, context, updater) {
+	  // Duplicated from ReactComponent.
+	  this.props = props;
+	  this.context = context;
+	  this.refs = emptyObject;
+	  // We initialize the default updater but the real one gets injected by the
+	  // renderer.
+	  this.updater = updater || ReactNoopUpdateQueue;
+	}
+
+	function ComponentDummy() {}
+	ComponentDummy.prototype = ReactComponent.prototype;
+	ReactPureComponent.prototype = new ComponentDummy();
+	ReactPureComponent.prototype.constructor = ReactPureComponent;
+	// Avoid an extra prototype jump for these methods.
+	_assign(ReactPureComponent.prototype, ReactComponent.prototype);
+	ReactPureComponent.prototype.isPureReactComponent = true;
+
+	module.exports = {
+	  Component: ReactComponent,
+	  PureComponent: ReactPureComponent
+	};
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports) {
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 *
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
+	 *
+	 * 
+	 */
+	'use strict';
+
+	/**
+	 * WARNING: DO NOT manually require this module.
+	 * This is a replacement for `invariant(...)` used by the error code system
+	 * and will _only_ be required by the corresponding babel pass.
+	 * It always throws.
+	 */
+
+	function reactProdInvariant(code) {
+	  var argCount = arguments.length - 1;
+
+	  var message = 'Minified React error #' + code + '; visit ' + 'http://facebook.github.io/react/docs/error-decoder.html?invariant=' + code;
+
+	  for (var argIdx = 0; argIdx < argCount; argIdx++) {
+	    message += '&args[]=' + encodeURIComponent(arguments[argIdx + 1]);
+	  }
+
+	  message += ' for the full message or use the non-minified dev environment' + ' for full errors and additional helpful warnings.';
+
+	  var error = new Error(message);
+	  error.name = 'Invariant Violation';
+	  error.framesToPop = 1; // we don't care about reactProdInvariant's own frame
+
+	  throw error;
+	}
+
+	module.exports = reactProdInvariant;
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright (c) 2015-present, Facebook, Inc.
+	 *
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
+	 *
+	 */
+
+	'use strict';
+
+	var warning = __webpack_require__(8);
+
+	function warnNoop(publicInstance, callerName) {
+	  if (false) {
+	    var constructor = publicInstance.constructor;
+	    process.env.NODE_ENV !== 'production' ? warning(false, '%s(...): Can only update a mounted or mounting component. ' + 'This usually means you called %s() on an unmounted component. ' + 'This is a no-op. Please check the code for the %s component.', callerName, callerName, constructor && (constructor.displayName || constructor.name) || 'ReactClass') : void 0;
+	  }
+	}
+
+	/**
+	 * This is the abstract API for an update queue.
+	 */
+	var ReactNoopUpdateQueue = {
+	  /**
+	   * Checks whether or not this composite component is mounted.
+	   * @param {ReactClass} publicInstance The instance we want to test.
+	   * @return {boolean} True if mounted, false otherwise.
+	   * @protected
+	   * @final
+	   */
+	  isMounted: function (publicInstance) {
+	    return false;
+	  },
+
+	  /**
+	   * Enqueue a callback that will be executed after all the pending updates
+	   * have processed.
+	   *
+	   * @param {ReactClass} publicInstance The instance to use as `this` context.
+	   * @param {?function} callback Called after state is updated.
+	   * @internal
+	   */
+	  enqueueCallback: function (publicInstance, callback) {},
+
+	  /**
+	   * Forces an update. This should only be invoked when it is known with
+	   * certainty that we are **not** in a DOM transaction.
+	   *
+	   * You may want to call this when you know that some deeper aspect of the
+	   * component's state has changed but `setState` was not called.
+	   *
+	   * This will not invoke `shouldComponentUpdate`, but it will invoke
+	   * `componentWillUpdate` and `componentDidUpdate`.
+	   *
+	   * @param {ReactClass} publicInstance The instance that should rerender.
+	   * @internal
+	   */
+	  enqueueForceUpdate: function (publicInstance) {
+	    warnNoop(publicInstance, 'forceUpdate');
+	  },
+
+	  /**
+	   * Replaces all of the state. Always use this or `setState` to mutate state.
+	   * You should treat `this.state` as immutable.
+	   *
+	   * There is no guarantee that `this.state` will be immediately updated, so
+	   * accessing `this.state` after calling this method may return the old value.
+	   *
+	   * @param {ReactClass} publicInstance The instance that should rerender.
+	   * @param {object} completeState Next state.
+	   * @internal
+	   */
+	  enqueueReplaceState: function (publicInstance, completeState) {
+	    warnNoop(publicInstance, 'replaceState');
+	  },
+
+	  /**
+	   * Sets a subset of the state. This only exists because _pendingState is
+	   * internal. This provides a merging strategy that is not available to deep
+	   * properties which is confusing. TODO: Expose pendingState or don't use it
+	   * during the merge.
+	   *
+	   * @param {ReactClass} publicInstance The instance that should rerender.
+	   * @param {object} partialState Next partial state to be merged with state.
+	   * @internal
+	   */
+	  enqueueSetState: function (publicInstance, partialState) {
+	    warnNoop(publicInstance, 'setState');
+	  }
+	};
+
+	module.exports = ReactNoopUpdateQueue;
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright (c) 2014-present, Facebook, Inc.
+	 *
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
+	 *
+	 */
+
+	'use strict';
+
+	var emptyFunction = __webpack_require__(9);
+
+	/**
+	 * Similar to invariant but only logs a warning if the condition is not met.
+	 * This can be used to log issues in development environments in critical
+	 * paths. Removing the logging code for production environments will keep the
+	 * same logic and follow the same code paths.
+	 */
+
+	var warning = emptyFunction;
+
+	if (false) {
+	  var printWarning = function printWarning(format) {
+	    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+	      args[_key - 1] = arguments[_key];
+	    }
+
+	    var argIndex = 0;
+	    var message = 'Warning: ' + format.replace(/%s/g, function () {
+	      return args[argIndex++];
+	    });
+	    if (typeof console !== 'undefined') {
+	      console.error(message);
+	    }
+	    try {
+	      // --- Welcome to debugging React ---
+	      // This error was thrown as a convenience so that you can use this stack
+	      // to find the callsite that caused this warning to fire.
+	      throw new Error(message);
+	    } catch (x) {}
+	  };
+
+	  warning = function warning(condition, format) {
+	    if (format === undefined) {
+	      throw new Error('`warning(condition, format, ...args)` requires a warning ' + 'message argument');
+	    }
+
+	    if (format.indexOf('Failed Composite propType: ') === 0) {
+	      return; // Ignore CompositeComponent proptype check.
+	    }
+
+	    if (!condition) {
+	      for (var _len2 = arguments.length, args = Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
+	        args[_key2 - 2] = arguments[_key2];
+	      }
+
+	      printWarning.apply(undefined, [format].concat(args));
+	    }
+	  };
+	}
+
+	module.exports = warning;
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports) {
+
+	"use strict";
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 *
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
+	 *
+	 * 
+	 */
+
+	function makeEmptyFunction(arg) {
+	  return function () {
+	    return arg;
+	  };
+	}
+
+	/**
+	 * This function accepts and discards inputs; it has no side effects. This is
+	 * primarily useful idiomatically for overridable function endpoints which
+	 * always need to be callable, since JS lacks a null-call idiom ala Cocoa.
+	 */
+	var emptyFunction = function emptyFunction() {};
+
+	emptyFunction.thatReturns = makeEmptyFunction;
+	emptyFunction.thatReturnsFalse = makeEmptyFunction(false);
+	emptyFunction.thatReturnsTrue = makeEmptyFunction(true);
+	emptyFunction.thatReturnsNull = makeEmptyFunction(null);
+	emptyFunction.thatReturnsThis = function () {
+	  return this;
+	};
+	emptyFunction.thatReturnsArgument = function (arg) {
+	  return arg;
+	};
+
+	module.exports = emptyFunction;
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 *
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
+	 *
+	 * 
+	 */
+
+	'use strict';
+
+	var canDefineProperty = false;
+	if (false) {
+	  try {
+	    // $FlowFixMe https://github.com/facebook/flow/issues/285
+	    Object.defineProperty({}, 'x', { get: function () {} });
+	    canDefineProperty = true;
+	  } catch (x) {
+	    // IE will fail on defineProperty
+	  }
+	}
+
+	module.exports = canDefineProperty;
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 *
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
+	 *
+	 */
+
+	'use strict';
+
+	var emptyObject = {};
+
+	if (false) {
+	  Object.freeze(emptyObject);
+	}
+
+	module.exports = emptyObject;
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 *
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
+	 *
+	 */
+
+	'use strict';
+
+	/**
+	 * Use invariant() to assert state which your program assumes to be true.
+	 *
+	 * Provide sprintf-style format (only %s is supported) and arguments
+	 * to provide information about what broke and what you were
+	 * expecting.
+	 *
+	 * The invariant message will be stripped in production, but the invariant
+	 * will remain to ensure logic does not differ in production.
+	 */
+
+	var validateFormat = function validateFormat(format) {};
+
+	if (false) {
+	  validateFormat = function validateFormat(format) {
+	    if (format === undefined) {
+	      throw new Error('invariant requires an error message argument');
+	    }
+	  };
+	}
+
+	function invariant(condition, format, a, b, c, d, e, f) {
+	  validateFormat(format);
+
+	  if (!condition) {
+	    var error;
+	    if (format === undefined) {
+	      error = new Error('Minified exception occurred; use the non-minified dev environment ' + 'for the full error message and additional helpful warnings.');
+	    } else {
+	      var args = [a, b, c, d, e, f];
+	      var argIndex = 0;
+	      error = new Error(format.replace(/%s/g, function () {
+	        return args[argIndex++];
+	      }));
+	      error.name = 'Invariant Violation';
+	    }
+
+	    error.framesToPop = 1; // we don't care about invariant's own frame
+	    throw error;
+	  }
+	}
+
+	module.exports = invariant;
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright (c) 2014-present, Facebook, Inc.
+	 *
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
+	 *
+	 */
+
+	'use strict';
+
+	/**
+	 * Forked from fbjs/warning:
+	 * https://github.com/facebook/fbjs/blob/e66ba20ad5be433eb54423f2b097d829324d9de6/packages/fbjs/src/__forks__/warning.js
+	 *
+	 * Only change is we use console.warn instead of console.error,
+	 * and do nothing when 'console' is not supported.
+	 * This really simplifies the code.
+	 * ---
+	 * Similar to invariant but only logs a warning if the condition is not met.
+	 * This can be used to log issues in development environments in critical
+	 * paths. Removing the logging code for production environments will keep the
+	 * same logic and follow the same code paths.
+	 */
+
+	var lowPriorityWarning = function () {};
+
+	if (false) {
+	  var printWarning = function (format) {
+	    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+	      args[_key - 1] = arguments[_key];
+	    }
+
+	    var argIndex = 0;
+	    var message = 'Warning: ' + format.replace(/%s/g, function () {
+	      return args[argIndex++];
+	    });
+	    if (typeof console !== 'undefined') {
+	      console.warn(message);
+	    }
+	    try {
+	      // --- Welcome to debugging React ---
+	      // This error was thrown as a convenience so that you can use this stack
+	      // to find the callsite that caused this warning to fire.
+	      throw new Error(message);
+	    } catch (x) {}
+	  };
+
+	  lowPriorityWarning = function (condition, format) {
+	    if (format === undefined) {
+	      throw new Error('`warning(condition, format, ...args)` requires a warning ' + 'message argument');
+	    }
+	    if (!condition) {
+	      for (var _len2 = arguments.length, args = Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
+	        args[_key2 - 2] = arguments[_key2];
+	      }
+
+	      printWarning.apply(undefined, [format].concat(args));
+	    }
+	  };
+	}
+
+	module.exports = lowPriorityWarning;
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 *
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
+	 *
+	 */
+
+	'use strict';
+
+	var PooledClass = __webpack_require__(15);
+	var ReactElement = __webpack_require__(16);
+
+	var emptyFunction = __webpack_require__(9);
+	var traverseAllChildren = __webpack_require__(19);
 
 	var twoArgumentPooler = PooledClass.twoArgumentPooler;
 	var fourArgumentPooler = PooledClass.fourArgumentPooler;
@@ -478,116 +1090,17 @@
 
 	module.exports = ReactChildren;
 
-/***/ },
-/* 6 */
-[628, 7],
-/* 7 */
-/***/ function(module, exports) {
+/***/ }),
+/* 15 */
+[656, 6],
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright (c) 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2014-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * 
-	 */
-	'use strict';
-
-	/**
-	 * WARNING: DO NOT manually require this module.
-	 * This is a replacement for `invariant(...)` used by the error code system
-	 * and will _only_ be required by the corresponding babel pass.
-	 * It always throws.
-	 */
-
-	function reactProdInvariant(code) {
-	  var argCount = arguments.length - 1;
-
-	  var message = 'Minified React error #' + code + '; visit ' + 'http://facebook.github.io/react/docs/error-decoder.html?invariant=' + code;
-
-	  for (var argIdx = 0; argIdx < argCount; argIdx++) {
-	    message += '&args[]=' + encodeURIComponent(arguments[argIdx + 1]);
-	  }
-
-	  message += ' for the full message or use the non-minified dev environment' + ' for full errors and additional helpful warnings.';
-
-	  var error = new Error(message);
-	  error.name = 'Invariant Violation';
-	  error.framesToPop = 1; // we don't care about reactProdInvariant's own frame
-
-	  throw error;
-	}
-
-	module.exports = reactProdInvariant;
-
-/***/ },
-/* 8 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright (c) 2013-present, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 */
-
-	'use strict';
-
-	/**
-	 * Use invariant() to assert state which your program assumes to be true.
-	 *
-	 * Provide sprintf-style format (only %s is supported) and arguments
-	 * to provide information about what broke and what you were
-	 * expecting.
-	 *
-	 * The invariant message will be stripped in production, but the invariant
-	 * will remain to ensure logic does not differ in production.
-	 */
-
-	function invariant(condition, format, a, b, c, d, e, f) {
-	  if (false) {
-	    if (format === undefined) {
-	      throw new Error('invariant requires an error message argument');
-	    }
-	  }
-
-	  if (!condition) {
-	    var error;
-	    if (format === undefined) {
-	      error = new Error('Minified exception occurred; use the non-minified dev environment ' + 'for the full error message and additional helpful warnings.');
-	    } else {
-	      var args = [a, b, c, d, e, f];
-	      var argIndex = 0;
-	      error = new Error(format.replace(/%s/g, function () {
-	        return args[argIndex++];
-	      }));
-	      error.name = 'Invariant Violation';
-	    }
-
-	    error.framesToPop = 1; // we don't care about invariant's own frame
-	    throw error;
-	  }
-	}
-
-	module.exports = invariant;
-
-/***/ },
-/* 9 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright 2014-present, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
@@ -595,13 +1108,13 @@
 
 	var _assign = __webpack_require__(4);
 
-	var ReactCurrentOwner = __webpack_require__(10);
+	var ReactCurrentOwner = __webpack_require__(17);
 
-	var warning = __webpack_require__(11);
-	var canDefineProperty = __webpack_require__(13);
+	var warning = __webpack_require__(8);
+	var canDefineProperty = __webpack_require__(10);
 	var hasOwnProperty = Object.prototype.hasOwnProperty;
 
-	var REACT_ELEMENT_TYPE = __webpack_require__(14);
+	var REACT_ELEMENT_TYPE = __webpack_require__(18);
 
 	var RESERVED_PROPS = {
 	  key: true,
@@ -922,17 +1435,15 @@
 
 	module.exports = ReactElement;
 
-/***/ },
-/* 10 */
-/***/ function(module, exports) {
+/***/ }),
+/* 17 */
+/***/ (function(module, exports) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 * 
 	 */
@@ -946,172 +1457,24 @@
 	 * currently being constructed.
 	 */
 	var ReactCurrentOwner = {
-
 	  /**
 	   * @internal
 	   * @type {ReactComponent}
 	   */
 	  current: null
-
 	};
 
 	module.exports = ReactCurrentOwner;
 
-/***/ },
-/* 11 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 18 */
+/***/ (function(module, exports) {
 
 	/**
-	 * Copyright 2014-2015, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2014-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 */
-
-	'use strict';
-
-	var emptyFunction = __webpack_require__(12);
-
-	/**
-	 * Similar to invariant but only logs a warning if the condition is not met.
-	 * This can be used to log issues in development environments in critical
-	 * paths. Removing the logging code for production environments will keep the
-	 * same logic and follow the same code paths.
-	 */
-
-	var warning = emptyFunction;
-
-	if (false) {
-	  (function () {
-	    var printWarning = function printWarning(format) {
-	      for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-	        args[_key - 1] = arguments[_key];
-	      }
-
-	      var argIndex = 0;
-	      var message = 'Warning: ' + format.replace(/%s/g, function () {
-	        return args[argIndex++];
-	      });
-	      if (typeof console !== 'undefined') {
-	        console.error(message);
-	      }
-	      try {
-	        // --- Welcome to debugging React ---
-	        // This error was thrown as a convenience so that you can use this stack
-	        // to find the callsite that caused this warning to fire.
-	        throw new Error(message);
-	      } catch (x) {}
-	    };
-
-	    warning = function warning(condition, format) {
-	      if (format === undefined) {
-	        throw new Error('`warning(condition, format, ...args)` requires a warning ' + 'message argument');
-	      }
-
-	      if (format.indexOf('Failed Composite propType: ') === 0) {
-	        return; // Ignore CompositeComponent proptype check.
-	      }
-
-	      if (!condition) {
-	        for (var _len2 = arguments.length, args = Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
-	          args[_key2 - 2] = arguments[_key2];
-	        }
-
-	        printWarning.apply(undefined, [format].concat(args));
-	      }
-	    };
-	  })();
-	}
-
-	module.exports = warning;
-
-/***/ },
-/* 12 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	/**
-	 * Copyright (c) 2013-present, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * 
-	 */
-
-	function makeEmptyFunction(arg) {
-	  return function () {
-	    return arg;
-	  };
-	}
-
-	/**
-	 * This function accepts and discards inputs; it has no side effects. This is
-	 * primarily useful idiomatically for overridable function endpoints which
-	 * always need to be callable, since JS lacks a null-call idiom ala Cocoa.
-	 */
-	var emptyFunction = function emptyFunction() {};
-
-	emptyFunction.thatReturns = makeEmptyFunction;
-	emptyFunction.thatReturnsFalse = makeEmptyFunction(false);
-	emptyFunction.thatReturnsTrue = makeEmptyFunction(true);
-	emptyFunction.thatReturnsNull = makeEmptyFunction(null);
-	emptyFunction.thatReturnsThis = function () {
-	  return this;
-	};
-	emptyFunction.thatReturnsArgument = function (arg) {
-	  return arg;
-	};
-
-	module.exports = emptyFunction;
-
-/***/ },
-/* 13 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * 
-	 */
-
-	'use strict';
-
-	var canDefineProperty = false;
-	if (false) {
-	  try {
-	    // $FlowFixMe https://github.com/facebook/flow/issues/285
-	    Object.defineProperty({}, 'x', { get: function () {} });
-	    canDefineProperty = true;
-	  } catch (x) {
-	    // IE will fail on defineProperty
-	  }
-	}
-
-	module.exports = canDefineProperty;
-
-/***/ },
-/* 14 */
-/***/ function(module, exports) {
-
-	/**
-	 * Copyright 2014-present, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 * 
 	 */
@@ -1125,31 +1488,29 @@
 
 	module.exports = REACT_ELEMENT_TYPE;
 
-/***/ },
-/* 15 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 19 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var _prodInvariant = __webpack_require__(7);
+	var _prodInvariant = __webpack_require__(6);
 
-	var ReactCurrentOwner = __webpack_require__(10);
-	var REACT_ELEMENT_TYPE = __webpack_require__(14);
+	var ReactCurrentOwner = __webpack_require__(17);
+	var REACT_ELEMENT_TYPE = __webpack_require__(18);
 
-	var getIteratorFn = __webpack_require__(16);
-	var invariant = __webpack_require__(8);
-	var KeyEscapeUtils = __webpack_require__(17);
-	var warning = __webpack_require__(11);
+	var getIteratorFn = __webpack_require__(20);
+	var invariant = __webpack_require__(12);
+	var KeyEscapeUtils = __webpack_require__(21);
+	var warning = __webpack_require__(8);
 
 	var SEPARATOR = '.';
 	var SUBSEPARATOR = ':';
@@ -1262,7 +1623,7 @@
 	      if (false) {
 	        addendum = ' If you meant to render a collection of children, use an array ' + 'instead or wrap the object using createFragment(object) from the ' + 'React add-ons.';
 	        if (children._isReactElement) {
-	          addendum = ' It looks like you\'re using an element created by a different ' + 'version of React. Make sure to use only one copy of React.';
+	          addendum = " It looks like you're using an element created by a different " + 'version of React. Make sure to use only one copy of React.';
 	        }
 	        if (ReactCurrentOwner.current) {
 	          var name = ReactCurrentOwner.current.getName();
@@ -1305,17 +1666,15 @@
 
 	module.exports = traverseAllChildren;
 
-/***/ },
-/* 16 */
-/***/ function(module, exports) {
+/***/ }),
+/* 20 */
+/***/ (function(module, exports) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 * 
 	 */
@@ -1350,17 +1709,15 @@
 
 	module.exports = getIteratorFn;
 
-/***/ },
-/* 17 */
-/***/ function(module, exports) {
+/***/ }),
+/* 21 */
+/***/ (function(module, exports) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 * 
 	 */
@@ -1413,1065 +1770,21 @@
 
 	module.exports = KeyEscapeUtils;
 
-/***/ },
-/* 18 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 */
-
-	'use strict';
-
-	var _prodInvariant = __webpack_require__(7);
-
-	var ReactNoopUpdateQueue = __webpack_require__(19);
-
-	var canDefineProperty = __webpack_require__(13);
-	var emptyObject = __webpack_require__(20);
-	var invariant = __webpack_require__(8);
-	var warning = __webpack_require__(11);
-
-	/**
-	 * Base class helpers for the updating state of a component.
-	 */
-	function ReactComponent(props, context, updater) {
-	  this.props = props;
-	  this.context = context;
-	  this.refs = emptyObject;
-	  // We initialize the default updater but the real one gets injected by the
-	  // renderer.
-	  this.updater = updater || ReactNoopUpdateQueue;
-	}
-
-	ReactComponent.prototype.isReactComponent = {};
-
-	/**
-	 * Sets a subset of the state. Always use this to mutate
-	 * state. You should treat `this.state` as immutable.
-	 *
-	 * There is no guarantee that `this.state` will be immediately updated, so
-	 * accessing `this.state` after calling this method may return the old value.
-	 *
-	 * There is no guarantee that calls to `setState` will run synchronously,
-	 * as they may eventually be batched together.  You can provide an optional
-	 * callback that will be executed when the call to setState is actually
-	 * completed.
-	 *
-	 * When a function is provided to setState, it will be called at some point in
-	 * the future (not synchronously). It will be called with the up to date
-	 * component arguments (state, props, context). These values can be different
-	 * from this.* because your function may be called after receiveProps but before
-	 * shouldComponentUpdate, and this new state, props, and context will not yet be
-	 * assigned to this.
-	 *
-	 * @param {object|function} partialState Next partial state or function to
-	 *        produce next partial state to be merged with current state.
-	 * @param {?function} callback Called after state is updated.
-	 * @final
-	 * @protected
-	 */
-	ReactComponent.prototype.setState = function (partialState, callback) {
-	  !(typeof partialState === 'object' || typeof partialState === 'function' || partialState == null) ?  false ? invariant(false, 'setState(...): takes an object of state variables to update or a function which returns an object of state variables.') : _prodInvariant('85') : void 0;
-	  this.updater.enqueueSetState(this, partialState);
-	  if (callback) {
-	    this.updater.enqueueCallback(this, callback, 'setState');
-	  }
-	};
-
-	/**
-	 * Forces an update. This should only be invoked when it is known with
-	 * certainty that we are **not** in a DOM transaction.
-	 *
-	 * You may want to call this when you know that some deeper aspect of the
-	 * component's state has changed but `setState` was not called.
-	 *
-	 * This will not invoke `shouldComponentUpdate`, but it will invoke
-	 * `componentWillUpdate` and `componentDidUpdate`.
-	 *
-	 * @param {?function} callback Called after update is complete.
-	 * @final
-	 * @protected
-	 */
-	ReactComponent.prototype.forceUpdate = function (callback) {
-	  this.updater.enqueueForceUpdate(this);
-	  if (callback) {
-	    this.updater.enqueueCallback(this, callback, 'forceUpdate');
-	  }
-	};
-
-	/**
-	 * Deprecated APIs. These APIs used to exist on classic React classes but since
-	 * we would like to deprecate them, we're not going to move them over to this
-	 * modern base class. Instead, we define a getter that warns if it's accessed.
-	 */
-	if (false) {
-	  var deprecatedAPIs = {
-	    isMounted: ['isMounted', 'Instead, make sure to clean up subscriptions and pending requests in ' + 'componentWillUnmount to prevent memory leaks.'],
-	    replaceState: ['replaceState', 'Refactor your code to use setState instead (see ' + 'https://github.com/facebook/react/issues/3236).']
-	  };
-	  var defineDeprecationWarning = function (methodName, info) {
-	    if (canDefineProperty) {
-	      Object.defineProperty(ReactComponent.prototype, methodName, {
-	        get: function () {
-	          process.env.NODE_ENV !== 'production' ? warning(false, '%s(...) is deprecated in plain JavaScript React classes. %s', info[0], info[1]) : void 0;
-	          return undefined;
-	        }
-	      });
-	    }
-	  };
-	  for (var fnName in deprecatedAPIs) {
-	    if (deprecatedAPIs.hasOwnProperty(fnName)) {
-	      defineDeprecationWarning(fnName, deprecatedAPIs[fnName]);
-	    }
-	  }
-	}
-
-	module.exports = ReactComponent;
-
-/***/ },
-/* 19 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright 2015-present, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 */
-
-	'use strict';
-
-	var warning = __webpack_require__(11);
-
-	function warnNoop(publicInstance, callerName) {
-	  if (false) {
-	    var constructor = publicInstance.constructor;
-	    process.env.NODE_ENV !== 'production' ? warning(false, '%s(...): Can only update a mounted or mounting component. ' + 'This usually means you called %s() on an unmounted component. ' + 'This is a no-op. Please check the code for the %s component.', callerName, callerName, constructor && (constructor.displayName || constructor.name) || 'ReactClass') : void 0;
-	  }
-	}
-
-	/**
-	 * This is the abstract API for an update queue.
-	 */
-	var ReactNoopUpdateQueue = {
-
-	  /**
-	   * Checks whether or not this composite component is mounted.
-	   * @param {ReactClass} publicInstance The instance we want to test.
-	   * @return {boolean} True if mounted, false otherwise.
-	   * @protected
-	   * @final
-	   */
-	  isMounted: function (publicInstance) {
-	    return false;
-	  },
-
-	  /**
-	   * Enqueue a callback that will be executed after all the pending updates
-	   * have processed.
-	   *
-	   * @param {ReactClass} publicInstance The instance to use as `this` context.
-	   * @param {?function} callback Called after state is updated.
-	   * @internal
-	   */
-	  enqueueCallback: function (publicInstance, callback) {},
-
-	  /**
-	   * Forces an update. This should only be invoked when it is known with
-	   * certainty that we are **not** in a DOM transaction.
-	   *
-	   * You may want to call this when you know that some deeper aspect of the
-	   * component's state has changed but `setState` was not called.
-	   *
-	   * This will not invoke `shouldComponentUpdate`, but it will invoke
-	   * `componentWillUpdate` and `componentDidUpdate`.
-	   *
-	   * @param {ReactClass} publicInstance The instance that should rerender.
-	   * @internal
-	   */
-	  enqueueForceUpdate: function (publicInstance) {
-	    warnNoop(publicInstance, 'forceUpdate');
-	  },
-
-	  /**
-	   * Replaces all of the state. Always use this or `setState` to mutate state.
-	   * You should treat `this.state` as immutable.
-	   *
-	   * There is no guarantee that `this.state` will be immediately updated, so
-	   * accessing `this.state` after calling this method may return the old value.
-	   *
-	   * @param {ReactClass} publicInstance The instance that should rerender.
-	   * @param {object} completeState Next state.
-	   * @internal
-	   */
-	  enqueueReplaceState: function (publicInstance, completeState) {
-	    warnNoop(publicInstance, 'replaceState');
-	  },
-
-	  /**
-	   * Sets a subset of the state. This only exists because _pendingState is
-	   * internal. This provides a merging strategy that is not available to deep
-	   * properties which is confusing. TODO: Expose pendingState or don't use it
-	   * during the merge.
-	   *
-	   * @param {ReactClass} publicInstance The instance that should rerender.
-	   * @param {object} partialState Next partial state to be merged with state.
-	   * @internal
-	   */
-	  enqueueSetState: function (publicInstance, partialState) {
-	    warnNoop(publicInstance, 'setState');
-	  }
-	};
-
-	module.exports = ReactNoopUpdateQueue;
-
-/***/ },
-/* 20 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
 	 * Copyright (c) 2013-present, Facebook, Inc.
-	 * All rights reserved.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var emptyObject = {};
-
-	if (false) {
-	  Object.freeze(emptyObject);
-	}
-
-	module.exports = emptyObject;
-
-/***/ },
-/* 21 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 */
-
-	'use strict';
-
-	var _assign = __webpack_require__(4);
-
-	var ReactComponent = __webpack_require__(18);
-	var ReactNoopUpdateQueue = __webpack_require__(19);
-
-	var emptyObject = __webpack_require__(20);
-
-	/**
-	 * Base class helpers for the updating state of a component.
-	 */
-	function ReactPureComponent(props, context, updater) {
-	  // Duplicated from ReactComponent.
-	  this.props = props;
-	  this.context = context;
-	  this.refs = emptyObject;
-	  // We initialize the default updater but the real one gets injected by the
-	  // renderer.
-	  this.updater = updater || ReactNoopUpdateQueue;
-	}
-
-	function ComponentDummy() {}
-	ComponentDummy.prototype = ReactComponent.prototype;
-	ReactPureComponent.prototype = new ComponentDummy();
-	ReactPureComponent.prototype.constructor = ReactPureComponent;
-	// Avoid an extra prototype jump for these methods.
-	_assign(ReactPureComponent.prototype, ReactComponent.prototype);
-	ReactPureComponent.prototype.isPureReactComponent = true;
-
-	module.exports = ReactPureComponent;
-
-/***/ },
-/* 22 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 */
-
-	'use strict';
-
-	var _prodInvariant = __webpack_require__(7),
-	    _assign = __webpack_require__(4);
-
-	var ReactComponent = __webpack_require__(18);
-	var ReactElement = __webpack_require__(9);
-	var ReactPropTypeLocationNames = __webpack_require__(23);
-	var ReactNoopUpdateQueue = __webpack_require__(19);
-
-	var emptyObject = __webpack_require__(20);
-	var invariant = __webpack_require__(8);
-	var warning = __webpack_require__(11);
-
-	var MIXINS_KEY = 'mixins';
-
-	// Helper function to allow the creation of anonymous functions which do not
-	// have .name set to the name of the variable being assigned to.
-	function identity(fn) {
-	  return fn;
-	}
-
-	/**
-	 * Policies that describe methods in `ReactClassInterface`.
-	 */
-
-
-	var injectedMixins = [];
-
-	/**
-	 * Composite components are higher-level components that compose other composite
-	 * or host components.
-	 *
-	 * To create a new type of `ReactClass`, pass a specification of
-	 * your new class to `React.createClass`. The only requirement of your class
-	 * specification is that you implement a `render` method.
-	 *
-	 *   var MyComponent = React.createClass({
-	 *     render: function() {
-	 *       return <div>Hello World</div>;
-	 *     }
-	 *   });
-	 *
-	 * The class specification supports a specific protocol of methods that have
-	 * special meaning (e.g. `render`). See `ReactClassInterface` for
-	 * more the comprehensive protocol. Any other properties and methods in the
-	 * class specification will be available on the prototype.
-	 *
-	 * @interface ReactClassInterface
-	 * @internal
-	 */
-	var ReactClassInterface = {
-
-	  /**
-	   * An array of Mixin objects to include when defining your component.
-	   *
-	   * @type {array}
-	   * @optional
-	   */
-	  mixins: 'DEFINE_MANY',
-
-	  /**
-	   * An object containing properties and methods that should be defined on
-	   * the component's constructor instead of its prototype (static methods).
-	   *
-	   * @type {object}
-	   * @optional
-	   */
-	  statics: 'DEFINE_MANY',
-
-	  /**
-	   * Definition of prop types for this component.
-	   *
-	   * @type {object}
-	   * @optional
-	   */
-	  propTypes: 'DEFINE_MANY',
-
-	  /**
-	   * Definition of context types for this component.
-	   *
-	   * @type {object}
-	   * @optional
-	   */
-	  contextTypes: 'DEFINE_MANY',
-
-	  /**
-	   * Definition of context types this component sets for its children.
-	   *
-	   * @type {object}
-	   * @optional
-	   */
-	  childContextTypes: 'DEFINE_MANY',
-
-	  // ==== Definition methods ====
-
-	  /**
-	   * Invoked when the component is mounted. Values in the mapping will be set on
-	   * `this.props` if that prop is not specified (i.e. using an `in` check).
-	   *
-	   * This method is invoked before `getInitialState` and therefore cannot rely
-	   * on `this.state` or use `this.setState`.
-	   *
-	   * @return {object}
-	   * @optional
-	   */
-	  getDefaultProps: 'DEFINE_MANY_MERGED',
-
-	  /**
-	   * Invoked once before the component is mounted. The return value will be used
-	   * as the initial value of `this.state`.
-	   *
-	   *   getInitialState: function() {
-	   *     return {
-	   *       isOn: false,
-	   *       fooBaz: new BazFoo()
-	   *     }
-	   *   }
-	   *
-	   * @return {object}
-	   * @optional
-	   */
-	  getInitialState: 'DEFINE_MANY_MERGED',
-
-	  /**
-	   * @return {object}
-	   * @optional
-	   */
-	  getChildContext: 'DEFINE_MANY_MERGED',
-
-	  /**
-	   * Uses props from `this.props` and state from `this.state` to render the
-	   * structure of the component.
-	   *
-	   * No guarantees are made about when or how often this method is invoked, so
-	   * it must not have side effects.
-	   *
-	   *   render: function() {
-	   *     var name = this.props.name;
-	   *     return <div>Hello, {name}!</div>;
-	   *   }
-	   *
-	   * @return {ReactComponent}
-	   * @nosideeffects
-	   * @required
-	   */
-	  render: 'DEFINE_ONCE',
-
-	  // ==== Delegate methods ====
-
-	  /**
-	   * Invoked when the component is initially created and about to be mounted.
-	   * This may have side effects, but any external subscriptions or data created
-	   * by this method must be cleaned up in `componentWillUnmount`.
-	   *
-	   * @optional
-	   */
-	  componentWillMount: 'DEFINE_MANY',
-
-	  /**
-	   * Invoked when the component has been mounted and has a DOM representation.
-	   * However, there is no guarantee that the DOM node is in the document.
-	   *
-	   * Use this as an opportunity to operate on the DOM when the component has
-	   * been mounted (initialized and rendered) for the first time.
-	   *
-	   * @param {DOMElement} rootNode DOM element representing the component.
-	   * @optional
-	   */
-	  componentDidMount: 'DEFINE_MANY',
-
-	  /**
-	   * Invoked before the component receives new props.
-	   *
-	   * Use this as an opportunity to react to a prop transition by updating the
-	   * state using `this.setState`. Current props are accessed via `this.props`.
-	   *
-	   *   componentWillReceiveProps: function(nextProps, nextContext) {
-	   *     this.setState({
-	   *       likesIncreasing: nextProps.likeCount > this.props.likeCount
-	   *     });
-	   *   }
-	   *
-	   * NOTE: There is no equivalent `componentWillReceiveState`. An incoming prop
-	   * transition may cause a state change, but the opposite is not true. If you
-	   * need it, you are probably looking for `componentWillUpdate`.
-	   *
-	   * @param {object} nextProps
-	   * @optional
-	   */
-	  componentWillReceiveProps: 'DEFINE_MANY',
-
-	  /**
-	   * Invoked while deciding if the component should be updated as a result of
-	   * receiving new props, state and/or context.
-	   *
-	   * Use this as an opportunity to `return false` when you're certain that the
-	   * transition to the new props/state/context will not require a component
-	   * update.
-	   *
-	   *   shouldComponentUpdate: function(nextProps, nextState, nextContext) {
-	   *     return !equal(nextProps, this.props) ||
-	   *       !equal(nextState, this.state) ||
-	   *       !equal(nextContext, this.context);
-	   *   }
-	   *
-	   * @param {object} nextProps
-	   * @param {?object} nextState
-	   * @param {?object} nextContext
-	   * @return {boolean} True if the component should update.
-	   * @optional
-	   */
-	  shouldComponentUpdate: 'DEFINE_ONCE',
-
-	  /**
-	   * Invoked when the component is about to update due to a transition from
-	   * `this.props`, `this.state` and `this.context` to `nextProps`, `nextState`
-	   * and `nextContext`.
-	   *
-	   * Use this as an opportunity to perform preparation before an update occurs.
-	   *
-	   * NOTE: You **cannot** use `this.setState()` in this method.
-	   *
-	   * @param {object} nextProps
-	   * @param {?object} nextState
-	   * @param {?object} nextContext
-	   * @param {ReactReconcileTransaction} transaction
-	   * @optional
-	   */
-	  componentWillUpdate: 'DEFINE_MANY',
-
-	  /**
-	   * Invoked when the component's DOM representation has been updated.
-	   *
-	   * Use this as an opportunity to operate on the DOM when the component has
-	   * been updated.
-	   *
-	   * @param {object} prevProps
-	   * @param {?object} prevState
-	   * @param {?object} prevContext
-	   * @param {DOMElement} rootNode DOM element representing the component.
-	   * @optional
-	   */
-	  componentDidUpdate: 'DEFINE_MANY',
-
-	  /**
-	   * Invoked when the component is about to be removed from its parent and have
-	   * its DOM representation destroyed.
-	   *
-	   * Use this as an opportunity to deallocate any external resources.
-	   *
-	   * NOTE: There is no `componentDidUnmount` since your component will have been
-	   * destroyed by that point.
-	   *
-	   * @optional
-	   */
-	  componentWillUnmount: 'DEFINE_MANY',
-
-	  // ==== Advanced methods ====
-
-	  /**
-	   * Updates the component's currently mounted DOM representation.
-	   *
-	   * By default, this implements React's rendering and reconciliation algorithm.
-	   * Sophisticated clients may wish to override this.
-	   *
-	   * @param {ReactReconcileTransaction} transaction
-	   * @internal
-	   * @overridable
-	   */
-	  updateComponent: 'OVERRIDE_BASE'
-
-	};
-
-	/**
-	 * Mapping from class specification keys to special processing functions.
-	 *
-	 * Although these are declared like instance properties in the specification
-	 * when defining classes using `React.createClass`, they are actually static
-	 * and are accessible on the constructor instead of the prototype. Despite
-	 * being static, they must be defined outside of the "statics" key under
-	 * which all other static methods are defined.
-	 */
-	var RESERVED_SPEC_KEYS = {
-	  displayName: function (Constructor, displayName) {
-	    Constructor.displayName = displayName;
-	  },
-	  mixins: function (Constructor, mixins) {
-	    if (mixins) {
-	      for (var i = 0; i < mixins.length; i++) {
-	        mixSpecIntoComponent(Constructor, mixins[i]);
-	      }
-	    }
-	  },
-	  childContextTypes: function (Constructor, childContextTypes) {
-	    if (false) {
-	      validateTypeDef(Constructor, childContextTypes, 'childContext');
-	    }
-	    Constructor.childContextTypes = _assign({}, Constructor.childContextTypes, childContextTypes);
-	  },
-	  contextTypes: function (Constructor, contextTypes) {
-	    if (false) {
-	      validateTypeDef(Constructor, contextTypes, 'context');
-	    }
-	    Constructor.contextTypes = _assign({}, Constructor.contextTypes, contextTypes);
-	  },
-	  /**
-	   * Special case getDefaultProps which should move into statics but requires
-	   * automatic merging.
-	   */
-	  getDefaultProps: function (Constructor, getDefaultProps) {
-	    if (Constructor.getDefaultProps) {
-	      Constructor.getDefaultProps = createMergedResultFunction(Constructor.getDefaultProps, getDefaultProps);
-	    } else {
-	      Constructor.getDefaultProps = getDefaultProps;
-	    }
-	  },
-	  propTypes: function (Constructor, propTypes) {
-	    if (false) {
-	      validateTypeDef(Constructor, propTypes, 'prop');
-	    }
-	    Constructor.propTypes = _assign({}, Constructor.propTypes, propTypes);
-	  },
-	  statics: function (Constructor, statics) {
-	    mixStaticSpecIntoComponent(Constructor, statics);
-	  },
-	  autobind: function () {} };
-
-	function validateTypeDef(Constructor, typeDef, location) {
-	  for (var propName in typeDef) {
-	    if (typeDef.hasOwnProperty(propName)) {
-	      // use a warning instead of an invariant so components
-	      // don't show up in prod but only in __DEV__
-	       false ? warning(typeof typeDef[propName] === 'function', '%s: %s type `%s` is invalid; it must be a function, usually from ' + 'React.PropTypes.', Constructor.displayName || 'ReactClass', ReactPropTypeLocationNames[location], propName) : void 0;
-	    }
-	  }
-	}
-
-	function validateMethodOverride(isAlreadyDefined, name) {
-	  var specPolicy = ReactClassInterface.hasOwnProperty(name) ? ReactClassInterface[name] : null;
-
-	  // Disallow overriding of base class methods unless explicitly allowed.
-	  if (ReactClassMixin.hasOwnProperty(name)) {
-	    !(specPolicy === 'OVERRIDE_BASE') ?  false ? invariant(false, 'ReactClassInterface: You are attempting to override `%s` from your class specification. Ensure that your method names do not overlap with React methods.', name) : _prodInvariant('73', name) : void 0;
-	  }
-
-	  // Disallow defining methods more than once unless explicitly allowed.
-	  if (isAlreadyDefined) {
-	    !(specPolicy === 'DEFINE_MANY' || specPolicy === 'DEFINE_MANY_MERGED') ?  false ? invariant(false, 'ReactClassInterface: You are attempting to define `%s` on your component more than once. This conflict may be due to a mixin.', name) : _prodInvariant('74', name) : void 0;
-	  }
-	}
-
-	/**
-	 * Mixin helper which handles policy validation and reserved
-	 * specification keys when building React classes.
-	 */
-	function mixSpecIntoComponent(Constructor, spec) {
-	  if (!spec) {
-	    if (false) {
-	      var typeofSpec = typeof spec;
-	      var isMixinValid = typeofSpec === 'object' && spec !== null;
-
-	      process.env.NODE_ENV !== 'production' ? warning(isMixinValid, '%s: You\'re attempting to include a mixin that is either null ' + 'or not an object. Check the mixins included by the component, ' + 'as well as any mixins they include themselves. ' + 'Expected object but got %s.', Constructor.displayName || 'ReactClass', spec === null ? null : typeofSpec) : void 0;
-	    }
-
-	    return;
-	  }
-
-	  !(typeof spec !== 'function') ?  false ? invariant(false, 'ReactClass: You\'re attempting to use a component class or function as a mixin. Instead, just use a regular object.') : _prodInvariant('75') : void 0;
-	  !!ReactElement.isValidElement(spec) ?  false ? invariant(false, 'ReactClass: You\'re attempting to use a component as a mixin. Instead, just use a regular object.') : _prodInvariant('76') : void 0;
-
-	  var proto = Constructor.prototype;
-	  var autoBindPairs = proto.__reactAutoBindPairs;
-
-	  // By handling mixins before any other properties, we ensure the same
-	  // chaining order is applied to methods with DEFINE_MANY policy, whether
-	  // mixins are listed before or after these methods in the spec.
-	  if (spec.hasOwnProperty(MIXINS_KEY)) {
-	    RESERVED_SPEC_KEYS.mixins(Constructor, spec.mixins);
-	  }
-
-	  for (var name in spec) {
-	    if (!spec.hasOwnProperty(name)) {
-	      continue;
-	    }
-
-	    if (name === MIXINS_KEY) {
-	      // We have already handled mixins in a special case above.
-	      continue;
-	    }
-
-	    var property = spec[name];
-	    var isAlreadyDefined = proto.hasOwnProperty(name);
-	    validateMethodOverride(isAlreadyDefined, name);
-
-	    if (RESERVED_SPEC_KEYS.hasOwnProperty(name)) {
-	      RESERVED_SPEC_KEYS[name](Constructor, property);
-	    } else {
-	      // Setup methods on prototype:
-	      // The following member methods should not be automatically bound:
-	      // 1. Expected ReactClass methods (in the "interface").
-	      // 2. Overridden methods (that were mixed in).
-	      var isReactClassMethod = ReactClassInterface.hasOwnProperty(name);
-	      var isFunction = typeof property === 'function';
-	      var shouldAutoBind = isFunction && !isReactClassMethod && !isAlreadyDefined && spec.autobind !== false;
-
-	      if (shouldAutoBind) {
-	        autoBindPairs.push(name, property);
-	        proto[name] = property;
-	      } else {
-	        if (isAlreadyDefined) {
-	          var specPolicy = ReactClassInterface[name];
-
-	          // These cases should already be caught by validateMethodOverride.
-	          !(isReactClassMethod && (specPolicy === 'DEFINE_MANY_MERGED' || specPolicy === 'DEFINE_MANY')) ?  false ? invariant(false, 'ReactClass: Unexpected spec policy %s for key %s when mixing in component specs.', specPolicy, name) : _prodInvariant('77', specPolicy, name) : void 0;
-
-	          // For methods which are defined more than once, call the existing
-	          // methods before calling the new property, merging if appropriate.
-	          if (specPolicy === 'DEFINE_MANY_MERGED') {
-	            proto[name] = createMergedResultFunction(proto[name], property);
-	          } else if (specPolicy === 'DEFINE_MANY') {
-	            proto[name] = createChainedFunction(proto[name], property);
-	          }
-	        } else {
-	          proto[name] = property;
-	          if (false) {
-	            // Add verbose displayName to the function, which helps when looking
-	            // at profiling tools.
-	            if (typeof property === 'function' && spec.displayName) {
-	              proto[name].displayName = spec.displayName + '_' + name;
-	            }
-	          }
-	        }
-	      }
-	    }
-	  }
-	}
-
-	function mixStaticSpecIntoComponent(Constructor, statics) {
-	  if (!statics) {
-	    return;
-	  }
-	  for (var name in statics) {
-	    var property = statics[name];
-	    if (!statics.hasOwnProperty(name)) {
-	      continue;
-	    }
-
-	    var isReserved = name in RESERVED_SPEC_KEYS;
-	    !!isReserved ?  false ? invariant(false, 'ReactClass: You are attempting to define a reserved property, `%s`, that shouldn\'t be on the "statics" key. Define it as an instance property instead; it will still be accessible on the constructor.', name) : _prodInvariant('78', name) : void 0;
-
-	    var isInherited = name in Constructor;
-	    !!isInherited ?  false ? invariant(false, 'ReactClass: You are attempting to define `%s` on your component more than once. This conflict may be due to a mixin.', name) : _prodInvariant('79', name) : void 0;
-	    Constructor[name] = property;
-	  }
-	}
-
-	/**
-	 * Merge two objects, but throw if both contain the same key.
-	 *
-	 * @param {object} one The first object, which is mutated.
-	 * @param {object} two The second object
-	 * @return {object} one after it has been mutated to contain everything in two.
-	 */
-	function mergeIntoWithNoDuplicateKeys(one, two) {
-	  !(one && two && typeof one === 'object' && typeof two === 'object') ?  false ? invariant(false, 'mergeIntoWithNoDuplicateKeys(): Cannot merge non-objects.') : _prodInvariant('80') : void 0;
-
-	  for (var key in two) {
-	    if (two.hasOwnProperty(key)) {
-	      !(one[key] === undefined) ?  false ? invariant(false, 'mergeIntoWithNoDuplicateKeys(): Tried to merge two objects with the same key: `%s`. This conflict may be due to a mixin; in particular, this may be caused by two getInitialState() or getDefaultProps() methods returning objects with clashing keys.', key) : _prodInvariant('81', key) : void 0;
-	      one[key] = two[key];
-	    }
-	  }
-	  return one;
-	}
-
-	/**
-	 * Creates a function that invokes two functions and merges their return values.
-	 *
-	 * @param {function} one Function to invoke first.
-	 * @param {function} two Function to invoke second.
-	 * @return {function} Function that invokes the two argument functions.
-	 * @private
-	 */
-	function createMergedResultFunction(one, two) {
-	  return function mergedResult() {
-	    var a = one.apply(this, arguments);
-	    var b = two.apply(this, arguments);
-	    if (a == null) {
-	      return b;
-	    } else if (b == null) {
-	      return a;
-	    }
-	    var c = {};
-	    mergeIntoWithNoDuplicateKeys(c, a);
-	    mergeIntoWithNoDuplicateKeys(c, b);
-	    return c;
-	  };
-	}
-
-	/**
-	 * Creates a function that invokes two functions and ignores their return vales.
-	 *
-	 * @param {function} one Function to invoke first.
-	 * @param {function} two Function to invoke second.
-	 * @return {function} Function that invokes the two argument functions.
-	 * @private
-	 */
-	function createChainedFunction(one, two) {
-	  return function chainedFunction() {
-	    one.apply(this, arguments);
-	    two.apply(this, arguments);
-	  };
-	}
-
-	/**
-	 * Binds a method to the component.
-	 *
-	 * @param {object} component Component whose method is going to be bound.
-	 * @param {function} method Method to be bound.
-	 * @return {function} The bound method.
-	 */
-	function bindAutoBindMethod(component, method) {
-	  var boundMethod = method.bind(component);
-	  if (false) {
-	    boundMethod.__reactBoundContext = component;
-	    boundMethod.__reactBoundMethod = method;
-	    boundMethod.__reactBoundArguments = null;
-	    var componentName = component.constructor.displayName;
-	    var _bind = boundMethod.bind;
-	    boundMethod.bind = function (newThis) {
-	      for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-	        args[_key - 1] = arguments[_key];
-	      }
-
-	      // User is trying to bind() an autobound method; we effectively will
-	      // ignore the value of "this" that the user is trying to use, so
-	      // let's warn.
-	      if (newThis !== component && newThis !== null) {
-	        process.env.NODE_ENV !== 'production' ? warning(false, 'bind(): React component methods may only be bound to the ' + 'component instance. See %s', componentName) : void 0;
-	      } else if (!args.length) {
-	        process.env.NODE_ENV !== 'production' ? warning(false, 'bind(): You are binding a component method to the component. ' + 'React does this for you automatically in a high-performance ' + 'way, so you can safely remove this call. See %s', componentName) : void 0;
-	        return boundMethod;
-	      }
-	      var reboundMethod = _bind.apply(boundMethod, arguments);
-	      reboundMethod.__reactBoundContext = component;
-	      reboundMethod.__reactBoundMethod = method;
-	      reboundMethod.__reactBoundArguments = args;
-	      return reboundMethod;
-	    };
-	  }
-	  return boundMethod;
-	}
-
-	/**
-	 * Binds all auto-bound methods in a component.
-	 *
-	 * @param {object} component Component whose method is going to be bound.
-	 */
-	function bindAutoBindMethods(component) {
-	  var pairs = component.__reactAutoBindPairs;
-	  for (var i = 0; i < pairs.length; i += 2) {
-	    var autoBindKey = pairs[i];
-	    var method = pairs[i + 1];
-	    component[autoBindKey] = bindAutoBindMethod(component, method);
-	  }
-	}
-
-	/**
-	 * Add more to the ReactClass base class. These are all legacy features and
-	 * therefore not already part of the modern ReactComponent.
-	 */
-	var ReactClassMixin = {
-
-	  /**
-	   * TODO: This will be deprecated because state should always keep a consistent
-	   * type signature and the only use case for this, is to avoid that.
-	   */
-	  replaceState: function (newState, callback) {
-	    this.updater.enqueueReplaceState(this, newState);
-	    if (callback) {
-	      this.updater.enqueueCallback(this, callback, 'replaceState');
-	    }
-	  },
-
-	  /**
-	   * Checks whether or not this composite component is mounted.
-	   * @return {boolean} True if mounted, false otherwise.
-	   * @protected
-	   * @final
-	   */
-	  isMounted: function () {
-	    return this.updater.isMounted(this);
-	  }
-	};
-
-	var ReactClassComponent = function () {};
-	_assign(ReactClassComponent.prototype, ReactComponent.prototype, ReactClassMixin);
-
-	/**
-	 * Module for creating composite components.
-	 *
-	 * @class ReactClass
-	 */
-	var ReactClass = {
-
-	  /**
-	   * Creates a composite component class given a class specification.
-	   * See https://facebook.github.io/react/docs/top-level-api.html#react.createclass
-	   *
-	   * @param {object} spec Class specification (which must define `render`).
-	   * @return {function} Component constructor function.
-	   * @public
-	   */
-	  createClass: function (spec) {
-	    // To keep our warnings more understandable, we'll use a little hack here to
-	    // ensure that Constructor.name !== 'Constructor'. This makes sure we don't
-	    // unnecessarily identify a class without displayName as 'Constructor'.
-	    var Constructor = identity(function (props, context, updater) {
-	      // This constructor gets overridden by mocks. The argument is used
-	      // by mocks to assert on what gets mounted.
-
-	      if (false) {
-	        process.env.NODE_ENV !== 'production' ? warning(this instanceof Constructor, 'Something is calling a React component directly. Use a factory or ' + 'JSX instead. See: https://fb.me/react-legacyfactory') : void 0;
-	      }
-
-	      // Wire up auto-binding
-	      if (this.__reactAutoBindPairs.length) {
-	        bindAutoBindMethods(this);
-	      }
-
-	      this.props = props;
-	      this.context = context;
-	      this.refs = emptyObject;
-	      this.updater = updater || ReactNoopUpdateQueue;
-
-	      this.state = null;
-
-	      // ReactClasses doesn't have constructors. Instead, they use the
-	      // getInitialState and componentWillMount methods for initialization.
-
-	      var initialState = this.getInitialState ? this.getInitialState() : null;
-	      if (false) {
-	        // We allow auto-mocks to proceed as if they're returning null.
-	        if (initialState === undefined && this.getInitialState._isMockFunction) {
-	          // This is probably bad practice. Consider warning here and
-	          // deprecating this convenience.
-	          initialState = null;
-	        }
-	      }
-	      !(typeof initialState === 'object' && !Array.isArray(initialState)) ?  false ? invariant(false, '%s.getInitialState(): must return an object or null', Constructor.displayName || 'ReactCompositeComponent') : _prodInvariant('82', Constructor.displayName || 'ReactCompositeComponent') : void 0;
-
-	      this.state = initialState;
-	    });
-	    Constructor.prototype = new ReactClassComponent();
-	    Constructor.prototype.constructor = Constructor;
-	    Constructor.prototype.__reactAutoBindPairs = [];
-
-	    injectedMixins.forEach(mixSpecIntoComponent.bind(null, Constructor));
-
-	    mixSpecIntoComponent(Constructor, spec);
-
-	    // Initialize the defaultProps property after all mixins have been merged.
-	    if (Constructor.getDefaultProps) {
-	      Constructor.defaultProps = Constructor.getDefaultProps();
-	    }
-
-	    if (false) {
-	      // This is a tag to indicate that the use of these method names is ok,
-	      // since it's used with createClass. If it's not, then it's likely a
-	      // mistake so we'll warn you to use the static property, property
-	      // initializer or constructor respectively.
-	      if (Constructor.getDefaultProps) {
-	        Constructor.getDefaultProps.isReactClassApproved = {};
-	      }
-	      if (Constructor.prototype.getInitialState) {
-	        Constructor.prototype.getInitialState.isReactClassApproved = {};
-	      }
-	    }
-
-	    !Constructor.prototype.render ?  false ? invariant(false, 'createClass(...): Class specification must implement a `render` method.') : _prodInvariant('83') : void 0;
-
-	    if (false) {
-	      process.env.NODE_ENV !== 'production' ? warning(!Constructor.prototype.componentShouldUpdate, '%s has a method called ' + 'componentShouldUpdate(). Did you mean shouldComponentUpdate()? ' + 'The name is phrased as a question because the function is ' + 'expected to return a value.', spec.displayName || 'A component') : void 0;
-	      process.env.NODE_ENV !== 'production' ? warning(!Constructor.prototype.componentWillRecieveProps, '%s has a method called ' + 'componentWillRecieveProps(). Did you mean componentWillReceiveProps()?', spec.displayName || 'A component') : void 0;
-	    }
-
-	    // Reduce time spent doing lookups by setting these on the prototype.
-	    for (var methodName in ReactClassInterface) {
-	      if (!Constructor.prototype[methodName]) {
-	        Constructor.prototype[methodName] = null;
-	      }
-	    }
-
-	    return Constructor;
-	  },
-
-	  injection: {
-	    injectMixin: function (mixin) {
-	      injectedMixins.push(mixin);
-	    }
-	  }
-
-	};
-
-	module.exports = ReactClass;
-
-/***/ },
-/* 23 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * 
-	 */
-
-	'use strict';
-
-	var ReactPropTypeLocationNames = {};
-
-	if (false) {
-	  ReactPropTypeLocationNames = {
-	    prop: 'prop',
-	    context: 'context',
-	    childContext: 'child context'
-	  };
-	}
-
-	module.exports = ReactPropTypeLocationNames;
-
-/***/ },
-/* 24 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 */
-
-	'use strict';
-
-	var ReactElement = __webpack_require__(9);
+	var ReactElement = __webpack_require__(16);
 
 	/**
 	 * Create a factory that creates HTML tag elements.
@@ -2486,7 +1799,6 @@
 
 	/**
 	 * Creates a mapping from supported HTML tags to `ReactDOMComponent` classes.
-	 * This is also accessible via `React.DOM`.
 	 *
 	 * @public
 	 */
@@ -2629,457 +1941,609 @@
 
 	module.exports = ReactDOMFactories;
 
-/***/ },
-/* 25 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 23 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var ReactElement = __webpack_require__(9);
-	var ReactPropTypeLocationNames = __webpack_require__(23);
-	var ReactPropTypesSecret = __webpack_require__(26);
+	var _require = __webpack_require__(16),
+	    isValidElement = _require.isValidElement;
 
-	var emptyFunction = __webpack_require__(12);
-	var getIteratorFn = __webpack_require__(16);
-	var warning = __webpack_require__(11);
+	var factory = __webpack_require__(24);
+
+	module.exports = factory(isValidElement);
+
+/***/ }),
+/* 24 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Collection of methods that allow declaration and validation of props that are
-	 * supplied to React components. Example usage:
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 *   var Props = require('ReactPropTypes');
-	 *   var MyArticle = React.createClass({
-	 *     propTypes: {
-	 *       // An optional string prop named "description".
-	 *       description: Props.string,
-	 *
-	 *       // A required enum prop named "category".
-	 *       category: Props.oneOf(['News','Photos']).isRequired,
-	 *
-	 *       // A prop named "dialog" that requires an instance of Dialog.
-	 *       dialog: Props.instanceOf(Dialog).isRequired
-	 *     },
-	 *     render: function() { ... }
-	 *   });
-	 *
-	 * A more formal specification of how these methods are used:
-	 *
-	 *   type := array|bool|func|object|number|string|oneOf([...])|instanceOf(...)
-	 *   decl := ReactPropTypes.{type}(.isRequired)?
-	 *
-	 * Each and every declaration produces a function with the same signature. This
-	 * allows the creation of custom validation functions. For example:
-	 *
-	 *  var MyLink = React.createClass({
-	 *    propTypes: {
-	 *      // An optional string or URI prop named "href".
-	 *      href: function(props, propName, componentName) {
-	 *        var propValue = props[propName];
-	 *        if (propValue != null && typeof propValue !== 'string' &&
-	 *            !(propValue instanceof URI)) {
-	 *          return new Error(
-	 *            'Expected a string or an URI for ' + propName + ' in ' +
-	 *            componentName
-	 *          );
-	 *        }
-	 *      }
-	 *    },
-	 *    render: function() {...}
-	 *  });
-	 *
-	 * @internal
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 */
 
-	var ANONYMOUS = '<<anonymous>>';
+	'use strict';
 
-	var ReactPropTypes = {
-	  array: createPrimitiveTypeChecker('array'),
-	  bool: createPrimitiveTypeChecker('boolean'),
-	  func: createPrimitiveTypeChecker('function'),
-	  number: createPrimitiveTypeChecker('number'),
-	  object: createPrimitiveTypeChecker('object'),
-	  string: createPrimitiveTypeChecker('string'),
-	  symbol: createPrimitiveTypeChecker('symbol'),
-
-	  any: createAnyTypeChecker(),
-	  arrayOf: createArrayOfTypeChecker,
-	  element: createElementTypeChecker(),
-	  instanceOf: createInstanceTypeChecker,
-	  node: createNodeChecker(),
-	  objectOf: createObjectOfTypeChecker,
-	  oneOf: createEnumTypeChecker,
-	  oneOfType: createUnionTypeChecker,
-	  shape: createShapeTypeChecker
+	// React 15.5 references this module, and assumes PropTypes are still callable in production.
+	// Therefore we re-export development-only version with all the PropTypes checks here.
+	// However if one is migrating to the `prop-types` npm library, they will go through the
+	// `index.js` entry point, and it will branch depending on the environment.
+	var factory = __webpack_require__(25);
+	module.exports = function(isValidElement) {
+	  // It is still allowed in 15.5.
+	  var throwOnDirectAccess = false;
+	  return factory(isValidElement, throwOnDirectAccess);
 	};
 
-	/**
-	 * inlined Object.is polyfill to avoid requiring consumers ship their own
-	 * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is
-	 */
-	/*eslint-disable no-self-compare*/
-	function is(x, y) {
-	  // SameValue algorithm
-	  if (x === y) {
-	    // Steps 1-5, 7-10
-	    // Steps 6.b-6.e: +0 != -0
-	    return x !== 0 || 1 / x === 1 / y;
-	  } else {
-	    // Step 6.a: NaN == NaN
-	    return x !== x && y !== y;
-	  }
-	}
-	/*eslint-enable no-self-compare*/
+
+/***/ }),
+/* 25 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * We use an Error-like object for backward compatibility as people may call
-	 * PropTypes directly and inspect their output. However we don't use real
-	 * Errors anymore. We don't inspect their stack anyway, and creating them
-	 * is prohibitively expensive if they are created too often, such as what
-	 * happens in oneOfType() for any type before the one that matched.
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 *
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 */
-	function PropTypeError(message) {
-	  this.message = message;
-	  this.stack = '';
-	}
-	// Make `instanceof Error` still work for returned errors.
-	PropTypeError.prototype = Error.prototype;
 
-	function createChainableTypeChecker(validate) {
-	  if (false) {
-	    var manualPropTypeCallCache = {};
+	'use strict';
+
+	var emptyFunction = __webpack_require__(9);
+	var invariant = __webpack_require__(12);
+	var warning = __webpack_require__(8);
+	var assign = __webpack_require__(4);
+
+	var ReactPropTypesSecret = __webpack_require__(26);
+	var checkPropTypes = __webpack_require__(27);
+
+	module.exports = function(isValidElement, throwOnDirectAccess) {
+	  /* global Symbol */
+	  var ITERATOR_SYMBOL = typeof Symbol === 'function' && Symbol.iterator;
+	  var FAUX_ITERATOR_SYMBOL = '@@iterator'; // Before Symbol spec.
+
+	  /**
+	   * Returns the iterator method function contained on the iterable object.
+	   *
+	   * Be sure to invoke the function with the iterable as context:
+	   *
+	   *     var iteratorFn = getIteratorFn(myIterable);
+	   *     if (iteratorFn) {
+	   *       var iterator = iteratorFn.call(myIterable);
+	   *       ...
+	   *     }
+	   *
+	   * @param {?object} maybeIterable
+	   * @return {?function}
+	   */
+	  function getIteratorFn(maybeIterable) {
+	    var iteratorFn = maybeIterable && (ITERATOR_SYMBOL && maybeIterable[ITERATOR_SYMBOL] || maybeIterable[FAUX_ITERATOR_SYMBOL]);
+	    if (typeof iteratorFn === 'function') {
+	      return iteratorFn;
+	    }
 	  }
-	  function checkType(isRequired, props, propName, componentName, location, propFullName, secret) {
-	    componentName = componentName || ANONYMOUS;
-	    propFullName = propFullName || propName;
+
+	  /**
+	   * Collection of methods that allow declaration and validation of props that are
+	   * supplied to React components. Example usage:
+	   *
+	   *   var Props = require('ReactPropTypes');
+	   *   var MyArticle = React.createClass({
+	   *     propTypes: {
+	   *       // An optional string prop named "description".
+	   *       description: Props.string,
+	   *
+	   *       // A required enum prop named "category".
+	   *       category: Props.oneOf(['News','Photos']).isRequired,
+	   *
+	   *       // A prop named "dialog" that requires an instance of Dialog.
+	   *       dialog: Props.instanceOf(Dialog).isRequired
+	   *     },
+	   *     render: function() { ... }
+	   *   });
+	   *
+	   * A more formal specification of how these methods are used:
+	   *
+	   *   type := array|bool|func|object|number|string|oneOf([...])|instanceOf(...)
+	   *   decl := ReactPropTypes.{type}(.isRequired)?
+	   *
+	   * Each and every declaration produces a function with the same signature. This
+	   * allows the creation of custom validation functions. For example:
+	   *
+	   *  var MyLink = React.createClass({
+	   *    propTypes: {
+	   *      // An optional string or URI prop named "href".
+	   *      href: function(props, propName, componentName) {
+	   *        var propValue = props[propName];
+	   *        if (propValue != null && typeof propValue !== 'string' &&
+	   *            !(propValue instanceof URI)) {
+	   *          return new Error(
+	   *            'Expected a string or an URI for ' + propName + ' in ' +
+	   *            componentName
+	   *          );
+	   *        }
+	   *      }
+	   *    },
+	   *    render: function() {...}
+	   *  });
+	   *
+	   * @internal
+	   */
+
+	  var ANONYMOUS = '<<anonymous>>';
+
+	  // Important!
+	  // Keep this list in sync with production version in `./factoryWithThrowingShims.js`.
+	  var ReactPropTypes = {
+	    array: createPrimitiveTypeChecker('array'),
+	    bool: createPrimitiveTypeChecker('boolean'),
+	    func: createPrimitiveTypeChecker('function'),
+	    number: createPrimitiveTypeChecker('number'),
+	    object: createPrimitiveTypeChecker('object'),
+	    string: createPrimitiveTypeChecker('string'),
+	    symbol: createPrimitiveTypeChecker('symbol'),
+
+	    any: createAnyTypeChecker(),
+	    arrayOf: createArrayOfTypeChecker,
+	    element: createElementTypeChecker(),
+	    instanceOf: createInstanceTypeChecker,
+	    node: createNodeChecker(),
+	    objectOf: createObjectOfTypeChecker,
+	    oneOf: createEnumTypeChecker,
+	    oneOfType: createUnionTypeChecker,
+	    shape: createShapeTypeChecker,
+	    exact: createStrictShapeTypeChecker,
+	  };
+
+	  /**
+	   * inlined Object.is polyfill to avoid requiring consumers ship their own
+	   * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is
+	   */
+	  /*eslint-disable no-self-compare*/
+	  function is(x, y) {
+	    // SameValue algorithm
+	    if (x === y) {
+	      // Steps 1-5, 7-10
+	      // Steps 6.b-6.e: +0 != -0
+	      return x !== 0 || 1 / x === 1 / y;
+	    } else {
+	      // Step 6.a: NaN == NaN
+	      return x !== x && y !== y;
+	    }
+	  }
+	  /*eslint-enable no-self-compare*/
+
+	  /**
+	   * We use an Error-like object for backward compatibility as people may call
+	   * PropTypes directly and inspect their output. However, we don't use real
+	   * Errors anymore. We don't inspect their stack anyway, and creating them
+	   * is prohibitively expensive if they are created too often, such as what
+	   * happens in oneOfType() for any type before the one that matched.
+	   */
+	  function PropTypeError(message) {
+	    this.message = message;
+	    this.stack = '';
+	  }
+	  // Make `instanceof Error` still work for returned errors.
+	  PropTypeError.prototype = Error.prototype;
+
+	  function createChainableTypeChecker(validate) {
 	    if (false) {
-	      if (secret !== ReactPropTypesSecret && typeof console !== 'undefined') {
-	        var cacheKey = componentName + ':' + propName;
-	        if (!manualPropTypeCallCache[cacheKey]) {
-	          process.env.NODE_ENV !== 'production' ? warning(false, 'You are manually calling a React.PropTypes validation ' + 'function for the `%s` prop on `%s`. This is deprecated ' + 'and will not work in production with the next major version. ' + 'You may be seeing this warning due to a third-party PropTypes ' + 'library. See https://fb.me/react-warning-dont-call-proptypes ' + 'for details.', propFullName, componentName) : void 0;
-	          manualPropTypeCallCache[cacheKey] = true;
+	      var manualPropTypeCallCache = {};
+	      var manualPropTypeWarningCount = 0;
+	    }
+	    function checkType(isRequired, props, propName, componentName, location, propFullName, secret) {
+	      componentName = componentName || ANONYMOUS;
+	      propFullName = propFullName || propName;
+
+	      if (secret !== ReactPropTypesSecret) {
+	        if (throwOnDirectAccess) {
+	          // New behavior only for users of `prop-types` package
+	          invariant(
+	            false,
+	            'Calling PropTypes validators directly is not supported by the `prop-types` package. ' +
+	            'Use `PropTypes.checkPropTypes()` to call them. ' +
+	            'Read more at http://fb.me/use-check-prop-types'
+	          );
+	        } else if (false) {
+	          // Old behavior for people using React.PropTypes
+	          var cacheKey = componentName + ':' + propName;
+	          if (
+	            !manualPropTypeCallCache[cacheKey] &&
+	            // Avoid spamming the console because they are often not actionable except for lib authors
+	            manualPropTypeWarningCount < 3
+	          ) {
+	            warning(
+	              false,
+	              'You are manually calling a React.PropTypes validation ' +
+	              'function for the `%s` prop on `%s`. This is deprecated ' +
+	              'and will throw in the standalone `prop-types` package. ' +
+	              'You may be seeing this warning due to a third-party PropTypes ' +
+	              'library. See https://fb.me/react-warning-dont-call-proptypes ' + 'for details.',
+	              propFullName,
+	              componentName
+	            );
+	            manualPropTypeCallCache[cacheKey] = true;
+	            manualPropTypeWarningCount++;
+	          }
 	        }
 	      }
-	    }
-	    if (props[propName] == null) {
-	      var locationName = ReactPropTypeLocationNames[location];
-	      if (isRequired) {
-	        if (props[propName] === null) {
-	          return new PropTypeError('The ' + locationName + ' `' + propFullName + '` is marked as required ' + ('in `' + componentName + '`, but its value is `null`.'));
+	      if (props[propName] == null) {
+	        if (isRequired) {
+	          if (props[propName] === null) {
+	            return new PropTypeError('The ' + location + ' `' + propFullName + '` is marked as required ' + ('in `' + componentName + '`, but its value is `null`.'));
+	          }
+	          return new PropTypeError('The ' + location + ' `' + propFullName + '` is marked as required in ' + ('`' + componentName + '`, but its value is `undefined`.'));
 	        }
-	        return new PropTypeError('The ' + locationName + ' `' + propFullName + '` is marked as required in ' + ('`' + componentName + '`, but its value is `undefined`.'));
+	        return null;
+	      } else {
+	        return validate(props, propName, componentName, location, propFullName);
+	      }
+	    }
+
+	    var chainedCheckType = checkType.bind(null, false);
+	    chainedCheckType.isRequired = checkType.bind(null, true);
+
+	    return chainedCheckType;
+	  }
+
+	  function createPrimitiveTypeChecker(expectedType) {
+	    function validate(props, propName, componentName, location, propFullName, secret) {
+	      var propValue = props[propName];
+	      var propType = getPropType(propValue);
+	      if (propType !== expectedType) {
+	        // `propValue` being instance of, say, date/regexp, pass the 'object'
+	        // check, but we can offer a more precise error message here rather than
+	        // 'of type `object`'.
+	        var preciseType = getPreciseType(propValue);
+
+	        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + preciseType + '` supplied to `' + componentName + '`, expected ') + ('`' + expectedType + '`.'));
 	      }
 	      return null;
-	    } else {
-	      return validate(props, propName, componentName, location, propFullName);
 	    }
+	    return createChainableTypeChecker(validate);
 	  }
 
-	  var chainedCheckType = checkType.bind(null, false);
-	  chainedCheckType.isRequired = checkType.bind(null, true);
-
-	  return chainedCheckType;
-	}
-
-	function createPrimitiveTypeChecker(expectedType) {
-	  function validate(props, propName, componentName, location, propFullName, secret) {
-	    var propValue = props[propName];
-	    var propType = getPropType(propValue);
-	    if (propType !== expectedType) {
-	      var locationName = ReactPropTypeLocationNames[location];
-	      // `propValue` being instance of, say, date/regexp, pass the 'object'
-	      // check, but we can offer a more precise error message here rather than
-	      // 'of type `object`'.
-	      var preciseType = getPreciseType(propValue);
-
-	      return new PropTypeError('Invalid ' + locationName + ' `' + propFullName + '` of type ' + ('`' + preciseType + '` supplied to `' + componentName + '`, expected ') + ('`' + expectedType + '`.'));
-	    }
-	    return null;
+	  function createAnyTypeChecker() {
+	    return createChainableTypeChecker(emptyFunction.thatReturnsNull);
 	  }
-	  return createChainableTypeChecker(validate);
-	}
 
-	function createAnyTypeChecker() {
-	  return createChainableTypeChecker(emptyFunction.thatReturns(null));
-	}
-
-	function createArrayOfTypeChecker(typeChecker) {
-	  function validate(props, propName, componentName, location, propFullName) {
-	    if (typeof typeChecker !== 'function') {
-	      return new PropTypeError('Property `' + propFullName + '` of component `' + componentName + '` has invalid PropType notation inside arrayOf.');
-	    }
-	    var propValue = props[propName];
-	    if (!Array.isArray(propValue)) {
-	      var locationName = ReactPropTypeLocationNames[location];
-	      var propType = getPropType(propValue);
-	      return new PropTypeError('Invalid ' + locationName + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected an array.'));
-	    }
-	    for (var i = 0; i < propValue.length; i++) {
-	      var error = typeChecker(propValue, i, componentName, location, propFullName + '[' + i + ']', ReactPropTypesSecret);
-	      if (error instanceof Error) {
-	        return error;
+	  function createArrayOfTypeChecker(typeChecker) {
+	    function validate(props, propName, componentName, location, propFullName) {
+	      if (typeof typeChecker !== 'function') {
+	        return new PropTypeError('Property `' + propFullName + '` of component `' + componentName + '` has invalid PropType notation inside arrayOf.');
 	      }
-	    }
-	    return null;
-	  }
-	  return createChainableTypeChecker(validate);
-	}
-
-	function createElementTypeChecker() {
-	  function validate(props, propName, componentName, location, propFullName) {
-	    var propValue = props[propName];
-	    if (!ReactElement.isValidElement(propValue)) {
-	      var locationName = ReactPropTypeLocationNames[location];
-	      var propType = getPropType(propValue);
-	      return new PropTypeError('Invalid ' + locationName + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected a single ReactElement.'));
-	    }
-	    return null;
-	  }
-	  return createChainableTypeChecker(validate);
-	}
-
-	function createInstanceTypeChecker(expectedClass) {
-	  function validate(props, propName, componentName, location, propFullName) {
-	    if (!(props[propName] instanceof expectedClass)) {
-	      var locationName = ReactPropTypeLocationNames[location];
-	      var expectedClassName = expectedClass.name || ANONYMOUS;
-	      var actualClassName = getClassName(props[propName]);
-	      return new PropTypeError('Invalid ' + locationName + ' `' + propFullName + '` of type ' + ('`' + actualClassName + '` supplied to `' + componentName + '`, expected ') + ('instance of `' + expectedClassName + '`.'));
-	    }
-	    return null;
-	  }
-	  return createChainableTypeChecker(validate);
-	}
-
-	function createEnumTypeChecker(expectedValues) {
-	  if (!Array.isArray(expectedValues)) {
-	     false ? warning(false, 'Invalid argument supplied to oneOf, expected an instance of array.') : void 0;
-	    return emptyFunction.thatReturnsNull;
-	  }
-
-	  function validate(props, propName, componentName, location, propFullName) {
-	    var propValue = props[propName];
-	    for (var i = 0; i < expectedValues.length; i++) {
-	      if (is(propValue, expectedValues[i])) {
-	        return null;
+	      var propValue = props[propName];
+	      if (!Array.isArray(propValue)) {
+	        var propType = getPropType(propValue);
+	        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected an array.'));
 	      }
-	    }
-
-	    var locationName = ReactPropTypeLocationNames[location];
-	    var valuesString = JSON.stringify(expectedValues);
-	    return new PropTypeError('Invalid ' + locationName + ' `' + propFullName + '` of value `' + propValue + '` ' + ('supplied to `' + componentName + '`, expected one of ' + valuesString + '.'));
-	  }
-	  return createChainableTypeChecker(validate);
-	}
-
-	function createObjectOfTypeChecker(typeChecker) {
-	  function validate(props, propName, componentName, location, propFullName) {
-	    if (typeof typeChecker !== 'function') {
-	      return new PropTypeError('Property `' + propFullName + '` of component `' + componentName + '` has invalid PropType notation inside objectOf.');
-	    }
-	    var propValue = props[propName];
-	    var propType = getPropType(propValue);
-	    if (propType !== 'object') {
-	      var locationName = ReactPropTypeLocationNames[location];
-	      return new PropTypeError('Invalid ' + locationName + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected an object.'));
-	    }
-	    for (var key in propValue) {
-	      if (propValue.hasOwnProperty(key)) {
-	        var error = typeChecker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret);
+	      for (var i = 0; i < propValue.length; i++) {
+	        var error = typeChecker(propValue, i, componentName, location, propFullName + '[' + i + ']', ReactPropTypesSecret);
 	        if (error instanceof Error) {
 	          return error;
 	        }
 	      }
+	      return null;
 	    }
-	    return null;
-	  }
-	  return createChainableTypeChecker(validate);
-	}
-
-	function createUnionTypeChecker(arrayOfTypeCheckers) {
-	  if (!Array.isArray(arrayOfTypeCheckers)) {
-	     false ? warning(false, 'Invalid argument supplied to oneOfType, expected an instance of array.') : void 0;
-	    return emptyFunction.thatReturnsNull;
+	    return createChainableTypeChecker(validate);
 	  }
 
-	  function validate(props, propName, componentName, location, propFullName) {
+	  function createElementTypeChecker() {
+	    function validate(props, propName, componentName, location, propFullName) {
+	      var propValue = props[propName];
+	      if (!isValidElement(propValue)) {
+	        var propType = getPropType(propValue);
+	        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected a single ReactElement.'));
+	      }
+	      return null;
+	    }
+	    return createChainableTypeChecker(validate);
+	  }
+
+	  function createInstanceTypeChecker(expectedClass) {
+	    function validate(props, propName, componentName, location, propFullName) {
+	      if (!(props[propName] instanceof expectedClass)) {
+	        var expectedClassName = expectedClass.name || ANONYMOUS;
+	        var actualClassName = getClassName(props[propName]);
+	        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + actualClassName + '` supplied to `' + componentName + '`, expected ') + ('instance of `' + expectedClassName + '`.'));
+	      }
+	      return null;
+	    }
+	    return createChainableTypeChecker(validate);
+	  }
+
+	  function createEnumTypeChecker(expectedValues) {
+	    if (!Array.isArray(expectedValues)) {
+	       false ? warning(false, 'Invalid argument supplied to oneOf, expected an instance of array.') : void 0;
+	      return emptyFunction.thatReturnsNull;
+	    }
+
+	    function validate(props, propName, componentName, location, propFullName) {
+	      var propValue = props[propName];
+	      for (var i = 0; i < expectedValues.length; i++) {
+	        if (is(propValue, expectedValues[i])) {
+	          return null;
+	        }
+	      }
+
+	      var valuesString = JSON.stringify(expectedValues);
+	      return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of value `' + propValue + '` ' + ('supplied to `' + componentName + '`, expected one of ' + valuesString + '.'));
+	    }
+	    return createChainableTypeChecker(validate);
+	  }
+
+	  function createObjectOfTypeChecker(typeChecker) {
+	    function validate(props, propName, componentName, location, propFullName) {
+	      if (typeof typeChecker !== 'function') {
+	        return new PropTypeError('Property `' + propFullName + '` of component `' + componentName + '` has invalid PropType notation inside objectOf.');
+	      }
+	      var propValue = props[propName];
+	      var propType = getPropType(propValue);
+	      if (propType !== 'object') {
+	        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected an object.'));
+	      }
+	      for (var key in propValue) {
+	        if (propValue.hasOwnProperty(key)) {
+	          var error = typeChecker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret);
+	          if (error instanceof Error) {
+	            return error;
+	          }
+	        }
+	      }
+	      return null;
+	    }
+	    return createChainableTypeChecker(validate);
+	  }
+
+	  function createUnionTypeChecker(arrayOfTypeCheckers) {
+	    if (!Array.isArray(arrayOfTypeCheckers)) {
+	       false ? warning(false, 'Invalid argument supplied to oneOfType, expected an instance of array.') : void 0;
+	      return emptyFunction.thatReturnsNull;
+	    }
+
 	    for (var i = 0; i < arrayOfTypeCheckers.length; i++) {
 	      var checker = arrayOfTypeCheckers[i];
-	      if (checker(props, propName, componentName, location, propFullName, ReactPropTypesSecret) == null) {
-	        return null;
+	      if (typeof checker !== 'function') {
+	        warning(
+	          false,
+	          'Invalid argument supplied to oneOfType. Expected an array of check functions, but ' +
+	          'received %s at index %s.',
+	          getPostfixForTypeWarning(checker),
+	          i
+	        );
+	        return emptyFunction.thatReturnsNull;
 	      }
 	    }
 
-	    var locationName = ReactPropTypeLocationNames[location];
-	    return new PropTypeError('Invalid ' + locationName + ' `' + propFullName + '` supplied to ' + ('`' + componentName + '`.'));
+	    function validate(props, propName, componentName, location, propFullName) {
+	      for (var i = 0; i < arrayOfTypeCheckers.length; i++) {
+	        var checker = arrayOfTypeCheckers[i];
+	        if (checker(props, propName, componentName, location, propFullName, ReactPropTypesSecret) == null) {
+	          return null;
+	        }
+	      }
+
+	      return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` supplied to ' + ('`' + componentName + '`.'));
+	    }
+	    return createChainableTypeChecker(validate);
 	  }
-	  return createChainableTypeChecker(validate);
-	}
 
-	function createNodeChecker() {
-	  function validate(props, propName, componentName, location, propFullName) {
-	    if (!isNode(props[propName])) {
-	      var locationName = ReactPropTypeLocationNames[location];
-	      return new PropTypeError('Invalid ' + locationName + ' `' + propFullName + '` supplied to ' + ('`' + componentName + '`, expected a ReactNode.'));
+	  function createNodeChecker() {
+	    function validate(props, propName, componentName, location, propFullName) {
+	      if (!isNode(props[propName])) {
+	        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` supplied to ' + ('`' + componentName + '`, expected a ReactNode.'));
+	      }
+	      return null;
 	    }
-	    return null;
+	    return createChainableTypeChecker(validate);
 	  }
-	  return createChainableTypeChecker(validate);
-	}
 
-	function createShapeTypeChecker(shapeTypes) {
-	  function validate(props, propName, componentName, location, propFullName) {
-	    var propValue = props[propName];
-	    var propType = getPropType(propValue);
-	    if (propType !== 'object') {
-	      var locationName = ReactPropTypeLocationNames[location];
-	      return new PropTypeError('Invalid ' + locationName + ' `' + propFullName + '` of type `' + propType + '` ' + ('supplied to `' + componentName + '`, expected `object`.'));
-	    }
-	    for (var key in shapeTypes) {
-	      var checker = shapeTypes[key];
-	      if (!checker) {
-	        continue;
+	  function createShapeTypeChecker(shapeTypes) {
+	    function validate(props, propName, componentName, location, propFullName) {
+	      var propValue = props[propName];
+	      var propType = getPropType(propValue);
+	      if (propType !== 'object') {
+	        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type `' + propType + '` ' + ('supplied to `' + componentName + '`, expected `object`.'));
 	      }
-	      var error = checker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret);
-	      if (error) {
-	        return error;
+	      for (var key in shapeTypes) {
+	        var checker = shapeTypes[key];
+	        if (!checker) {
+	          continue;
+	        }
+	        var error = checker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret);
+	        if (error) {
+	          return error;
+	        }
 	      }
+	      return null;
 	    }
-	    return null;
+	    return createChainableTypeChecker(validate);
 	  }
-	  return createChainableTypeChecker(validate);
-	}
 
-	function isNode(propValue) {
-	  switch (typeof propValue) {
-	    case 'number':
-	    case 'string':
-	    case 'undefined':
-	      return true;
-	    case 'boolean':
-	      return !propValue;
-	    case 'object':
-	      if (Array.isArray(propValue)) {
-	        return propValue.every(isNode);
+	  function createStrictShapeTypeChecker(shapeTypes) {
+	    function validate(props, propName, componentName, location, propFullName) {
+	      var propValue = props[propName];
+	      var propType = getPropType(propValue);
+	      if (propType !== 'object') {
+	        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type `' + propType + '` ' + ('supplied to `' + componentName + '`, expected `object`.'));
 	      }
-	      if (propValue === null || ReactElement.isValidElement(propValue)) {
+	      // We need to check all keys in case some are required but missing from
+	      // props.
+	      var allKeys = assign({}, props[propName], shapeTypes);
+	      for (var key in allKeys) {
+	        var checker = shapeTypes[key];
+	        if (!checker) {
+	          return new PropTypeError(
+	            'Invalid ' + location + ' `' + propFullName + '` key `' + key + '` supplied to `' + componentName + '`.' +
+	            '\nBad object: ' + JSON.stringify(props[propName], null, '  ') +
+	            '\nValid keys: ' +  JSON.stringify(Object.keys(shapeTypes), null, '  ')
+	          );
+	        }
+	        var error = checker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret);
+	        if (error) {
+	          return error;
+	        }
+	      }
+	      return null;
+	    }
+
+	    return createChainableTypeChecker(validate);
+	  }
+
+	  function isNode(propValue) {
+	    switch (typeof propValue) {
+	      case 'number':
+	      case 'string':
+	      case 'undefined':
 	        return true;
-	      }
+	      case 'boolean':
+	        return !propValue;
+	      case 'object':
+	        if (Array.isArray(propValue)) {
+	          return propValue.every(isNode);
+	        }
+	        if (propValue === null || isValidElement(propValue)) {
+	          return true;
+	        }
 
-	      var iteratorFn = getIteratorFn(propValue);
-	      if (iteratorFn) {
-	        var iterator = iteratorFn.call(propValue);
-	        var step;
-	        if (iteratorFn !== propValue.entries) {
-	          while (!(step = iterator.next()).done) {
-	            if (!isNode(step.value)) {
-	              return false;
-	            }
-	          }
-	        } else {
-	          // Iterator will provide entry [k,v] tuples rather than values.
-	          while (!(step = iterator.next()).done) {
-	            var entry = step.value;
-	            if (entry) {
-	              if (!isNode(entry[1])) {
+	        var iteratorFn = getIteratorFn(propValue);
+	        if (iteratorFn) {
+	          var iterator = iteratorFn.call(propValue);
+	          var step;
+	          if (iteratorFn !== propValue.entries) {
+	            while (!(step = iterator.next()).done) {
+	              if (!isNode(step.value)) {
 	                return false;
 	              }
 	            }
+	          } else {
+	            // Iterator will provide entry [k,v] tuples rather than values.
+	            while (!(step = iterator.next()).done) {
+	              var entry = step.value;
+	              if (entry) {
+	                if (!isNode(entry[1])) {
+	                  return false;
+	                }
+	              }
+	            }
 	          }
+	        } else {
+	          return false;
 	        }
-	      } else {
+
+	        return true;
+	      default:
 	        return false;
-	      }
-
-	      return true;
-	    default:
-	      return false;
-	  }
-	}
-
-	function isSymbol(propType, propValue) {
-	  // Native Symbol.
-	  if (propType === 'symbol') {
-	    return true;
-	  }
-
-	  // 19.4.3.5 Symbol.prototype[@@toStringTag] === 'Symbol'
-	  if (propValue['@@toStringTag'] === 'Symbol') {
-	    return true;
-	  }
-
-	  // Fallback for non-spec compliant Symbols which are polyfilled.
-	  if (typeof Symbol === 'function' && propValue instanceof Symbol) {
-	    return true;
-	  }
-
-	  return false;
-	}
-
-	// Equivalent of `typeof` but with special handling for array and regexp.
-	function getPropType(propValue) {
-	  var propType = typeof propValue;
-	  if (Array.isArray(propValue)) {
-	    return 'array';
-	  }
-	  if (propValue instanceof RegExp) {
-	    // Old webkits (at least until Android 4.0) return 'function' rather than
-	    // 'object' for typeof a RegExp. We'll normalize this here so that /bla/
-	    // passes PropTypes.object.
-	    return 'object';
-	  }
-	  if (isSymbol(propType, propValue)) {
-	    return 'symbol';
-	  }
-	  return propType;
-	}
-
-	// This handles more types than `getPropType`. Only used for error messages.
-	// See `createPrimitiveTypeChecker`.
-	function getPreciseType(propValue) {
-	  var propType = getPropType(propValue);
-	  if (propType === 'object') {
-	    if (propValue instanceof Date) {
-	      return 'date';
-	    } else if (propValue instanceof RegExp) {
-	      return 'regexp';
 	    }
 	  }
-	  return propType;
-	}
 
-	// Returns class name of the object, if any.
-	function getClassName(propValue) {
-	  if (!propValue.constructor || !propValue.constructor.name) {
-	    return ANONYMOUS;
+	  function isSymbol(propType, propValue) {
+	    // Native Symbol.
+	    if (propType === 'symbol') {
+	      return true;
+	    }
+
+	    // 19.4.3.5 Symbol.prototype[@@toStringTag] === 'Symbol'
+	    if (propValue['@@toStringTag'] === 'Symbol') {
+	      return true;
+	    }
+
+	    // Fallback for non-spec compliant Symbols which are polyfilled.
+	    if (typeof Symbol === 'function' && propValue instanceof Symbol) {
+	      return true;
+	    }
+
+	    return false;
 	  }
-	  return propValue.constructor.name;
-	}
 
-	module.exports = ReactPropTypes;
+	  // Equivalent of `typeof` but with special handling for array and regexp.
+	  function getPropType(propValue) {
+	    var propType = typeof propValue;
+	    if (Array.isArray(propValue)) {
+	      return 'array';
+	    }
+	    if (propValue instanceof RegExp) {
+	      // Old webkits (at least until Android 4.0) return 'function' rather than
+	      // 'object' for typeof a RegExp. We'll normalize this here so that /bla/
+	      // passes PropTypes.object.
+	      return 'object';
+	    }
+	    if (isSymbol(propType, propValue)) {
+	      return 'symbol';
+	    }
+	    return propType;
+	  }
 
-/***/ },
+	  // This handles more types than `getPropType`. Only used for error messages.
+	  // See `createPrimitiveTypeChecker`.
+	  function getPreciseType(propValue) {
+	    if (typeof propValue === 'undefined' || propValue === null) {
+	      return '' + propValue;
+	    }
+	    var propType = getPropType(propValue);
+	    if (propType === 'object') {
+	      if (propValue instanceof Date) {
+	        return 'date';
+	      } else if (propValue instanceof RegExp) {
+	        return 'regexp';
+	      }
+	    }
+	    return propType;
+	  }
+
+	  // Returns a string that is postfixed to a warning about an invalid type.
+	  // For example, "undefined" or "of type array"
+	  function getPostfixForTypeWarning(value) {
+	    var type = getPreciseType(value);
+	    switch (type) {
+	      case 'array':
+	      case 'object':
+	        return 'an ' + type;
+	      case 'boolean':
+	      case 'date':
+	      case 'regexp':
+	        return 'a ' + type;
+	      default:
+	        return type;
+	    }
+	  }
+
+	  // Returns class name of the object, if any.
+	  function getClassName(propValue) {
+	    if (!propValue.constructor || !propValue.constructor.name) {
+	      return ANONYMOUS;
+	    }
+	    return propValue.constructor.name;
+	  }
+
+	  ReactPropTypes.checkPropTypes = checkPropTypes;
+	  ReactPropTypes.PropTypes = ReactPropTypes;
+
+	  return ReactPropTypes;
+	};
+
+
+/***/ }),
 /* 26 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * 
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 */
 
 	'use strict';
@@ -3088,44 +2552,1007 @@
 
 	module.exports = ReactPropTypesSecret;
 
-/***/ },
+
+/***/ }),
 /* 27 */
-/***/ function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 */
 
 	'use strict';
 
-	module.exports = '15.4.1';
+	if (false) {
+	  var invariant = require('fbjs/lib/invariant');
+	  var warning = require('fbjs/lib/warning');
+	  var ReactPropTypesSecret = require('./lib/ReactPropTypesSecret');
+	  var loggedTypeFailures = {};
+	}
 
-/***/ },
+	/**
+	 * Assert that the values match with the type specs.
+	 * Error messages are memorized and will only be shown once.
+	 *
+	 * @param {object} typeSpecs Map of name to a ReactPropType
+	 * @param {object} values Runtime values that need to be type-checked
+	 * @param {string} location e.g. "prop", "context", "child context"
+	 * @param {string} componentName Name of the component for error messages.
+	 * @param {?Function} getStack Returns the component stack.
+	 * @private
+	 */
+	function checkPropTypes(typeSpecs, values, location, componentName, getStack) {
+	  if (false) {
+	    for (var typeSpecName in typeSpecs) {
+	      if (typeSpecs.hasOwnProperty(typeSpecName)) {
+	        var error;
+	        // Prop type validation may throw. In case they do, we don't want to
+	        // fail the render phase where it didn't fail before. So we log it.
+	        // After these have been cleaned up, we'll let them throw.
+	        try {
+	          // This is intentionally an invariant that gets caught. It's the same
+	          // behavior as without this statement except with a better message.
+	          invariant(typeof typeSpecs[typeSpecName] === 'function', '%s: %s type `%s` is invalid; it must be a function, usually from ' + 'the `prop-types` package, but received `%s`.', componentName || 'React class', location, typeSpecName, typeof typeSpecs[typeSpecName]);
+	          error = typeSpecs[typeSpecName](values, typeSpecName, componentName, location, null, ReactPropTypesSecret);
+	        } catch (ex) {
+	          error = ex;
+	        }
+	        warning(!error || error instanceof Error, '%s: type specification of %s `%s` is invalid; the type checker ' + 'function must return `null` or an `Error` but returned a %s. ' + 'You may have forgotten to pass an argument to the type checker ' + 'creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and ' + 'shape all require an argument).', componentName || 'React class', location, typeSpecName, typeof error);
+	        if (error instanceof Error && !(error.message in loggedTypeFailures)) {
+	          // Only monitor this failure once because there tends to be a lot of the
+	          // same error.
+	          loggedTypeFailures[error.message] = true;
+
+	          var stack = getStack ? getStack() : '';
+
+	          warning(false, 'Failed %s type: %s%s', location, error.message, stack != null ? stack : '');
+	        }
+	      }
+	    }
+	  }
+	}
+
+	module.exports = checkPropTypes;
+
+
+/***/ }),
 /* 28 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
+	 *
+	 */
+
+	'use strict';
+
+	module.exports = '15.6.2';
+
+/***/ }),
+/* 29 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 *
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
+	 *
+	 */
+
+	'use strict';
+
+	var _require = __webpack_require__(5),
+	    Component = _require.Component;
+
+	var _require2 = __webpack_require__(16),
+	    isValidElement = _require2.isValidElement;
+
+	var ReactNoopUpdateQueue = __webpack_require__(7);
+	var factory = __webpack_require__(30);
+
+	module.exports = factory(Component, isValidElement, ReactNoopUpdateQueue);
+
+/***/ }),
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 *
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
+	 *
+	 */
+
+	'use strict';
+
+	var _assign = __webpack_require__(4);
+
+	var emptyObject = __webpack_require__(11);
+	var _invariant = __webpack_require__(12);
+
+	if (false) {
+	  var warning = require('fbjs/lib/warning');
+	}
+
+	var MIXINS_KEY = 'mixins';
+
+	// Helper function to allow the creation of anonymous functions which do not
+	// have .name set to the name of the variable being assigned to.
+	function identity(fn) {
+	  return fn;
+	}
+
+	var ReactPropTypeLocationNames;
+	if (false) {
+	  ReactPropTypeLocationNames = {
+	    prop: 'prop',
+	    context: 'context',
+	    childContext: 'child context'
+	  };
+	} else {
+	  ReactPropTypeLocationNames = {};
+	}
+
+	function factory(ReactComponent, isValidElement, ReactNoopUpdateQueue) {
+	  /**
+	   * Policies that describe methods in `ReactClassInterface`.
+	   */
+
+	  var injectedMixins = [];
+
+	  /**
+	   * Composite components are higher-level components that compose other composite
+	   * or host components.
+	   *
+	   * To create a new type of `ReactClass`, pass a specification of
+	   * your new class to `React.createClass`. The only requirement of your class
+	   * specification is that you implement a `render` method.
+	   *
+	   *   var MyComponent = React.createClass({
+	   *     render: function() {
+	   *       return <div>Hello World</div>;
+	   *     }
+	   *   });
+	   *
+	   * The class specification supports a specific protocol of methods that have
+	   * special meaning (e.g. `render`). See `ReactClassInterface` for
+	   * more the comprehensive protocol. Any other properties and methods in the
+	   * class specification will be available on the prototype.
+	   *
+	   * @interface ReactClassInterface
+	   * @internal
+	   */
+	  var ReactClassInterface = {
+	    /**
+	     * An array of Mixin objects to include when defining your component.
+	     *
+	     * @type {array}
+	     * @optional
+	     */
+	    mixins: 'DEFINE_MANY',
+
+	    /**
+	     * An object containing properties and methods that should be defined on
+	     * the component's constructor instead of its prototype (static methods).
+	     *
+	     * @type {object}
+	     * @optional
+	     */
+	    statics: 'DEFINE_MANY',
+
+	    /**
+	     * Definition of prop types for this component.
+	     *
+	     * @type {object}
+	     * @optional
+	     */
+	    propTypes: 'DEFINE_MANY',
+
+	    /**
+	     * Definition of context types for this component.
+	     *
+	     * @type {object}
+	     * @optional
+	     */
+	    contextTypes: 'DEFINE_MANY',
+
+	    /**
+	     * Definition of context types this component sets for its children.
+	     *
+	     * @type {object}
+	     * @optional
+	     */
+	    childContextTypes: 'DEFINE_MANY',
+
+	    // ==== Definition methods ====
+
+	    /**
+	     * Invoked when the component is mounted. Values in the mapping will be set on
+	     * `this.props` if that prop is not specified (i.e. using an `in` check).
+	     *
+	     * This method is invoked before `getInitialState` and therefore cannot rely
+	     * on `this.state` or use `this.setState`.
+	     *
+	     * @return {object}
+	     * @optional
+	     */
+	    getDefaultProps: 'DEFINE_MANY_MERGED',
+
+	    /**
+	     * Invoked once before the component is mounted. The return value will be used
+	     * as the initial value of `this.state`.
+	     *
+	     *   getInitialState: function() {
+	     *     return {
+	     *       isOn: false,
+	     *       fooBaz: new BazFoo()
+	     *     }
+	     *   }
+	     *
+	     * @return {object}
+	     * @optional
+	     */
+	    getInitialState: 'DEFINE_MANY_MERGED',
+
+	    /**
+	     * @return {object}
+	     * @optional
+	     */
+	    getChildContext: 'DEFINE_MANY_MERGED',
+
+	    /**
+	     * Uses props from `this.props` and state from `this.state` to render the
+	     * structure of the component.
+	     *
+	     * No guarantees are made about when or how often this method is invoked, so
+	     * it must not have side effects.
+	     *
+	     *   render: function() {
+	     *     var name = this.props.name;
+	     *     return <div>Hello, {name}!</div>;
+	     *   }
+	     *
+	     * @return {ReactComponent}
+	     * @required
+	     */
+	    render: 'DEFINE_ONCE',
+
+	    // ==== Delegate methods ====
+
+	    /**
+	     * Invoked when the component is initially created and about to be mounted.
+	     * This may have side effects, but any external subscriptions or data created
+	     * by this method must be cleaned up in `componentWillUnmount`.
+	     *
+	     * @optional
+	     */
+	    componentWillMount: 'DEFINE_MANY',
+
+	    /**
+	     * Invoked when the component has been mounted and has a DOM representation.
+	     * However, there is no guarantee that the DOM node is in the document.
+	     *
+	     * Use this as an opportunity to operate on the DOM when the component has
+	     * been mounted (initialized and rendered) for the first time.
+	     *
+	     * @param {DOMElement} rootNode DOM element representing the component.
+	     * @optional
+	     */
+	    componentDidMount: 'DEFINE_MANY',
+
+	    /**
+	     * Invoked before the component receives new props.
+	     *
+	     * Use this as an opportunity to react to a prop transition by updating the
+	     * state using `this.setState`. Current props are accessed via `this.props`.
+	     *
+	     *   componentWillReceiveProps: function(nextProps, nextContext) {
+	     *     this.setState({
+	     *       likesIncreasing: nextProps.likeCount > this.props.likeCount
+	     *     });
+	     *   }
+	     *
+	     * NOTE: There is no equivalent `componentWillReceiveState`. An incoming prop
+	     * transition may cause a state change, but the opposite is not true. If you
+	     * need it, you are probably looking for `componentWillUpdate`.
+	     *
+	     * @param {object} nextProps
+	     * @optional
+	     */
+	    componentWillReceiveProps: 'DEFINE_MANY',
+
+	    /**
+	     * Invoked while deciding if the component should be updated as a result of
+	     * receiving new props, state and/or context.
+	     *
+	     * Use this as an opportunity to `return false` when you're certain that the
+	     * transition to the new props/state/context will not require a component
+	     * update.
+	     *
+	     *   shouldComponentUpdate: function(nextProps, nextState, nextContext) {
+	     *     return !equal(nextProps, this.props) ||
+	     *       !equal(nextState, this.state) ||
+	     *       !equal(nextContext, this.context);
+	     *   }
+	     *
+	     * @param {object} nextProps
+	     * @param {?object} nextState
+	     * @param {?object} nextContext
+	     * @return {boolean} True if the component should update.
+	     * @optional
+	     */
+	    shouldComponentUpdate: 'DEFINE_ONCE',
+
+	    /**
+	     * Invoked when the component is about to update due to a transition from
+	     * `this.props`, `this.state` and `this.context` to `nextProps`, `nextState`
+	     * and `nextContext`.
+	     *
+	     * Use this as an opportunity to perform preparation before an update occurs.
+	     *
+	     * NOTE: You **cannot** use `this.setState()` in this method.
+	     *
+	     * @param {object} nextProps
+	     * @param {?object} nextState
+	     * @param {?object} nextContext
+	     * @param {ReactReconcileTransaction} transaction
+	     * @optional
+	     */
+	    componentWillUpdate: 'DEFINE_MANY',
+
+	    /**
+	     * Invoked when the component's DOM representation has been updated.
+	     *
+	     * Use this as an opportunity to operate on the DOM when the component has
+	     * been updated.
+	     *
+	     * @param {object} prevProps
+	     * @param {?object} prevState
+	     * @param {?object} prevContext
+	     * @param {DOMElement} rootNode DOM element representing the component.
+	     * @optional
+	     */
+	    componentDidUpdate: 'DEFINE_MANY',
+
+	    /**
+	     * Invoked when the component is about to be removed from its parent and have
+	     * its DOM representation destroyed.
+	     *
+	     * Use this as an opportunity to deallocate any external resources.
+	     *
+	     * NOTE: There is no `componentDidUnmount` since your component will have been
+	     * destroyed by that point.
+	     *
+	     * @optional
+	     */
+	    componentWillUnmount: 'DEFINE_MANY',
+
+	    // ==== Advanced methods ====
+
+	    /**
+	     * Updates the component's currently mounted DOM representation.
+	     *
+	     * By default, this implements React's rendering and reconciliation algorithm.
+	     * Sophisticated clients may wish to override this.
+	     *
+	     * @param {ReactReconcileTransaction} transaction
+	     * @internal
+	     * @overridable
+	     */
+	    updateComponent: 'OVERRIDE_BASE'
+	  };
+
+	  /**
+	   * Mapping from class specification keys to special processing functions.
+	   *
+	   * Although these are declared like instance properties in the specification
+	   * when defining classes using `React.createClass`, they are actually static
+	   * and are accessible on the constructor instead of the prototype. Despite
+	   * being static, they must be defined outside of the "statics" key under
+	   * which all other static methods are defined.
+	   */
+	  var RESERVED_SPEC_KEYS = {
+	    displayName: function(Constructor, displayName) {
+	      Constructor.displayName = displayName;
+	    },
+	    mixins: function(Constructor, mixins) {
+	      if (mixins) {
+	        for (var i = 0; i < mixins.length; i++) {
+	          mixSpecIntoComponent(Constructor, mixins[i]);
+	        }
+	      }
+	    },
+	    childContextTypes: function(Constructor, childContextTypes) {
+	      if (false) {
+	        validateTypeDef(Constructor, childContextTypes, 'childContext');
+	      }
+	      Constructor.childContextTypes = _assign(
+	        {},
+	        Constructor.childContextTypes,
+	        childContextTypes
+	      );
+	    },
+	    contextTypes: function(Constructor, contextTypes) {
+	      if (false) {
+	        validateTypeDef(Constructor, contextTypes, 'context');
+	      }
+	      Constructor.contextTypes = _assign(
+	        {},
+	        Constructor.contextTypes,
+	        contextTypes
+	      );
+	    },
+	    /**
+	     * Special case getDefaultProps which should move into statics but requires
+	     * automatic merging.
+	     */
+	    getDefaultProps: function(Constructor, getDefaultProps) {
+	      if (Constructor.getDefaultProps) {
+	        Constructor.getDefaultProps = createMergedResultFunction(
+	          Constructor.getDefaultProps,
+	          getDefaultProps
+	        );
+	      } else {
+	        Constructor.getDefaultProps = getDefaultProps;
+	      }
+	    },
+	    propTypes: function(Constructor, propTypes) {
+	      if (false) {
+	        validateTypeDef(Constructor, propTypes, 'prop');
+	      }
+	      Constructor.propTypes = _assign({}, Constructor.propTypes, propTypes);
+	    },
+	    statics: function(Constructor, statics) {
+	      mixStaticSpecIntoComponent(Constructor, statics);
+	    },
+	    autobind: function() {}
+	  };
+
+	  function validateTypeDef(Constructor, typeDef, location) {
+	    for (var propName in typeDef) {
+	      if (typeDef.hasOwnProperty(propName)) {
+	        // use a warning instead of an _invariant so components
+	        // don't show up in prod but only in __DEV__
+	        if (false) {
+	          warning(
+	            typeof typeDef[propName] === 'function',
+	            '%s: %s type `%s` is invalid; it must be a function, usually from ' +
+	              'React.PropTypes.',
+	            Constructor.displayName || 'ReactClass',
+	            ReactPropTypeLocationNames[location],
+	            propName
+	          );
+	        }
+	      }
+	    }
+	  }
+
+	  function validateMethodOverride(isAlreadyDefined, name) {
+	    var specPolicy = ReactClassInterface.hasOwnProperty(name)
+	      ? ReactClassInterface[name]
+	      : null;
+
+	    // Disallow overriding of base class methods unless explicitly allowed.
+	    if (ReactClassMixin.hasOwnProperty(name)) {
+	      _invariant(
+	        specPolicy === 'OVERRIDE_BASE',
+	        'ReactClassInterface: You are attempting to override ' +
+	          '`%s` from your class specification. Ensure that your method names ' +
+	          'do not overlap with React methods.',
+	        name
+	      );
+	    }
+
+	    // Disallow defining methods more than once unless explicitly allowed.
+	    if (isAlreadyDefined) {
+	      _invariant(
+	        specPolicy === 'DEFINE_MANY' || specPolicy === 'DEFINE_MANY_MERGED',
+	        'ReactClassInterface: You are attempting to define ' +
+	          '`%s` on your component more than once. This conflict may be due ' +
+	          'to a mixin.',
+	        name
+	      );
+	    }
+	  }
+
+	  /**
+	   * Mixin helper which handles policy validation and reserved
+	   * specification keys when building React classes.
+	   */
+	  function mixSpecIntoComponent(Constructor, spec) {
+	    if (!spec) {
+	      if (false) {
+	        var typeofSpec = typeof spec;
+	        var isMixinValid = typeofSpec === 'object' && spec !== null;
+
+	        if (process.env.NODE_ENV !== 'production') {
+	          warning(
+	            isMixinValid,
+	            "%s: You're attempting to include a mixin that is either null " +
+	              'or not an object. Check the mixins included by the component, ' +
+	              'as well as any mixins they include themselves. ' +
+	              'Expected object but got %s.',
+	            Constructor.displayName || 'ReactClass',
+	            spec === null ? null : typeofSpec
+	          );
+	        }
+	      }
+
+	      return;
+	    }
+
+	    _invariant(
+	      typeof spec !== 'function',
+	      "ReactClass: You're attempting to " +
+	        'use a component class or function as a mixin. Instead, just use a ' +
+	        'regular object.'
+	    );
+	    _invariant(
+	      !isValidElement(spec),
+	      "ReactClass: You're attempting to " +
+	        'use a component as a mixin. Instead, just use a regular object.'
+	    );
+
+	    var proto = Constructor.prototype;
+	    var autoBindPairs = proto.__reactAutoBindPairs;
+
+	    // By handling mixins before any other properties, we ensure the same
+	    // chaining order is applied to methods with DEFINE_MANY policy, whether
+	    // mixins are listed before or after these methods in the spec.
+	    if (spec.hasOwnProperty(MIXINS_KEY)) {
+	      RESERVED_SPEC_KEYS.mixins(Constructor, spec.mixins);
+	    }
+
+	    for (var name in spec) {
+	      if (!spec.hasOwnProperty(name)) {
+	        continue;
+	      }
+
+	      if (name === MIXINS_KEY) {
+	        // We have already handled mixins in a special case above.
+	        continue;
+	      }
+
+	      var property = spec[name];
+	      var isAlreadyDefined = proto.hasOwnProperty(name);
+	      validateMethodOverride(isAlreadyDefined, name);
+
+	      if (RESERVED_SPEC_KEYS.hasOwnProperty(name)) {
+	        RESERVED_SPEC_KEYS[name](Constructor, property);
+	      } else {
+	        // Setup methods on prototype:
+	        // The following member methods should not be automatically bound:
+	        // 1. Expected ReactClass methods (in the "interface").
+	        // 2. Overridden methods (that were mixed in).
+	        var isReactClassMethod = ReactClassInterface.hasOwnProperty(name);
+	        var isFunction = typeof property === 'function';
+	        var shouldAutoBind =
+	          isFunction &&
+	          !isReactClassMethod &&
+	          !isAlreadyDefined &&
+	          spec.autobind !== false;
+
+	        if (shouldAutoBind) {
+	          autoBindPairs.push(name, property);
+	          proto[name] = property;
+	        } else {
+	          if (isAlreadyDefined) {
+	            var specPolicy = ReactClassInterface[name];
+
+	            // These cases should already be caught by validateMethodOverride.
+	            _invariant(
+	              isReactClassMethod &&
+	                (specPolicy === 'DEFINE_MANY_MERGED' ||
+	                  specPolicy === 'DEFINE_MANY'),
+	              'ReactClass: Unexpected spec policy %s for key %s ' +
+	                'when mixing in component specs.',
+	              specPolicy,
+	              name
+	            );
+
+	            // For methods which are defined more than once, call the existing
+	            // methods before calling the new property, merging if appropriate.
+	            if (specPolicy === 'DEFINE_MANY_MERGED') {
+	              proto[name] = createMergedResultFunction(proto[name], property);
+	            } else if (specPolicy === 'DEFINE_MANY') {
+	              proto[name] = createChainedFunction(proto[name], property);
+	            }
+	          } else {
+	            proto[name] = property;
+	            if (false) {
+	              // Add verbose displayName to the function, which helps when looking
+	              // at profiling tools.
+	              if (typeof property === 'function' && spec.displayName) {
+	                proto[name].displayName = spec.displayName + '_' + name;
+	              }
+	            }
+	          }
+	        }
+	      }
+	    }
+	  }
+
+	  function mixStaticSpecIntoComponent(Constructor, statics) {
+	    if (!statics) {
+	      return;
+	    }
+	    for (var name in statics) {
+	      var property = statics[name];
+	      if (!statics.hasOwnProperty(name)) {
+	        continue;
+	      }
+
+	      var isReserved = name in RESERVED_SPEC_KEYS;
+	      _invariant(
+	        !isReserved,
+	        'ReactClass: You are attempting to define a reserved ' +
+	          'property, `%s`, that shouldn\'t be on the "statics" key. Define it ' +
+	          'as an instance property instead; it will still be accessible on the ' +
+	          'constructor.',
+	        name
+	      );
+
+	      var isInherited = name in Constructor;
+	      _invariant(
+	        !isInherited,
+	        'ReactClass: You are attempting to define ' +
+	          '`%s` on your component more than once. This conflict may be ' +
+	          'due to a mixin.',
+	        name
+	      );
+	      Constructor[name] = property;
+	    }
+	  }
+
+	  /**
+	   * Merge two objects, but throw if both contain the same key.
+	   *
+	   * @param {object} one The first object, which is mutated.
+	   * @param {object} two The second object
+	   * @return {object} one after it has been mutated to contain everything in two.
+	   */
+	  function mergeIntoWithNoDuplicateKeys(one, two) {
+	    _invariant(
+	      one && two && typeof one === 'object' && typeof two === 'object',
+	      'mergeIntoWithNoDuplicateKeys(): Cannot merge non-objects.'
+	    );
+
+	    for (var key in two) {
+	      if (two.hasOwnProperty(key)) {
+	        _invariant(
+	          one[key] === undefined,
+	          'mergeIntoWithNoDuplicateKeys(): ' +
+	            'Tried to merge two objects with the same key: `%s`. This conflict ' +
+	            'may be due to a mixin; in particular, this may be caused by two ' +
+	            'getInitialState() or getDefaultProps() methods returning objects ' +
+	            'with clashing keys.',
+	          key
+	        );
+	        one[key] = two[key];
+	      }
+	    }
+	    return one;
+	  }
+
+	  /**
+	   * Creates a function that invokes two functions and merges their return values.
+	   *
+	   * @param {function} one Function to invoke first.
+	   * @param {function} two Function to invoke second.
+	   * @return {function} Function that invokes the two argument functions.
+	   * @private
+	   */
+	  function createMergedResultFunction(one, two) {
+	    return function mergedResult() {
+	      var a = one.apply(this, arguments);
+	      var b = two.apply(this, arguments);
+	      if (a == null) {
+	        return b;
+	      } else if (b == null) {
+	        return a;
+	      }
+	      var c = {};
+	      mergeIntoWithNoDuplicateKeys(c, a);
+	      mergeIntoWithNoDuplicateKeys(c, b);
+	      return c;
+	    };
+	  }
+
+	  /**
+	   * Creates a function that invokes two functions and ignores their return vales.
+	   *
+	   * @param {function} one Function to invoke first.
+	   * @param {function} two Function to invoke second.
+	   * @return {function} Function that invokes the two argument functions.
+	   * @private
+	   */
+	  function createChainedFunction(one, two) {
+	    return function chainedFunction() {
+	      one.apply(this, arguments);
+	      two.apply(this, arguments);
+	    };
+	  }
+
+	  /**
+	   * Binds a method to the component.
+	   *
+	   * @param {object} component Component whose method is going to be bound.
+	   * @param {function} method Method to be bound.
+	   * @return {function} The bound method.
+	   */
+	  function bindAutoBindMethod(component, method) {
+	    var boundMethod = method.bind(component);
+	    if (false) {
+	      boundMethod.__reactBoundContext = component;
+	      boundMethod.__reactBoundMethod = method;
+	      boundMethod.__reactBoundArguments = null;
+	      var componentName = component.constructor.displayName;
+	      var _bind = boundMethod.bind;
+	      boundMethod.bind = function(newThis) {
+	        for (
+	          var _len = arguments.length,
+	            args = Array(_len > 1 ? _len - 1 : 0),
+	            _key = 1;
+	          _key < _len;
+	          _key++
+	        ) {
+	          args[_key - 1] = arguments[_key];
+	        }
+
+	        // User is trying to bind() an autobound method; we effectively will
+	        // ignore the value of "this" that the user is trying to use, so
+	        // let's warn.
+	        if (newThis !== component && newThis !== null) {
+	          if (process.env.NODE_ENV !== 'production') {
+	            warning(
+	              false,
+	              'bind(): React component methods may only be bound to the ' +
+	                'component instance. See %s',
+	              componentName
+	            );
+	          }
+	        } else if (!args.length) {
+	          if (process.env.NODE_ENV !== 'production') {
+	            warning(
+	              false,
+	              'bind(): You are binding a component method to the component. ' +
+	                'React does this for you automatically in a high-performance ' +
+	                'way, so you can safely remove this call. See %s',
+	              componentName
+	            );
+	          }
+	          return boundMethod;
+	        }
+	        var reboundMethod = _bind.apply(boundMethod, arguments);
+	        reboundMethod.__reactBoundContext = component;
+	        reboundMethod.__reactBoundMethod = method;
+	        reboundMethod.__reactBoundArguments = args;
+	        return reboundMethod;
+	      };
+	    }
+	    return boundMethod;
+	  }
+
+	  /**
+	   * Binds all auto-bound methods in a component.
+	   *
+	   * @param {object} component Component whose method is going to be bound.
+	   */
+	  function bindAutoBindMethods(component) {
+	    var pairs = component.__reactAutoBindPairs;
+	    for (var i = 0; i < pairs.length; i += 2) {
+	      var autoBindKey = pairs[i];
+	      var method = pairs[i + 1];
+	      component[autoBindKey] = bindAutoBindMethod(component, method);
+	    }
+	  }
+
+	  var IsMountedPreMixin = {
+	    componentDidMount: function() {
+	      this.__isMounted = true;
+	    }
+	  };
+
+	  var IsMountedPostMixin = {
+	    componentWillUnmount: function() {
+	      this.__isMounted = false;
+	    }
+	  };
+
+	  /**
+	   * Add more to the ReactClass base class. These are all legacy features and
+	   * therefore not already part of the modern ReactComponent.
+	   */
+	  var ReactClassMixin = {
+	    /**
+	     * TODO: This will be deprecated because state should always keep a consistent
+	     * type signature and the only use case for this, is to avoid that.
+	     */
+	    replaceState: function(newState, callback) {
+	      this.updater.enqueueReplaceState(this, newState, callback);
+	    },
+
+	    /**
+	     * Checks whether or not this composite component is mounted.
+	     * @return {boolean} True if mounted, false otherwise.
+	     * @protected
+	     * @final
+	     */
+	    isMounted: function() {
+	      if (false) {
+	        warning(
+	          this.__didWarnIsMounted,
+	          '%s: isMounted is deprecated. Instead, make sure to clean up ' +
+	            'subscriptions and pending requests in componentWillUnmount to ' +
+	            'prevent memory leaks.',
+	          (this.constructor && this.constructor.displayName) ||
+	            this.name ||
+	            'Component'
+	        );
+	        this.__didWarnIsMounted = true;
+	      }
+	      return !!this.__isMounted;
+	    }
+	  };
+
+	  var ReactClassComponent = function() {};
+	  _assign(
+	    ReactClassComponent.prototype,
+	    ReactComponent.prototype,
+	    ReactClassMixin
+	  );
+
+	  /**
+	   * Creates a composite component class given a class specification.
+	   * See https://facebook.github.io/react/docs/top-level-api.html#react.createclass
+	   *
+	   * @param {object} spec Class specification (which must define `render`).
+	   * @return {function} Component constructor function.
+	   * @public
+	   */
+	  function createClass(spec) {
+	    // To keep our warnings more understandable, we'll use a little hack here to
+	    // ensure that Constructor.name !== 'Constructor'. This makes sure we don't
+	    // unnecessarily identify a class without displayName as 'Constructor'.
+	    var Constructor = identity(function(props, context, updater) {
+	      // This constructor gets overridden by mocks. The argument is used
+	      // by mocks to assert on what gets mounted.
+
+	      if (false) {
+	        warning(
+	          this instanceof Constructor,
+	          'Something is calling a React component directly. Use a factory or ' +
+	            'JSX instead. See: https://fb.me/react-legacyfactory'
+	        );
+	      }
+
+	      // Wire up auto-binding
+	      if (this.__reactAutoBindPairs.length) {
+	        bindAutoBindMethods(this);
+	      }
+
+	      this.props = props;
+	      this.context = context;
+	      this.refs = emptyObject;
+	      this.updater = updater || ReactNoopUpdateQueue;
+
+	      this.state = null;
+
+	      // ReactClasses doesn't have constructors. Instead, they use the
+	      // getInitialState and componentWillMount methods for initialization.
+
+	      var initialState = this.getInitialState ? this.getInitialState() : null;
+	      if (false) {
+	        // We allow auto-mocks to proceed as if they're returning null.
+	        if (
+	          initialState === undefined &&
+	          this.getInitialState._isMockFunction
+	        ) {
+	          // This is probably bad practice. Consider warning here and
+	          // deprecating this convenience.
+	          initialState = null;
+	        }
+	      }
+	      _invariant(
+	        typeof initialState === 'object' && !Array.isArray(initialState),
+	        '%s.getInitialState(): must return an object or null',
+	        Constructor.displayName || 'ReactCompositeComponent'
+	      );
+
+	      this.state = initialState;
+	    });
+	    Constructor.prototype = new ReactClassComponent();
+	    Constructor.prototype.constructor = Constructor;
+	    Constructor.prototype.__reactAutoBindPairs = [];
+
+	    injectedMixins.forEach(mixSpecIntoComponent.bind(null, Constructor));
+
+	    mixSpecIntoComponent(Constructor, IsMountedPreMixin);
+	    mixSpecIntoComponent(Constructor, spec);
+	    mixSpecIntoComponent(Constructor, IsMountedPostMixin);
+
+	    // Initialize the defaultProps property after all mixins have been merged.
+	    if (Constructor.getDefaultProps) {
+	      Constructor.defaultProps = Constructor.getDefaultProps();
+	    }
+
+	    if (false) {
+	      // This is a tag to indicate that the use of these method names is ok,
+	      // since it's used with createClass. If it's not, then it's likely a
+	      // mistake so we'll warn you to use the static property, property
+	      // initializer or constructor respectively.
+	      if (Constructor.getDefaultProps) {
+	        Constructor.getDefaultProps.isReactClassApproved = {};
+	      }
+	      if (Constructor.prototype.getInitialState) {
+	        Constructor.prototype.getInitialState.isReactClassApproved = {};
+	      }
+	    }
+
+	    _invariant(
+	      Constructor.prototype.render,
+	      'createClass(...): Class specification must implement a `render` method.'
+	    );
+
+	    if (false) {
+	      warning(
+	        !Constructor.prototype.componentShouldUpdate,
+	        '%s has a method called ' +
+	          'componentShouldUpdate(). Did you mean shouldComponentUpdate()? ' +
+	          'The name is phrased as a question because the function is ' +
+	          'expected to return a value.',
+	        spec.displayName || 'A component'
+	      );
+	      warning(
+	        !Constructor.prototype.componentWillRecieveProps,
+	        '%s has a method called ' +
+	          'componentWillRecieveProps(). Did you mean componentWillReceiveProps()?',
+	        spec.displayName || 'A component'
+	      );
+	    }
+
+	    // Reduce time spent doing lookups by setting these on the prototype.
+	    for (var methodName in ReactClassInterface) {
+	      if (!Constructor.prototype[methodName]) {
+	        Constructor.prototype[methodName] = null;
+	      }
+	    }
+
+	    return Constructor;
+	  }
+
+	  return createClass;
+	}
+
+	module.exports = factory;
+
+
+/***/ }),
+/* 31 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 *
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 	'use strict';
 
-	var _prodInvariant = __webpack_require__(7);
+	var _prodInvariant = __webpack_require__(6);
 
-	var ReactElement = __webpack_require__(9);
+	var ReactElement = __webpack_require__(16);
 
-	var invariant = __webpack_require__(8);
+	var invariant = __webpack_require__(12);
 
 	/**
 	 * Returns the first child in a collection of children and verifies that there
@@ -3148,26 +3575,24 @@
 
 	module.exports = onlyChild;
 
-/***/ },
-/* 29 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 32 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	module.exports = __webpack_require__(30);
+	module.exports = __webpack_require__(33);
 
 
-/***/ },
-/* 30 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 33 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
@@ -3175,17 +3600,17 @@
 
 	'use strict';
 
-	var ReactDOMComponentTree = __webpack_require__(31);
-	var ReactDefaultInjection = __webpack_require__(35);
-	var ReactMount = __webpack_require__(158);
-	var ReactReconciler = __webpack_require__(56);
-	var ReactUpdates = __webpack_require__(53);
-	var ReactVersion = __webpack_require__(163);
+	var ReactDOMComponentTree = __webpack_require__(34);
+	var ReactDefaultInjection = __webpack_require__(38);
+	var ReactMount = __webpack_require__(162);
+	var ReactReconciler = __webpack_require__(59);
+	var ReactUpdates = __webpack_require__(56);
+	var ReactVersion = __webpack_require__(167);
 
-	var findDOMNode = __webpack_require__(164);
-	var getHostComponentFromComposite = __webpack_require__(165);
-	var renderSubtreeIntoContainer = __webpack_require__(166);
-	var warning = __webpack_require__(11);
+	var findDOMNode = __webpack_require__(168);
+	var getHostComponentFromComposite = __webpack_require__(169);
+	var renderSubtreeIntoContainer = __webpack_require__(170);
+	var warning = __webpack_require__(8);
 
 	ReactDefaultInjection.inject();
 
@@ -3198,6 +3623,7 @@
 	  /* eslint-disable camelcase */
 	  unstable_batchedUpdates: ReactUpdates.batchedUpdates,
 	  unstable_renderSubtreeIntoContainer: renderSubtreeIntoContainer
+	  /* eslint-enable camelcase */
 	};
 
 	// Inject the runtime into a devtools global hook regardless of browser.
@@ -3226,7 +3652,6 @@
 	if (false) {
 	  var ExecutionEnvironment = require('fbjs/lib/ExecutionEnvironment');
 	  if (ExecutionEnvironment.canUseDOM && window.top === window.self) {
-
 	    // First check if devtools is not installed
 	    if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ === 'undefined') {
 	      // If we're in Chrome or Firefox, provide a download link if not installed.
@@ -3238,7 +3663,7 @@
 	    }
 
 	    var testFunc = function testFn() {};
-	    process.env.NODE_ENV !== 'production' ? warning((testFunc.name || testFunc.toString()).indexOf('testFn') !== -1, 'It looks like you\'re using a minified copy of the development build ' + 'of React. When deploying React apps to production, make sure to use ' + 'the production build which skips development warnings and is faster. ' + 'See https://fb.me/react-minification for more details.') : void 0;
+	    process.env.NODE_ENV !== 'production' ? warning((testFunc.name || testFunc.toString()).indexOf('testFn') !== -1, "It looks like you're using a minified copy of the development build " + 'of React. When deploying React apps to production, make sure to use ' + 'the production build which skips development warnings and is faster. ' + 'See https://fb.me/react-minification for more details.') : void 0;
 
 	    // If we're in IE8, check to see if we are in compatibility mode and provide
 	    // information on preventing compatibility mode
@@ -3272,33 +3697,38 @@
 
 	module.exports = ReactDOM;
 
-/***/ },
-/* 31 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 34 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var _prodInvariant = __webpack_require__(32);
+	var _prodInvariant = __webpack_require__(35);
 
-	var DOMProperty = __webpack_require__(33);
-	var ReactDOMComponentFlags = __webpack_require__(34);
+	var DOMProperty = __webpack_require__(36);
+	var ReactDOMComponentFlags = __webpack_require__(37);
 
-	var invariant = __webpack_require__(8);
+	var invariant = __webpack_require__(12);
 
 	var ATTR_NAME = DOMProperty.ID_ATTRIBUTE_NAME;
 	var Flags = ReactDOMComponentFlags;
 
 	var internalInstanceKey = '__reactInternalInstance$' + Math.random().toString(36).slice(2);
+
+	/**
+	 * Check if a given node should be cached.
+	 */
+	function shouldPrecacheNode(node, nodeID) {
+	  return node.nodeType === 1 && node.getAttribute(ATTR_NAME) === String(nodeID) || node.nodeType === 8 && node.nodeValue === ' react-text: ' + nodeID + ' ' || node.nodeType === 8 && node.nodeValue === ' react-empty: ' + nodeID + ' ';
+	}
 
 	/**
 	 * Drill down (through composites and empty components) until we get a host or
@@ -3365,7 +3795,7 @@
 	    }
 	    // We assume the child nodes are in the same order as the child instances.
 	    for (; childNode !== null; childNode = childNode.nextSibling) {
-	      if (childNode.nodeType === 1 && childNode.getAttribute(ATTR_NAME) === String(childID) || childNode.nodeType === 8 && childNode.nodeValue === ' react-text: ' + childID + ' ' || childNode.nodeType === 8 && childNode.nodeValue === ' react-empty: ' + childID + ' ') {
+	      if (shouldPrecacheNode(childNode, childID)) {
 	        precacheNode(childInst, childNode);
 	        continue outer;
 	      }
@@ -3464,27 +3894,25 @@
 
 	module.exports = ReactDOMComponentTree;
 
-/***/ },
-/* 32 */
-7,
-/* 33 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 35 */
+6,
+/* 36 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var _prodInvariant = __webpack_require__(32);
+	var _prodInvariant = __webpack_require__(35);
 
-	var invariant = __webpack_require__(8);
+	var invariant = __webpack_require__(12);
 
 	function checkMask(value, bitmask) {
 	  return (value & bitmask) === bitmask;
@@ -3608,7 +4036,6 @@
 	 * @see http://jsperf.com/key-missing
 	 */
 	var DOMProperty = {
-
 	  ID_ATTRIBUTE_NAME: 'data-reactid',
 	  ROOT_ATTRIBUTE_NAME: 'data-reactroot',
 
@@ -3680,17 +4107,15 @@
 
 	module.exports = DOMProperty;
 
-/***/ },
-/* 34 */
-/***/ function(module, exports) {
+/***/ }),
+/* 37 */
+/***/ (function(module, exports) {
 
 	/**
-	 * Copyright 2015-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2015-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
@@ -3702,41 +4127,39 @@
 
 	module.exports = ReactDOMComponentFlags;
 
-/***/ },
-/* 35 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 38 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var ARIADOMPropertyConfig = __webpack_require__(36);
-	var BeforeInputEventPlugin = __webpack_require__(37);
-	var ChangeEventPlugin = __webpack_require__(52);
-	var DefaultEventPluginOrder = __webpack_require__(64);
-	var EnterLeaveEventPlugin = __webpack_require__(65);
-	var HTMLDOMPropertyConfig = __webpack_require__(70);
-	var ReactComponentBrowserEnvironment = __webpack_require__(71);
-	var ReactDOMComponent = __webpack_require__(84);
-	var ReactDOMComponentTree = __webpack_require__(31);
-	var ReactDOMEmptyComponent = __webpack_require__(129);
-	var ReactDOMTreeTraversal = __webpack_require__(130);
-	var ReactDOMTextComponent = __webpack_require__(131);
-	var ReactDefaultBatchingStrategy = __webpack_require__(132);
-	var ReactEventListener = __webpack_require__(133);
-	var ReactInjection = __webpack_require__(136);
-	var ReactReconcileTransaction = __webpack_require__(137);
-	var SVGDOMPropertyConfig = __webpack_require__(145);
-	var SelectEventPlugin = __webpack_require__(146);
-	var SimpleEventPlugin = __webpack_require__(147);
+	var ARIADOMPropertyConfig = __webpack_require__(39);
+	var BeforeInputEventPlugin = __webpack_require__(40);
+	var ChangeEventPlugin = __webpack_require__(55);
+	var DefaultEventPluginOrder = __webpack_require__(68);
+	var EnterLeaveEventPlugin = __webpack_require__(69);
+	var HTMLDOMPropertyConfig = __webpack_require__(74);
+	var ReactComponentBrowserEnvironment = __webpack_require__(75);
+	var ReactDOMComponent = __webpack_require__(88);
+	var ReactDOMComponentTree = __webpack_require__(34);
+	var ReactDOMEmptyComponent = __webpack_require__(133);
+	var ReactDOMTreeTraversal = __webpack_require__(134);
+	var ReactDOMTextComponent = __webpack_require__(135);
+	var ReactDefaultBatchingStrategy = __webpack_require__(136);
+	var ReactEventListener = __webpack_require__(137);
+	var ReactInjection = __webpack_require__(140);
+	var ReactReconcileTransaction = __webpack_require__(141);
+	var SVGDOMPropertyConfig = __webpack_require__(149);
+	var SelectEventPlugin = __webpack_require__(150);
+	var SimpleEventPlugin = __webpack_require__(151);
 
 	var alreadyInjected = false;
 
@@ -3792,17 +4215,15 @@
 	  inject: inject
 	};
 
-/***/ },
-/* 36 */
-/***/ function(module, exports) {
+/***/ }),
+/* 39 */
+/***/ (function(module, exports) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
@@ -3870,27 +4291,25 @@
 
 	module.exports = ARIADOMPropertyConfig;
 
-/***/ },
-/* 37 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 40 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var EventPropagators = __webpack_require__(38);
-	var ExecutionEnvironment = __webpack_require__(45);
-	var FallbackCompositionState = __webpack_require__(46);
-	var SyntheticCompositionEvent = __webpack_require__(49);
-	var SyntheticInputEvent = __webpack_require__(51);
+	var EventPropagators = __webpack_require__(41);
+	var ExecutionEnvironment = __webpack_require__(48);
+	var FallbackCompositionState = __webpack_require__(49);
+	var SyntheticCompositionEvent = __webpack_require__(52);
+	var SyntheticInputEvent = __webpack_require__(54);
 
 	var END_KEYCODES = [9, 13, 27, 32]; // Tab, Return, Esc, Space
 	var START_KEYCODE = 229;
@@ -4249,7 +4668,6 @@
 	 * `composition` event types.
 	 */
 	var BeforeInputEventPlugin = {
-
 	  eventTypes: eventTypes,
 
 	  extractEvents: function (topLevelType, targetInst, nativeEvent, nativeEventTarget) {
@@ -4259,28 +4677,26 @@
 
 	module.exports = BeforeInputEventPlugin;
 
-/***/ },
-/* 38 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 41 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var EventPluginHub = __webpack_require__(39);
-	var EventPluginUtils = __webpack_require__(41);
+	var EventPluginHub = __webpack_require__(42);
+	var EventPluginUtils = __webpack_require__(44);
 
-	var accumulateInto = __webpack_require__(43);
-	var forEachAccumulated = __webpack_require__(44);
-	var warning = __webpack_require__(11);
+	var accumulateInto = __webpack_require__(46);
+	var forEachAccumulated = __webpack_require__(47);
+	var warning = __webpack_require__(8);
 
 	var getListener = EventPluginHub.getListener;
 
@@ -4397,31 +4813,29 @@
 
 	module.exports = EventPropagators;
 
-/***/ },
-/* 39 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 42 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var _prodInvariant = __webpack_require__(32);
+	var _prodInvariant = __webpack_require__(35);
 
-	var EventPluginRegistry = __webpack_require__(40);
-	var EventPluginUtils = __webpack_require__(41);
-	var ReactErrorUtils = __webpack_require__(42);
+	var EventPluginRegistry = __webpack_require__(43);
+	var EventPluginUtils = __webpack_require__(44);
+	var ReactErrorUtils = __webpack_require__(45);
 
-	var accumulateInto = __webpack_require__(43);
-	var forEachAccumulated = __webpack_require__(44);
-	var invariant = __webpack_require__(8);
+	var accumulateInto = __webpack_require__(46);
+	var forEachAccumulated = __webpack_require__(47);
+	var invariant = __webpack_require__(12);
 
 	/**
 	 * Internal store for event listeners
@@ -4508,12 +4922,10 @@
 	 * @public
 	 */
 	var EventPluginHub = {
-
 	  /**
 	   * Methods for injecting dependencies.
 	   */
 	  injection: {
-
 	    /**
 	     * @param {array} InjectedEventPluginOrder
 	     * @public
@@ -4524,7 +4936,6 @@
 	     * @param {object} injectedNamesToPlugins Map from names to plugin modules.
 	     */
 	    injectEventPluginsByName: EventPluginRegistry.injectEventPluginsByName
-
 	  },
 
 	  /**
@@ -4674,31 +5085,28 @@
 	  __getListenerBank: function () {
 	    return listenerBank;
 	  }
-
 	};
 
 	module.exports = EventPluginHub;
 
-/***/ },
-/* 40 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 43 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 * 
 	 */
 
 	'use strict';
 
-	var _prodInvariant = __webpack_require__(32);
+	var _prodInvariant = __webpack_require__(35);
 
-	var invariant = __webpack_require__(8);
+	var invariant = __webpack_require__(12);
 
 	/**
 	 * Injectable ordering of event plugins.
@@ -4793,7 +5201,6 @@
 	 * @see {EventPluginHub}
 	 */
 	var EventPluginRegistry = {
-
 	  /**
 	   * Ordered list of injected plugins.
 	   */
@@ -4933,33 +5340,30 @@
 	      }
 	    }
 	  }
-
 	};
 
 	module.exports = EventPluginRegistry;
 
-/***/ },
-/* 41 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 44 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var _prodInvariant = __webpack_require__(32);
+	var _prodInvariant = __webpack_require__(35);
 
-	var ReactErrorUtils = __webpack_require__(42);
+	var ReactErrorUtils = __webpack_require__(45);
 
-	var invariant = __webpack_require__(8);
-	var warning = __webpack_require__(11);
+	var invariant = __webpack_require__(12);
+	var warning = __webpack_require__(8);
 
 	/**
 	 * Injected dependencies:
@@ -5168,17 +5572,15 @@
 
 	module.exports = EventPluginUtils;
 
-/***/ },
-/* 42 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 45 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 * 
 	 */
@@ -5235,11 +5637,12 @@
 	  if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function' && typeof document !== 'undefined' && typeof document.createEvent === 'function') {
 	    var fakeNode = document.createElement('react');
 	    ReactErrorUtils.invokeGuardedCallback = function (name, func, a) {
-	      var boundFunc = func.bind(null, a);
+	      var boundFunc = function () {
+	        func(a);
+	      };
 	      var evtType = 'react-' + name;
 	      fakeNode.addEventListener(evtType, boundFunc, false);
 	      var evt = document.createEvent('Event');
-	      // $FlowFixMe https://github.com/facebook/flow/issues/2336
 	      evt.initEvent(evtType, false, false);
 	      fakeNode.dispatchEvent(evt);
 	      fakeNode.removeEventListener(evtType, boundFunc, false);
@@ -5249,26 +5652,24 @@
 
 	module.exports = ReactErrorUtils;
 
-/***/ },
-/* 43 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 46 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2014-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2014-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 * 
 	 */
 
 	'use strict';
 
-	var _prodInvariant = __webpack_require__(32);
+	var _prodInvariant = __webpack_require__(35);
 
-	var invariant = __webpack_require__(8);
+	var invariant = __webpack_require__(12);
 
 	/**
 	 * Accumulates items that must not be null or undefined into the first one. This
@@ -5311,17 +5712,15 @@
 
 	module.exports = accumulateInto;
 
-/***/ },
-/* 44 */
-/***/ function(module, exports) {
+/***/ }),
+/* 47 */
+/***/ (function(module, exports) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 * 
 	 */
@@ -5346,17 +5745,15 @@
 
 	module.exports = forEachAccumulated;
 
-/***/ },
-/* 45 */
-/***/ function(module, exports) {
+/***/ }),
+/* 48 */
+/***/ (function(module, exports) {
 
 	/**
 	 * Copyright (c) 2013-present, Facebook, Inc.
-	 * All rights reserved.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
@@ -5386,17 +5783,15 @@
 
 	module.exports = ExecutionEnvironment;
 
-/***/ },
-/* 46 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 49 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
@@ -5404,9 +5799,9 @@
 
 	var _assign = __webpack_require__(4);
 
-	var PooledClass = __webpack_require__(47);
+	var PooledClass = __webpack_require__(50);
 
-	var getTextContentAccessor = __webpack_require__(48);
+	var getTextContentAccessor = __webpack_require__(51);
 
 	/**
 	 * This helper class stores information about text content of a target node,
@@ -5485,25 +5880,23 @@
 
 	module.exports = FallbackCompositionState;
 
-/***/ },
-/* 47 */
-[628, 32],
-/* 48 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 50 */
+[656, 35],
+/* 51 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var ExecutionEnvironment = __webpack_require__(45);
+	var ExecutionEnvironment = __webpack_require__(48);
 
 	var contentKey = null;
 
@@ -5524,23 +5917,21 @@
 
 	module.exports = getTextContentAccessor;
 
-/***/ },
-/* 49 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 52 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var SyntheticEvent = __webpack_require__(50);
+	var SyntheticEvent = __webpack_require__(53);
 
 	/**
 	 * @interface Event
@@ -5564,17 +5955,15 @@
 
 	module.exports = SyntheticCompositionEvent;
 
-/***/ },
-/* 50 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 53 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
@@ -5582,10 +5971,10 @@
 
 	var _assign = __webpack_require__(4);
 
-	var PooledClass = __webpack_require__(47);
+	var PooledClass = __webpack_require__(50);
 
-	var emptyFunction = __webpack_require__(12);
-	var warning = __webpack_require__(11);
+	var emptyFunction = __webpack_require__(9);
+	var warning = __webpack_require__(8);
 
 	var didWarnForAddedNewProperty = false;
 	var isProxySupported = typeof Proxy === 'function';
@@ -5672,7 +6061,6 @@
 	}
 
 	_assign(SyntheticEvent.prototype, {
-
 	  preventDefault: function () {
 	    this.defaultPrevented = true;
 	    var event = this.nativeEvent;
@@ -5682,8 +6070,8 @@
 
 	    if (event.preventDefault) {
 	      event.preventDefault();
+	      // eslint-disable-next-line valid-typeof
 	    } else if (typeof event.returnValue !== 'unknown') {
-	      // eslint-disable-line valid-typeof
 	      event.returnValue = false;
 	    }
 	    this.isDefaultPrevented = emptyFunction.thatReturnsTrue;
@@ -5697,8 +6085,8 @@
 
 	    if (event.stopPropagation) {
 	      event.stopPropagation();
+	      // eslint-disable-next-line valid-typeof
 	    } else if (typeof event.cancelBubble !== 'unknown') {
-	      // eslint-disable-line valid-typeof
 	      // The ChangeEventPlugin registers a "propertychange" event for
 	      // IE. This event does not support bubbling or cancelling, and
 	      // any references to cancelBubble throw "Member not found".  A
@@ -5747,34 +6135,10 @@
 	      Object.defineProperty(this, 'stopPropagation', getPooledWarningPropertyDefinition('stopPropagation', emptyFunction));
 	    }
 	  }
-
 	});
 
 	SyntheticEvent.Interface = EventInterface;
 
-	if (false) {
-	  if (isProxySupported) {
-	    /*eslint-disable no-func-assign */
-	    SyntheticEvent = new Proxy(SyntheticEvent, {
-	      construct: function (target, args) {
-	        return this.apply(target, Object.create(target.prototype), args);
-	      },
-	      apply: function (constructor, that, args) {
-	        return new Proxy(constructor.apply(that, args), {
-	          set: function (target, prop, value) {
-	            if (prop !== 'isPersistent' && !target.constructor.Interface.hasOwnProperty(prop) && shouldBeReleasedProperties.indexOf(prop) === -1) {
-	              process.env.NODE_ENV !== 'production' ? warning(didWarnForAddedNewProperty || target.isPersistent(), 'This synthetic event is reused for performance reasons. If you\'re ' + 'seeing this, you\'re adding a new property in the synthetic event object. ' + 'The property is never released. See ' + 'https://fb.me/react-event-pooling for more information.') : void 0;
-	              didWarnForAddedNewProperty = true;
-	            }
-	            target[prop] = value;
-	            return true;
-	          }
-	        });
-	      }
-	    });
-	    /*eslint-enable no-func-assign */
-	  }
-	}
 	/**
 	 * Helper to reduce boilerplate when creating subclasses.
 	 *
@@ -5797,6 +6161,34 @@
 
 	  PooledClass.addPoolingTo(Class, PooledClass.fourArgumentPooler);
 	};
+
+	/** Proxying after everything set on SyntheticEvent
+	  * to resolve Proxy issue on some WebKit browsers
+	  * in which some Event properties are set to undefined (GH#10010)
+	  */
+	if (false) {
+	  if (isProxySupported) {
+	    /*eslint-disable no-func-assign */
+	    SyntheticEvent = new Proxy(SyntheticEvent, {
+	      construct: function (target, args) {
+	        return this.apply(target, Object.create(target.prototype), args);
+	      },
+	      apply: function (constructor, that, args) {
+	        return new Proxy(constructor.apply(that, args), {
+	          set: function (target, prop, value) {
+	            if (prop !== 'isPersistent' && !target.constructor.Interface.hasOwnProperty(prop) && shouldBeReleasedProperties.indexOf(prop) === -1) {
+	              process.env.NODE_ENV !== 'production' ? warning(didWarnForAddedNewProperty || target.isPersistent(), "This synthetic event is reused for performance reasons. If you're " + "seeing this, you're adding a new property in the synthetic event object. " + 'The property is never released. See ' + 'https://fb.me/react-event-pooling for more information.') : void 0;
+	              didWarnForAddedNewProperty = true;
+	            }
+	            target[prop] = value;
+	            return true;
+	          }
+	        });
+	      }
+	    });
+	    /*eslint-enable no-func-assign */
+	  }
+	}
 
 	PooledClass.addPoolingTo(SyntheticEvent, PooledClass.fourArgumentPooler);
 
@@ -5832,27 +6224,25 @@
 
 	  function warn(action, result) {
 	    var warningCondition = false;
-	     false ? warning(warningCondition, 'This synthetic event is reused for performance reasons. If you\'re seeing this, ' + 'you\'re %s `%s` on a released/nullified synthetic event. %s. ' + 'If you must keep the original synthetic event around, use event.persist(). ' + 'See https://fb.me/react-event-pooling for more information.', action, propName, result) : void 0;
+	     false ? warning(warningCondition, "This synthetic event is reused for performance reasons. If you're seeing this, " + "you're %s `%s` on a released/nullified synthetic event. %s. " + 'If you must keep the original synthetic event around, use event.persist(). ' + 'See https://fb.me/react-event-pooling for more information.', action, propName, result) : void 0;
 	  }
 	}
 
-/***/ },
-/* 51 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 54 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var SyntheticEvent = __webpack_require__(50);
+	var SyntheticEvent = __webpack_require__(53);
 
 	/**
 	 * @interface Event
@@ -5877,32 +6267,31 @@
 
 	module.exports = SyntheticInputEvent;
 
-/***/ },
-/* 52 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 55 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var EventPluginHub = __webpack_require__(39);
-	var EventPropagators = __webpack_require__(38);
-	var ExecutionEnvironment = __webpack_require__(45);
-	var ReactDOMComponentTree = __webpack_require__(31);
-	var ReactUpdates = __webpack_require__(53);
-	var SyntheticEvent = __webpack_require__(50);
+	var EventPluginHub = __webpack_require__(42);
+	var EventPropagators = __webpack_require__(41);
+	var ExecutionEnvironment = __webpack_require__(48);
+	var ReactDOMComponentTree = __webpack_require__(34);
+	var ReactUpdates = __webpack_require__(56);
+	var SyntheticEvent = __webpack_require__(53);
 
-	var getEventTarget = __webpack_require__(61);
-	var isEventSupported = __webpack_require__(62);
-	var isTextInputElement = __webpack_require__(63);
+	var inputValueTracking = __webpack_require__(64);
+	var getEventTarget = __webpack_require__(65);
+	var isEventSupported = __webpack_require__(66);
+	var isTextInputElement = __webpack_require__(67);
 
 	var eventTypes = {
 	  change: {
@@ -5914,13 +6303,17 @@
 	  }
 	};
 
+	function createAndAccumulateChangeEvent(inst, nativeEvent, target) {
+	  var event = SyntheticEvent.getPooled(eventTypes.change, inst, nativeEvent, target);
+	  event.type = 'change';
+	  EventPropagators.accumulateTwoPhaseDispatches(event);
+	  return event;
+	}
 	/**
 	 * For IE shims
 	 */
 	var activeElement = null;
 	var activeElementInst = null;
-	var activeElementValue = null;
-	var activeElementValueProp = null;
 
 	/**
 	 * SECTION: handle `change` event
@@ -5937,8 +6330,7 @@
 	}
 
 	function manualDispatchChangeEvent(nativeEvent) {
-	  var event = SyntheticEvent.getPooled(eventTypes.change, activeElementInst, nativeEvent, getEventTarget(nativeEvent));
-	  EventPropagators.accumulateTwoPhaseDispatches(event);
+	  var event = createAndAccumulateChangeEvent(activeElementInst, nativeEvent, getEventTarget(nativeEvent));
 
 	  // If change and propertychange bubbled, we'd just bind to it like all the
 	  // other events and have it go through ReactBrowserEventEmitter. Since it
@@ -5974,11 +6366,21 @@
 	  activeElementInst = null;
 	}
 
+	function getInstIfValueChanged(targetInst, nativeEvent) {
+	  var updated = inputValueTracking.updateValueIfChanged(targetInst);
+	  var simulated = nativeEvent.simulated === true && ChangeEventPlugin._allowSimulatedPassThrough;
+
+	  if (updated || simulated) {
+	    return targetInst;
+	  }
+	}
+
 	function getTargetInstForChangeEvent(topLevelType, targetInst) {
 	  if (topLevelType === 'topChange') {
 	    return targetInst;
 	  }
 	}
+
 	function handleEventsForChangeEventIE8(topLevelType, target, targetInst) {
 	  if (topLevelType === 'topFocus') {
 	    // stopWatching() should be a noop here but we call it just in case we
@@ -5997,105 +6399,54 @@
 	if (ExecutionEnvironment.canUseDOM) {
 	  // IE9 claims to support the input event but fails to trigger it when
 	  // deleting text, so we ignore its input events.
-	  // IE10+ fire input events to often, such when a placeholder
-	  // changes or when an input with a placeholder is focused.
-	  isInputEventSupported = isEventSupported('input') && (!document.documentMode || document.documentMode > 11);
+
+	  isInputEventSupported = isEventSupported('input') && (!document.documentMode || document.documentMode > 9);
 	}
 
 	/**
-	 * (For IE <=11) Replacement getter/setter for the `value` property that gets
-	 * set on the active element.
-	 */
-	var newValueProp = {
-	  get: function () {
-	    return activeElementValueProp.get.call(this);
-	  },
-	  set: function (val) {
-	    // Cast to a string so we can do equality checks.
-	    activeElementValue = '' + val;
-	    activeElementValueProp.set.call(this, val);
-	  }
-	};
-
-	/**
-	 * (For IE <=11) Starts tracking propertychange events on the passed-in element
+	 * (For IE <=9) Starts tracking propertychange events on the passed-in element
 	 * and override the value property so that we can distinguish user events from
 	 * value changes in JS.
 	 */
 	function startWatchingForValueChange(target, targetInst) {
 	  activeElement = target;
 	  activeElementInst = targetInst;
-	  activeElementValue = target.value;
-	  activeElementValueProp = Object.getOwnPropertyDescriptor(target.constructor.prototype, 'value');
-
-	  // Not guarded in a canDefineProperty check: IE8 supports defineProperty only
-	  // on DOM elements
-	  Object.defineProperty(activeElement, 'value', newValueProp);
-	  if (activeElement.attachEvent) {
-	    activeElement.attachEvent('onpropertychange', handlePropertyChange);
-	  } else {
-	    activeElement.addEventListener('propertychange', handlePropertyChange, false);
-	  }
+	  activeElement.attachEvent('onpropertychange', handlePropertyChange);
 	}
 
 	/**
-	 * (For IE <=11) Removes the event listeners from the currently-tracked element,
+	 * (For IE <=9) Removes the event listeners from the currently-tracked element,
 	 * if any exists.
 	 */
 	function stopWatchingForValueChange() {
 	  if (!activeElement) {
 	    return;
 	  }
-
-	  // delete restores the original property definition
-	  delete activeElement.value;
-
-	  if (activeElement.detachEvent) {
-	    activeElement.detachEvent('onpropertychange', handlePropertyChange);
-	  } else {
-	    activeElement.removeEventListener('propertychange', handlePropertyChange, false);
-	  }
+	  activeElement.detachEvent('onpropertychange', handlePropertyChange);
 
 	  activeElement = null;
 	  activeElementInst = null;
-	  activeElementValue = null;
-	  activeElementValueProp = null;
 	}
 
 	/**
-	 * (For IE <=11) Handles a propertychange event, sending a `change` event if
+	 * (For IE <=9) Handles a propertychange event, sending a `change` event if
 	 * the value of the active element has changed.
 	 */
 	function handlePropertyChange(nativeEvent) {
 	  if (nativeEvent.propertyName !== 'value') {
 	    return;
 	  }
-	  var value = nativeEvent.srcElement.value;
-	  if (value === activeElementValue) {
-	    return;
-	  }
-	  activeElementValue = value;
-
-	  manualDispatchChangeEvent(nativeEvent);
-	}
-
-	/**
-	 * If a `change` event should be fired, returns the target's ID.
-	 */
-	function getTargetInstForInputEvent(topLevelType, targetInst) {
-	  if (topLevelType === 'topInput') {
-	    // In modern browsers (i.e., not IE8 or IE9), the input event is exactly
-	    // what we want so fall through here and trigger an abstract event
-	    return targetInst;
+	  if (getInstIfValueChanged(activeElementInst, nativeEvent)) {
+	    manualDispatchChangeEvent(nativeEvent);
 	  }
 	}
 
-	function handleEventsForInputEventIE(topLevelType, target, targetInst) {
+	function handleEventsForInputEventPolyfill(topLevelType, target, targetInst) {
 	  if (topLevelType === 'topFocus') {
 	    // In IE8, we can capture almost all .value changes by adding a
 	    // propertychange handler and looking for events with propertyName
 	    // equal to 'value'
-	    // In IE9-11, propertychange fires for most input events but is buggy and
+	    // In IE9, propertychange fires for most input events but is buggy and
 	    // doesn't fire when text is deleted, but conveniently, selectionchange
 	    // appears to fire in all of the remaining cases so we catch those and
 	    // forward the event if the value has changed
@@ -6113,7 +6464,7 @@
 	}
 
 	// For IE8 and IE9.
-	function getTargetInstForInputEventIE(topLevelType, targetInst) {
+	function getTargetInstForInputEventPolyfill(topLevelType, targetInst, nativeEvent) {
 	  if (topLevelType === 'topSelectionChange' || topLevelType === 'topKeyUp' || topLevelType === 'topKeyDown') {
 	    // On the selectionchange event, the target is just document which isn't
 	    // helpful for us so just check activeElement instead.
@@ -6125,10 +6476,7 @@
 	    // keystroke if user does a key repeat (it'll be a little delayed: right
 	    // before the second keystroke). Other input methods (e.g., paste) seem to
 	    // fire selectionchange normally.
-	    if (activeElement && activeElement.value !== activeElementValue) {
-	      activeElementValue = activeElement.value;
-	      return activeElementInst;
-	    }
+	    return getInstIfValueChanged(activeElementInst, nativeEvent);
 	  }
 	}
 
@@ -6139,12 +6487,39 @@
 	  // Use the `click` event to detect changes to checkbox and radio inputs.
 	  // This approach works across all browsers, whereas `change` does not fire
 	  // until `blur` in IE8.
-	  return elem.nodeName && elem.nodeName.toLowerCase() === 'input' && (elem.type === 'checkbox' || elem.type === 'radio');
+	  var nodeName = elem.nodeName;
+	  return nodeName && nodeName.toLowerCase() === 'input' && (elem.type === 'checkbox' || elem.type === 'radio');
 	}
 
-	function getTargetInstForClickEvent(topLevelType, targetInst) {
+	function getTargetInstForClickEvent(topLevelType, targetInst, nativeEvent) {
 	  if (topLevelType === 'topClick') {
-	    return targetInst;
+	    return getInstIfValueChanged(targetInst, nativeEvent);
+	  }
+	}
+
+	function getTargetInstForInputOrChangeEvent(topLevelType, targetInst, nativeEvent) {
+	  if (topLevelType === 'topInput' || topLevelType === 'topChange') {
+	    return getInstIfValueChanged(targetInst, nativeEvent);
+	  }
+	}
+
+	function handleControlledInputBlur(inst, node) {
+	  // TODO: In IE, inst is occasionally null. Why?
+	  if (inst == null) {
+	    return;
+	  }
+
+	  // Fiber and ReactDOM keep wrapper state in separate places
+	  var state = inst._wrapperState || node._wrapperState;
+
+	  if (!state || !state.controlled || node.type !== 'number') {
+	    return;
+	  }
+
+	  // If controlled, assign the value attribute to the current value on blur
+	  var value = '' + node.value;
+	  if (node.getAttribute('value') !== value) {
+	    node.setAttribute('value', value);
 	  }
 	}
 
@@ -6159,8 +6534,10 @@
 	 * - select
 	 */
 	var ChangeEventPlugin = {
-
 	  eventTypes: eventTypes,
+
+	  _allowSimulatedPassThrough: true,
+	  _isInputEventSupported: isInputEventSupported,
 
 	  extractEvents: function (topLevelType, targetInst, nativeEvent, nativeEventTarget) {
 	    var targetNode = targetInst ? ReactDOMComponentTree.getNodeFromInstance(targetInst) : window;
@@ -6174,21 +6551,19 @@
 	      }
 	    } else if (isTextInputElement(targetNode)) {
 	      if (isInputEventSupported) {
-	        getTargetInstFunc = getTargetInstForInputEvent;
+	        getTargetInstFunc = getTargetInstForInputOrChangeEvent;
 	      } else {
-	        getTargetInstFunc = getTargetInstForInputEventIE;
-	        handleEventFunc = handleEventsForInputEventIE;
+	        getTargetInstFunc = getTargetInstForInputEventPolyfill;
+	        handleEventFunc = handleEventsForInputEventPolyfill;
 	      }
 	    } else if (shouldUseClickEvent(targetNode)) {
 	      getTargetInstFunc = getTargetInstForClickEvent;
 	    }
 
 	    if (getTargetInstFunc) {
-	      var inst = getTargetInstFunc(topLevelType, targetInst);
+	      var inst = getTargetInstFunc(topLevelType, targetInst, nativeEvent);
 	      if (inst) {
-	        var event = SyntheticEvent.getPooled(eventTypes.change, inst, nativeEvent, nativeEventTarget);
-	        event.type = 'change';
-	        EventPropagators.accumulateTwoPhaseDispatches(event);
+	        var event = createAndAccumulateChangeEvent(inst, nativeEvent, nativeEventTarget);
 	        return event;
 	      }
 	    }
@@ -6196,38 +6571,40 @@
 	    if (handleEventFunc) {
 	      handleEventFunc(topLevelType, targetNode, targetInst);
 	    }
-	  }
 
+	    // When blurring, set the value attribute for number inputs
+	    if (topLevelType === 'topBlur') {
+	      handleControlledInputBlur(targetInst, targetNode);
+	    }
+	  }
 	};
 
 	module.exports = ChangeEventPlugin;
 
-/***/ },
-/* 53 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 56 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var _prodInvariant = __webpack_require__(32),
+	var _prodInvariant = __webpack_require__(35),
 	    _assign = __webpack_require__(4);
 
-	var CallbackQueue = __webpack_require__(54);
-	var PooledClass = __webpack_require__(47);
-	var ReactFeatureFlags = __webpack_require__(55);
-	var ReactReconciler = __webpack_require__(56);
-	var Transaction = __webpack_require__(60);
+	var CallbackQueue = __webpack_require__(57);
+	var PooledClass = __webpack_require__(50);
+	var ReactFeatureFlags = __webpack_require__(58);
+	var ReactReconciler = __webpack_require__(59);
+	var Transaction = __webpack_require__(63);
 
-	var invariant = __webpack_require__(8);
+	var invariant = __webpack_require__(12);
 
 	var dirtyComponents = [];
 	var updateBatchNumber = 0;
@@ -6420,7 +6797,7 @@
 	 * if no updates are currently being performed.
 	 */
 	function asap(callback, context) {
-	  !batchingStrategy.isBatchingUpdates ?  false ? invariant(false, 'ReactUpdates.asap: Can\'t enqueue an asap callback in a context whereupdates are not being batched.') : _prodInvariant('125') : void 0;
+	  invariant(batchingStrategy.isBatchingUpdates, "ReactUpdates.asap: Can't enqueue an asap callback in a context where" + 'updates are not being batched.');
 	  asapCallbackQueue.enqueue(callback, context);
 	  asapEnqueued = true;
 	}
@@ -6457,30 +6834,28 @@
 
 	module.exports = ReactUpdates;
 
-/***/ },
-/* 54 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 57 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 * 
 	 */
 
 	'use strict';
 
-	var _prodInvariant = __webpack_require__(32);
+	var _prodInvariant = __webpack_require__(35);
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var PooledClass = __webpack_require__(47);
+	var PooledClass = __webpack_require__(50);
 
-	var invariant = __webpack_require__(8);
+	var invariant = __webpack_require__(12);
 
 	/**
 	 * A specialized pseudo-event module to help keep track of components waiting to
@@ -6580,17 +6955,15 @@
 
 	module.exports = PooledClass.addPoolingTo(CallbackQueue);
 
-/***/ },
-/* 55 */
-/***/ function(module, exports) {
+/***/ }),
+/* 58 */
+/***/ (function(module, exports) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 * 
 	 */
@@ -6606,26 +6979,24 @@
 
 	module.exports = ReactFeatureFlags;
 
-/***/ },
-/* 56 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 59 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var ReactRef = __webpack_require__(57);
-	var ReactInstrumentation = __webpack_require__(59);
+	var ReactRef = __webpack_require__(60);
+	var ReactInstrumentation = __webpack_require__(62);
 
-	var warning = __webpack_require__(11);
+	var warning = __webpack_require__(8);
 
 	/**
 	 * Helper to call ReactRef.attachRefs with this composite component, split out
@@ -6636,7 +7007,6 @@
 	}
 
 	var ReactReconciler = {
-
 	  /**
 	   * Initializes the component, renders markup, and registers event listeners.
 	   *
@@ -6648,8 +7018,8 @@
 	   * @final
 	   * @internal
 	   */
-	  mountComponent: function (internalInstance, transaction, hostParent, hostContainerInfo, context, parentDebugID // 0 in production and for roots
-	  ) {
+	  mountComponent: function (internalInstance, transaction, hostParent, hostContainerInfo, context, parentDebugID) // 0 in production and for roots
+	  {
 	    if (false) {
 	      if (internalInstance._debugID !== 0) {
 	        ReactInstrumentation.debugTool.onBeforeMountComponent(internalInstance._debugID, internalInstance._currentElement, parentDebugID);
@@ -6773,29 +7143,26 @@
 	      }
 	    }
 	  }
-
 	};
 
 	module.exports = ReactReconciler;
 
-/***/ },
-/* 57 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 60 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 * 
 	 */
 
 	'use strict';
 
-	var ReactOwner = __webpack_require__(58);
+	var ReactOwner = __webpack_require__(61);
 
 	var ReactRef = {};
 
@@ -6871,26 +7238,24 @@
 
 	module.exports = ReactRef;
 
-/***/ },
-/* 58 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 61 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 * 
 	 */
 
 	'use strict';
 
-	var _prodInvariant = __webpack_require__(32);
+	var _prodInvariant = __webpack_require__(35);
 
-	var invariant = __webpack_require__(8);
+	var invariant = __webpack_require__(12);
 
 	/**
 	 * @param {?object} object
@@ -6964,22 +7329,19 @@
 	      owner.detachRef(ref);
 	    }
 	  }
-
 	};
 
 	module.exports = ReactOwner;
 
-/***/ },
-/* 59 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 62 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2016-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2016-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 * 
 	 */
@@ -6997,26 +7359,24 @@
 
 	module.exports = { debugTool: debugTool };
 
-/***/ },
-/* 60 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 63 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 * 
 	 */
 
 	'use strict';
 
-	var _prodInvariant = __webpack_require__(32);
+	var _prodInvariant = __webpack_require__(35);
 
-	var invariant = __webpack_require__(8);
+	var invariant = __webpack_require__(12);
 
 	var OBSERVED_ERROR = {};
 
@@ -7111,6 +7471,8 @@
 	    return !!this._isInTransaction;
 	  },
 
+	  /* eslint-disable space-before-function-paren */
+
 	  /**
 	   * Executes the function within a safety window. Use this for the top level
 	   * methods that result in large amounts of computation/mutations that would
@@ -7129,6 +7491,7 @@
 	   * @return {*} Return value from `method`.
 	   */
 	  perform: function (method, scope, a, b, c, d, e, f) {
+	    /* eslint-enable space-before-function-paren */
 	    !!this.isInTransaction() ?  false ? invariant(false, 'Transaction.perform(...): Cannot initialize a transaction when there is already an outstanding transaction.') : _prodInvariant('27') : void 0;
 	    var errorThrown;
 	    var ret;
@@ -7226,17 +7589,140 @@
 
 	module.exports = TransactionImpl;
 
-/***/ },
-/* 61 */
-/***/ function(module, exports) {
+/***/ }),
+/* 64 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
+	 *
+	 */
+
+	'use strict';
+
+	var ReactDOMComponentTree = __webpack_require__(34);
+
+	function isCheckable(elem) {
+	  var type = elem.type;
+	  var nodeName = elem.nodeName;
+	  return nodeName && nodeName.toLowerCase() === 'input' && (type === 'checkbox' || type === 'radio');
+	}
+
+	function getTracker(inst) {
+	  return inst._wrapperState.valueTracker;
+	}
+
+	function attachTracker(inst, tracker) {
+	  inst._wrapperState.valueTracker = tracker;
+	}
+
+	function detachTracker(inst) {
+	  inst._wrapperState.valueTracker = null;
+	}
+
+	function getValueFromNode(node) {
+	  var value;
+	  if (node) {
+	    value = isCheckable(node) ? '' + node.checked : node.value;
+	  }
+	  return value;
+	}
+
+	var inputValueTracking = {
+	  // exposed for testing
+	  _getTrackerFromNode: function (node) {
+	    return getTracker(ReactDOMComponentTree.getInstanceFromNode(node));
+	  },
+
+
+	  track: function (inst) {
+	    if (getTracker(inst)) {
+	      return;
+	    }
+
+	    var node = ReactDOMComponentTree.getNodeFromInstance(inst);
+	    var valueField = isCheckable(node) ? 'checked' : 'value';
+	    var descriptor = Object.getOwnPropertyDescriptor(node.constructor.prototype, valueField);
+
+	    var currentValue = '' + node[valueField];
+
+	    // if someone has already defined a value or Safari, then bail
+	    // and don't track value will cause over reporting of changes,
+	    // but it's better then a hard failure
+	    // (needed for certain tests that spyOn input values and Safari)
+	    if (node.hasOwnProperty(valueField) || typeof descriptor.get !== 'function' || typeof descriptor.set !== 'function') {
+	      return;
+	    }
+
+	    Object.defineProperty(node, valueField, {
+	      enumerable: descriptor.enumerable,
+	      configurable: true,
+	      get: function () {
+	        return descriptor.get.call(this);
+	      },
+	      set: function (value) {
+	        currentValue = '' + value;
+	        descriptor.set.call(this, value);
+	      }
+	    });
+
+	    attachTracker(inst, {
+	      getValue: function () {
+	        return currentValue;
+	      },
+	      setValue: function (value) {
+	        currentValue = '' + value;
+	      },
+	      stopTracking: function () {
+	        detachTracker(inst);
+	        delete node[valueField];
+	      }
+	    });
+	  },
+
+	  updateValueIfChanged: function (inst) {
+	    if (!inst) {
+	      return false;
+	    }
+	    var tracker = getTracker(inst);
+
+	    if (!tracker) {
+	      inputValueTracking.track(inst);
+	      return true;
+	    }
+
+	    var lastValue = tracker.getValue();
+	    var nextValue = getValueFromNode(ReactDOMComponentTree.getNodeFromInstance(inst));
+
+	    if (nextValue !== lastValue) {
+	      tracker.setValue(nextValue);
+	      return true;
+	    }
+
+	    return false;
+	  },
+	  stopTracking: function (inst) {
+	    var tracker = getTracker(inst);
+	    if (tracker) {
+	      tracker.stopTracking();
+	    }
+	  }
+	};
+
+	module.exports = inputValueTracking;
+
+/***/ }),
+/* 65 */
+/***/ (function(module, exports) {
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 *
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
@@ -7265,23 +7751,21 @@
 
 	module.exports = getEventTarget;
 
-/***/ },
-/* 62 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 66 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var ExecutionEnvironment = __webpack_require__(45);
+	var ExecutionEnvironment = __webpack_require__(48);
 
 	var useHasFeature;
 	if (ExecutionEnvironment.canUseDOM) {
@@ -7329,17 +7813,15 @@
 
 	module.exports = isEventSupported;
 
-/***/ },
-/* 63 */
-/***/ function(module, exports) {
+/***/ }),
+/* 67 */
+/***/ (function(module, exports) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 * 
 	 */
@@ -7351,21 +7833,21 @@
 	 */
 
 	var supportedInputTypes = {
-	  'color': true,
-	  'date': true,
-	  'datetime': true,
+	  color: true,
+	  date: true,
+	  datetime: true,
 	  'datetime-local': true,
-	  'email': true,
-	  'month': true,
-	  'number': true,
-	  'password': true,
-	  'range': true,
-	  'search': true,
-	  'tel': true,
-	  'text': true,
-	  'time': true,
-	  'url': true,
-	  'week': true
+	  email: true,
+	  month: true,
+	  number: true,
+	  password: true,
+	  range: true,
+	  search: true,
+	  tel: true,
+	  text: true,
+	  time: true,
+	  url: true,
+	  week: true
 	};
 
 	function isTextInputElement(elem) {
@@ -7384,17 +7866,15 @@
 
 	module.exports = isTextInputElement;
 
-/***/ },
-/* 64 */
-/***/ function(module, exports) {
+/***/ }),
+/* 68 */
+/***/ (function(module, exports) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
@@ -7414,25 +7894,23 @@
 
 	module.exports = DefaultEventPluginOrder;
 
-/***/ },
-/* 65 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 69 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var EventPropagators = __webpack_require__(38);
-	var ReactDOMComponentTree = __webpack_require__(31);
-	var SyntheticMouseEvent = __webpack_require__(66);
+	var EventPropagators = __webpack_require__(41);
+	var ReactDOMComponentTree = __webpack_require__(34);
+	var SyntheticMouseEvent = __webpack_require__(70);
 
 	var eventTypes = {
 	  mouseEnter: {
@@ -7446,7 +7924,6 @@
 	};
 
 	var EnterLeaveEventPlugin = {
-
 	  eventTypes: eventTypes,
 
 	  /**
@@ -7513,31 +7990,28 @@
 
 	    return [leave, enter];
 	  }
-
 	};
 
 	module.exports = EnterLeaveEventPlugin;
 
-/***/ },
-/* 66 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 70 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var SyntheticUIEvent = __webpack_require__(67);
-	var ViewportMetrics = __webpack_require__(68);
+	var SyntheticUIEvent = __webpack_require__(71);
+	var ViewportMetrics = __webpack_require__(72);
 
-	var getEventModifierState = __webpack_require__(69);
+	var getEventModifierState = __webpack_require__(73);
 
 	/**
 	 * @interface MouseEvent
@@ -7594,25 +8068,23 @@
 
 	module.exports = SyntheticMouseEvent;
 
-/***/ },
-/* 67 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 71 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var SyntheticEvent = __webpack_require__(50);
+	var SyntheticEvent = __webpack_require__(53);
 
-	var getEventTarget = __webpack_require__(61);
+	var getEventTarget = __webpack_require__(65);
 
 	/**
 	 * @interface UIEvent
@@ -7657,24 +8129,21 @@
 
 	module.exports = SyntheticUIEvent;
 
-/***/ },
-/* 68 */
-/***/ function(module, exports) {
+/***/ }),
+/* 72 */
+/***/ (function(module, exports) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
 	var ViewportMetrics = {
-
 	  currentScrollLeft: 0,
 
 	  currentScrollTop: 0,
@@ -7683,22 +8152,19 @@
 	    ViewportMetrics.currentScrollLeft = scrollPosition.x;
 	    ViewportMetrics.currentScrollTop = scrollPosition.y;
 	  }
-
 	};
 
 	module.exports = ViewportMetrics;
 
-/***/ },
-/* 69 */
-/***/ function(module, exports) {
+/***/ }),
+/* 73 */
+/***/ (function(module, exports) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
@@ -7710,10 +8176,10 @@
 	 */
 
 	var modifierKeyToProp = {
-	  'Alt': 'altKey',
-	  'Control': 'ctrlKey',
-	  'Meta': 'metaKey',
-	  'Shift': 'shiftKey'
+	  Alt: 'altKey',
+	  Control: 'ctrlKey',
+	  Meta: 'metaKey',
+	  Shift: 'shiftKey'
 	};
 
 	// IE8 does not implement getModifierState so we simply map it to the only
@@ -7735,23 +8201,21 @@
 
 	module.exports = getEventModifierState;
 
-/***/ },
-/* 70 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 74 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var DOMProperty = __webpack_require__(33);
+	var DOMProperty = __webpack_require__(36);
 
 	var MUST_USE_PROPERTY = DOMProperty.injection.MUST_USE_PROPERTY;
 	var HAS_BOOLEAN_VALUE = DOMProperty.injection.HAS_BOOLEAN_VALUE;
@@ -7794,6 +8258,7 @@
 	    contentEditable: 0,
 	    contextMenu: 0,
 	    controls: HAS_BOOLEAN_VALUE,
+	    controlsList: 0,
 	    coords: 0,
 	    crossOrigin: 0,
 	    data: 0, // For `<object />` acts as `src`.
@@ -7946,29 +8411,51 @@
 	    htmlFor: 'for',
 	    httpEquiv: 'http-equiv'
 	  },
-	  DOMPropertyNames: {}
+	  DOMPropertyNames: {},
+	  DOMMutationMethods: {
+	    value: function (node, value) {
+	      if (value == null) {
+	        return node.removeAttribute('value');
+	      }
+
+	      // Number inputs get special treatment due to some edge cases in
+	      // Chrome. Let everything else assign the value attribute as normal.
+	      // https://github.com/facebook/react/issues/7253#issuecomment-236074326
+	      if (node.type !== 'number' || node.hasAttribute('value') === false) {
+	        node.setAttribute('value', '' + value);
+	      } else if (node.validity && !node.validity.badInput && node.ownerDocument.activeElement !== node) {
+	        // Don't assign an attribute if validation reports bad
+	        // input. Chrome will clear the value. Additionally, don't
+	        // operate on inputs that have focus, otherwise Chrome might
+	        // strip off trailing decimal places and cause the user's
+	        // cursor position to jump to the beginning of the input.
+	        //
+	        // In ReactDOMInput, we have an onBlur event that will trigger
+	        // this function again when focus is lost.
+	        node.setAttribute('value', '' + value);
+	      }
+	    }
+	  }
 	};
 
 	module.exports = HTMLDOMPropertyConfig;
 
-/***/ },
-/* 71 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 75 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var DOMChildrenOperations = __webpack_require__(72);
-	var ReactDOMIDOperations = __webpack_require__(83);
+	var DOMChildrenOperations = __webpack_require__(76);
+	var ReactDOMIDOperations = __webpack_require__(87);
 
 	/**
 	 * Abstracts away all functionality of the reconciler that requires knowledge of
@@ -7976,39 +8463,35 @@
 	 * need for this injection.
 	 */
 	var ReactComponentBrowserEnvironment = {
-
 	  processChildrenUpdates: ReactDOMIDOperations.dangerouslyProcessChildrenUpdates,
 
 	  replaceNodeWithMarkup: DOMChildrenOperations.dangerouslyReplaceNodeWithMarkup
-
 	};
 
 	module.exports = ReactComponentBrowserEnvironment;
 
-/***/ },
-/* 72 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 76 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var DOMLazyTree = __webpack_require__(73);
-	var Danger = __webpack_require__(79);
-	var ReactDOMComponentTree = __webpack_require__(31);
-	var ReactInstrumentation = __webpack_require__(59);
+	var DOMLazyTree = __webpack_require__(77);
+	var Danger = __webpack_require__(83);
+	var ReactDOMComponentTree = __webpack_require__(34);
+	var ReactInstrumentation = __webpack_require__(62);
 
-	var createMicrosoftUnsafeLocalFunction = __webpack_require__(76);
-	var setInnerHTML = __webpack_require__(75);
-	var setTextContent = __webpack_require__(77);
+	var createMicrosoftUnsafeLocalFunction = __webpack_require__(80);
+	var setInnerHTML = __webpack_require__(79);
+	var setTextContent = __webpack_require__(81);
 
 	function getNodeAfter(parentNode, node) {
 	  // Special case for text components, which return [open, close] comments
@@ -8136,7 +8619,6 @@
 	 * Operations for updating with DOM children.
 	 */
 	var DOMChildrenOperations = {
-
 	  dangerouslyReplaceNodeWithMarkup: dangerouslyReplaceNodeWithMarkup,
 
 	  replaceDelimitedText: replaceDelimitedText,
@@ -8162,7 +8644,10 @@
 	            ReactInstrumentation.debugTool.onHostOperation({
 	              instanceID: parentNodeDebugID,
 	              type: 'insert child',
-	              payload: { toIndex: update.toIndex, content: update.content.toString() }
+	              payload: {
+	                toIndex: update.toIndex,
+	                content: update.content.toString()
+	              }
 	            });
 	          }
 	          break;
@@ -8209,32 +8694,29 @@
 	      }
 	    }
 	  }
-
 	};
 
 	module.exports = DOMChildrenOperations;
 
-/***/ },
-/* 73 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 77 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2015-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2015-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var DOMNamespaces = __webpack_require__(74);
-	var setInnerHTML = __webpack_require__(75);
+	var DOMNamespaces = __webpack_require__(78);
+	var setInnerHTML = __webpack_require__(79);
 
-	var createMicrosoftUnsafeLocalFunction = __webpack_require__(76);
-	var setTextContent = __webpack_require__(77);
+	var createMicrosoftUnsafeLocalFunction = __webpack_require__(80);
+	var setTextContent = __webpack_require__(81);
 
 	var ELEMENT_NODE_TYPE = 1;
 	var DOCUMENT_FRAGMENT_NODE_TYPE = 11;
@@ -8336,17 +8818,15 @@
 
 	module.exports = DOMLazyTree;
 
-/***/ },
-/* 74 */
-/***/ function(module, exports) {
+/***/ }),
+/* 78 */
+/***/ (function(module, exports) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
@@ -8360,29 +8840,27 @@
 
 	module.exports = DOMNamespaces;
 
-/***/ },
-/* 75 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 79 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var ExecutionEnvironment = __webpack_require__(45);
-	var DOMNamespaces = __webpack_require__(74);
+	var ExecutionEnvironment = __webpack_require__(48);
+	var DOMNamespaces = __webpack_require__(78);
 
 	var WHITESPACE_TEST = /^[ \r\n\t\f]/;
 	var NONVISIBLE_TEST = /<(!--|link|noscript|meta|script|style)[ \r\n\t\f\/>]/;
 
-	var createMicrosoftUnsafeLocalFunction = __webpack_require__(76);
+	var createMicrosoftUnsafeLocalFunction = __webpack_require__(80);
 
 	// SVG temp container for IE lacking innerHTML
 	var reusableSVGContainer;
@@ -8442,7 +8920,7 @@
 	        // in hopes that this is preserved even if "\uFEFF" is transformed to
 	        // the actual Unicode character (by Babel, for example).
 	        // https://github.com/mishoo/UglifyJS2/blob/v2.4.20/lib/parse.js#L216
-	        node.innerHTML = String.fromCharCode(0xFEFF) + html;
+	        node.innerHTML = String.fromCharCode(0xfeff) + html;
 
 	        // deleteData leaves an empty `TextNode` which offsets the index of all
 	        // children. Definitely want to avoid this.
@@ -8462,17 +8940,15 @@
 
 	module.exports = setInnerHTML;
 
-/***/ },
-/* 76 */
-/***/ function(module, exports) {
+/***/ }),
+/* 80 */
+/***/ (function(module, exports) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
@@ -8498,25 +8974,23 @@
 
 	module.exports = createMicrosoftUnsafeLocalFunction;
 
-/***/ },
-/* 77 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 81 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var ExecutionEnvironment = __webpack_require__(45);
-	var escapeTextContentForBrowser = __webpack_require__(78);
-	var setInnerHTML = __webpack_require__(75);
+	var ExecutionEnvironment = __webpack_require__(48);
+	var escapeTextContentForBrowser = __webpack_require__(82);
+	var setInnerHTML = __webpack_require__(79);
 
 	/**
 	 * Set the textContent property of a node, ensuring that whitespace is preserved
@@ -8554,17 +9028,15 @@
 
 	module.exports = setTextContent;
 
-/***/ },
-/* 78 */
-/***/ function(module, exports) {
+/***/ }),
+/* 82 */
+/***/ (function(module, exports) {
 
 	/**
-	 * Copyright 2016-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2016-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 * Based on the escape-html library, which is used under the MIT License below:
 	 *
@@ -8662,7 +9134,6 @@
 	}
 	// end code copied and modified from escape-html
 
-
 	/**
 	 * Escapes text to prevent scripting attacks.
 	 *
@@ -8681,33 +9152,30 @@
 
 	module.exports = escapeTextContentForBrowser;
 
-/***/ },
-/* 79 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 83 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var _prodInvariant = __webpack_require__(32);
+	var _prodInvariant = __webpack_require__(35);
 
-	var DOMLazyTree = __webpack_require__(73);
-	var ExecutionEnvironment = __webpack_require__(45);
+	var DOMLazyTree = __webpack_require__(77);
+	var ExecutionEnvironment = __webpack_require__(48);
 
-	var createNodesFromMarkup = __webpack_require__(80);
-	var emptyFunction = __webpack_require__(12);
-	var invariant = __webpack_require__(8);
+	var createNodesFromMarkup = __webpack_require__(84);
+	var emptyFunction = __webpack_require__(9);
+	var invariant = __webpack_require__(12);
 
 	var Danger = {
-
 	  /**
 	   * Replaces a node with a string of markup at its current position within its
 	   * parent. The markup must render into a single root node.
@@ -8728,35 +9196,32 @@
 	      DOMLazyTree.replaceChildWithTree(oldChild, markup);
 	    }
 	  }
-
 	};
 
 	module.exports = Danger;
 
-/***/ },
-/* 80 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 84 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	/**
 	 * Copyright (c) 2013-present, Facebook, Inc.
-	 * All rights reserved.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 * @typechecks
 	 */
 
 	/*eslint-disable fb-www/unsafe-html*/
 
-	var ExecutionEnvironment = __webpack_require__(45);
+	var ExecutionEnvironment = __webpack_require__(48);
 
-	var createArrayFromMixed = __webpack_require__(81);
-	var getMarkupWrap = __webpack_require__(82);
-	var invariant = __webpack_require__(8);
+	var createArrayFromMixed = __webpack_require__(85);
+	var getMarkupWrap = __webpack_require__(86);
+	var invariant = __webpack_require__(12);
 
 	/**
 	 * Dummy container used to render all markup.
@@ -8821,24 +9286,22 @@
 
 	module.exports = createNodesFromMarkup;
 
-/***/ },
-/* 81 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 85 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	/**
 	 * Copyright (c) 2013-present, Facebook, Inc.
-	 * All rights reserved.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 * @typechecks
 	 */
 
-	var invariant = __webpack_require__(8);
+	var invariant = __webpack_require__(12);
 
 	/**
 	 * Convert array-like objects to arrays.
@@ -8952,27 +9415,25 @@
 
 	module.exports = createArrayFromMixed;
 
-/***/ },
-/* 82 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 86 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	/**
 	 * Copyright (c) 2013-present, Facebook, Inc.
-	 * All rights reserved.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	/*eslint-disable fb-www/unsafe-html */
 
-	var ExecutionEnvironment = __webpack_require__(45);
+	var ExecutionEnvironment = __webpack_require__(48);
 
-	var invariant = __webpack_require__(8);
+	var invariant = __webpack_require__(12);
 
 	/**
 	 * Dummy container used to detect which wraps are necessary.
@@ -9051,30 +9512,27 @@
 
 	module.exports = getMarkupWrap;
 
-/***/ },
-/* 83 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 87 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var DOMChildrenOperations = __webpack_require__(72);
-	var ReactDOMComponentTree = __webpack_require__(31);
+	var DOMChildrenOperations = __webpack_require__(76);
+	var ReactDOMComponentTree = __webpack_require__(34);
 
 	/**
 	 * Operations used to process updates to DOM nodes.
 	 */
 	var ReactDOMIDOperations = {
-
 	  /**
 	   * Updates a component's children by processing a series of updates.
 	   *
@@ -9089,17 +9547,15 @@
 
 	module.exports = ReactDOMIDOperations;
 
-/***/ },
-/* 84 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 88 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
@@ -9107,35 +9563,36 @@
 
 	'use strict';
 
-	var _prodInvariant = __webpack_require__(32),
+	var _prodInvariant = __webpack_require__(35),
 	    _assign = __webpack_require__(4);
 
-	var AutoFocusUtils = __webpack_require__(85);
-	var CSSPropertyOperations = __webpack_require__(87);
-	var DOMLazyTree = __webpack_require__(73);
-	var DOMNamespaces = __webpack_require__(74);
-	var DOMProperty = __webpack_require__(33);
-	var DOMPropertyOperations = __webpack_require__(95);
-	var EventPluginHub = __webpack_require__(39);
-	var EventPluginRegistry = __webpack_require__(40);
-	var ReactBrowserEventEmitter = __webpack_require__(97);
-	var ReactDOMComponentFlags = __webpack_require__(34);
-	var ReactDOMComponentTree = __webpack_require__(31);
-	var ReactDOMInput = __webpack_require__(100);
-	var ReactDOMOption = __webpack_require__(103);
-	var ReactDOMSelect = __webpack_require__(104);
-	var ReactDOMTextarea = __webpack_require__(105);
-	var ReactInstrumentation = __webpack_require__(59);
-	var ReactMultiChild = __webpack_require__(106);
-	var ReactServerRenderingTransaction = __webpack_require__(125);
+	var AutoFocusUtils = __webpack_require__(89);
+	var CSSPropertyOperations = __webpack_require__(91);
+	var DOMLazyTree = __webpack_require__(77);
+	var DOMNamespaces = __webpack_require__(78);
+	var DOMProperty = __webpack_require__(36);
+	var DOMPropertyOperations = __webpack_require__(99);
+	var EventPluginHub = __webpack_require__(42);
+	var EventPluginRegistry = __webpack_require__(43);
+	var ReactBrowserEventEmitter = __webpack_require__(101);
+	var ReactDOMComponentFlags = __webpack_require__(37);
+	var ReactDOMComponentTree = __webpack_require__(34);
+	var ReactDOMInput = __webpack_require__(104);
+	var ReactDOMOption = __webpack_require__(107);
+	var ReactDOMSelect = __webpack_require__(108);
+	var ReactDOMTextarea = __webpack_require__(109);
+	var ReactInstrumentation = __webpack_require__(62);
+	var ReactMultiChild = __webpack_require__(110);
+	var ReactServerRenderingTransaction = __webpack_require__(129);
 
-	var emptyFunction = __webpack_require__(12);
-	var escapeTextContentForBrowser = __webpack_require__(78);
-	var invariant = __webpack_require__(8);
-	var isEventSupported = __webpack_require__(62);
-	var shallowEqual = __webpack_require__(114);
-	var validateDOMNesting = __webpack_require__(128);
-	var warning = __webpack_require__(11);
+	var emptyFunction = __webpack_require__(9);
+	var escapeTextContentForBrowser = __webpack_require__(82);
+	var invariant = __webpack_require__(12);
+	var isEventSupported = __webpack_require__(66);
+	var shallowEqual = __webpack_require__(118);
+	var inputValueTracking = __webpack_require__(64);
+	var validateDOMNesting = __webpack_require__(132);
+	var warning = __webpack_require__(8);
 
 	var Flags = ReactDOMComponentFlags;
 	var deleteListener = EventPluginHub.deleteListener;
@@ -9144,7 +9601,7 @@
 	var registrationNameModules = EventPluginRegistry.registrationNameModules;
 
 	// For quickly matching children type, to test if can be treated as content.
-	var CONTENT_TYPES = { 'string': true, 'number': true };
+	var CONTENT_TYPES = { string: true, number: true };
 
 	var STYLE = 'style';
 	var HTML = '__html';
@@ -9253,7 +9710,7 @@
 	  if (false) {
 	    // IE8 has no API for event capturing and the `onScroll` event doesn't
 	    // bubble.
-	    process.env.NODE_ENV !== 'production' ? warning(registrationName !== 'onScroll' || isEventSupported('scroll', true), 'This browser doesn\'t support the `onScroll` event') : void 0;
+	    process.env.NODE_ENV !== 'production' ? warning(registrationName !== 'onScroll' || isEventSupported('scroll', true), "This browser doesn't support the `onScroll` event") : void 0;
 	  }
 	  var containerInfo = inst._hostContainerInfo;
 	  var isDocumentFragment = containerInfo._node && containerInfo._node.nodeType === DOC_FRAGMENT_TYPE;
@@ -9343,6 +9800,10 @@
 	  topWaiting: 'waiting'
 	};
 
+	function trackInputValue() {
+	  inputValueTracking.track(this);
+	}
+
 	function trapBubbledEventsLocal() {
 	  var inst = this;
 	  // If a component renders to null or if another component fatals and causes
@@ -9358,7 +9819,6 @@
 	      break;
 	    case 'video':
 	    case 'audio':
-
 	      inst._wrapperState.listeners = [];
 	      // Create listener for each media event
 	      for (var event in mediaEvents) {
@@ -9392,34 +9852,35 @@
 	// those special-case tags.
 
 	var omittedCloseTags = {
-	  'area': true,
-	  'base': true,
-	  'br': true,
-	  'col': true,
-	  'embed': true,
-	  'hr': true,
-	  'img': true,
-	  'input': true,
-	  'keygen': true,
-	  'link': true,
-	  'meta': true,
-	  'param': true,
-	  'source': true,
-	  'track': true,
-	  'wbr': true
+	  area: true,
+	  base: true,
+	  br: true,
+	  col: true,
+	  embed: true,
+	  hr: true,
+	  img: true,
+	  input: true,
+	  keygen: true,
+	  link: true,
+	  meta: true,
+	  param: true,
+	  source: true,
+	  track: true,
+	  wbr: true
+	  // NOTE: menuitem's close tag should be omitted, but that causes problems.
 	};
 
 	var newlineEatingTags = {
-	  'listing': true,
-	  'pre': true,
-	  'textarea': true
+	  listing: true,
+	  pre: true,
+	  textarea: true
 	};
 
 	// For HTML, certain tags cannot have children. This has the same purpose as
 	// `omittedCloseTags` except that `menuitem` should still have its closing tag.
 
 	var voidElementTags = _assign({
-	  'menuitem': true
+	  menuitem: true
 	}, omittedCloseTags);
 
 	// We accept any tag to be rendered but since this gets injected into arbitrary
@@ -9483,7 +9944,6 @@
 	ReactDOMComponent.displayName = 'ReactDOMComponent';
 
 	ReactDOMComponent.Mixin = {
-
 	  /**
 	   * Generates root tag markup then recurses. This method has side effects and
 	   * is not idempotent.
@@ -9520,6 +9980,7 @@
 	      case 'input':
 	        ReactDOMInput.mountWrapper(this, props, hostParent);
 	        props = ReactDOMInput.getHostProps(this, props);
+	        transaction.getReactMountReady().enqueue(trackInputValue, this);
 	        transaction.getReactMountReady().enqueue(trapBubbledEventsLocal, this);
 	        break;
 	      case 'option':
@@ -9534,6 +9995,7 @@
 	      case 'textarea':
 	        ReactDOMTextarea.mountWrapper(this, props, hostParent);
 	        props = ReactDOMTextarea.getHostProps(this, props);
+	        transaction.getReactMountReady().enqueue(trackInputValue, this);
 	        transaction.getReactMountReady().enqueue(trapBubbledEventsLocal, this);
 	        break;
 	    }
@@ -9776,12 +10238,18 @@
 	    } else {
 	      var contentToUse = CONTENT_TYPES[typeof props.children] ? props.children : null;
 	      var childrenToUse = contentToUse != null ? null : props.children;
+	      // TODO: Validate that text is allowed as a child of this node
 	      if (contentToUse != null) {
-	        // TODO: Validate that text is allowed as a child of this node
-	        if (false) {
-	          setAndValidateContentChildDev.call(this, contentToUse);
+	        // Avoid setting textContent when the text is empty. In IE11 setting
+	        // textContent on a text area will cause the placeholder to not
+	        // show within the textarea until it has been focused and blurred again.
+	        // https://github.com/facebook/react/issues/6731#issuecomment-254874553
+	        if (contentToUse !== '') {
+	          if (false) {
+	            setAndValidateContentChildDev.call(this, contentToUse);
+	          }
+	          DOMLazyTree.queueText(lazyTree, contentToUse);
 	        }
-	        DOMLazyTree.queueText(lazyTree, contentToUse);
 	      } else if (childrenToUse != null) {
 	        var mountImages = this.mountChildren(childrenToUse, transaction, context);
 	        for (var i = 0; i < mountImages.length; i++) {
@@ -9848,6 +10316,10 @@
 	        // happen after `_updateDOMProperties`. Otherwise HTML5 input validations
 	        // raise warnings and prevent the new value from being assigned.
 	        ReactDOMInput.updateWrapper(this);
+
+	        // We also check that we haven't missed a value update, such as a
+	        // Radio group shifting the checked value to another named radio input.
+	        inputValueTracking.updateValueIfChanged(this);
 	        break;
 	      case 'textarea':
 	        ReactDOMTextarea.updateWrapper(this);
@@ -10053,6 +10525,10 @@
 	          }
 	        }
 	        break;
+	      case 'input':
+	      case 'textarea':
+	        inputValueTracking.stopTracking(this);
+	        break;
 	      case 'html':
 	      case 'head':
 	      case 'body':
@@ -10081,32 +10557,29 @@
 	  getPublicInstance: function () {
 	    return getNode(this);
 	  }
-
 	};
 
 	_assign(ReactDOMComponent.prototype, ReactDOMComponent.Mixin, ReactMultiChild.Mixin);
 
 	module.exports = ReactDOMComponent;
 
-/***/ },
-/* 85 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 89 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var ReactDOMComponentTree = __webpack_require__(31);
+	var ReactDOMComponentTree = __webpack_require__(34);
 
-	var focusNode = __webpack_require__(86);
+	var focusNode = __webpack_require__(90);
 
 	var AutoFocusUtils = {
 	  focusDOMComponent: function () {
@@ -10116,17 +10589,15 @@
 
 	module.exports = AutoFocusUtils;
 
-/***/ },
-/* 86 */
-/***/ function(module, exports) {
+/***/ }),
+/* 90 */
+/***/ (function(module, exports) {
 
 	/**
 	 * Copyright (c) 2013-present, Facebook, Inc.
-	 * All rights reserved.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
@@ -10147,31 +10618,29 @@
 
 	module.exports = focusNode;
 
-/***/ },
-/* 87 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 91 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var CSSProperty = __webpack_require__(88);
-	var ExecutionEnvironment = __webpack_require__(45);
-	var ReactInstrumentation = __webpack_require__(59);
+	var CSSProperty = __webpack_require__(92);
+	var ExecutionEnvironment = __webpack_require__(48);
+	var ReactInstrumentation = __webpack_require__(62);
 
-	var camelizeStyleName = __webpack_require__(89);
-	var dangerousStyleValue = __webpack_require__(91);
-	var hyphenateStyleName = __webpack_require__(92);
-	var memoizeStringOnly = __webpack_require__(94);
-	var warning = __webpack_require__(11);
+	var camelizeStyleName = __webpack_require__(93);
+	var dangerousStyleValue = __webpack_require__(95);
+	var hyphenateStyleName = __webpack_require__(96);
+	var memoizeStringOnly = __webpack_require__(98);
+	var warning = __webpack_require__(8);
 
 	var processStyleName = memoizeStringOnly(function (styleName) {
 	  return hyphenateStyleName(styleName);
@@ -10228,7 +10697,7 @@
 	    }
 
 	    warnedStyleValues[value] = true;
-	    process.env.NODE_ENV !== 'production' ? warning(false, 'Style property values shouldn\'t contain a semicolon.%s ' + 'Try "%s: %s" instead.', checkRenderMessage(owner), name, value.replace(badStyleValueWithSemicolonPattern, '')) : void 0;
+	    process.env.NODE_ENV !== 'production' ? warning(false, "Style property values shouldn't contain a semicolon.%s " + 'Try "%s: %s" instead.', checkRenderMessage(owner), name, value.replace(badStyleValueWithSemicolonPattern, '')) : void 0;
 	  };
 
 	  var warnStyleValueIsNaN = function (name, value, owner) {
@@ -10278,7 +10747,6 @@
 	 * Operations for dealing with CSS properties.
 	 */
 	var CSSPropertyOperations = {
-
 	  /**
 	   * Serializes a mapping of style properties for use as inline styles:
 	   *
@@ -10298,13 +10766,16 @@
 	      if (!styles.hasOwnProperty(styleName)) {
 	        continue;
 	      }
+	      var isCustomProperty = styleName.indexOf('--') === 0;
 	      var styleValue = styles[styleName];
 	      if (false) {
-	        warnValidStyle(styleName, styleValue, component);
+	        if (!isCustomProperty) {
+	          warnValidStyle(styleName, styleValue, component);
+	        }
 	      }
 	      if (styleValue != null) {
 	        serialized += processStyleName(styleName) + ':';
-	        serialized += dangerousStyleValue(styleName, styleValue, component) + ';';
+	        serialized += dangerousStyleValue(styleName, styleValue, component, isCustomProperty) + ';';
 	      }
 	    }
 	    return serialized || null;
@@ -10332,14 +10803,19 @@
 	      if (!styles.hasOwnProperty(styleName)) {
 	        continue;
 	      }
+	      var isCustomProperty = styleName.indexOf('--') === 0;
 	      if (false) {
-	        warnValidStyle(styleName, styles[styleName], component);
+	        if (!isCustomProperty) {
+	          warnValidStyle(styleName, styles[styleName], component);
+	        }
 	      }
-	      var styleValue = dangerousStyleValue(styleName, styles[styleName], component);
+	      var styleValue = dangerousStyleValue(styleName, styles[styleName], component, isCustomProperty);
 	      if (styleName === 'float' || styleName === 'cssFloat') {
 	        styleName = styleFloatAccessor;
 	      }
-	      if (styleValue) {
+	      if (isCustomProperty) {
+	        style.setProperty(styleName, styleValue);
+	      } else if (styleValue) {
 	        style[styleName] = styleValue;
 	      } else {
 	        var expansion = hasShorthandPropertyBug && CSSProperty.shorthandPropertyExpansions[styleName];
@@ -10355,22 +10831,19 @@
 	      }
 	    }
 	  }
-
 	};
 
 	module.exports = CSSPropertyOperations;
 
-/***/ },
-/* 88 */
-/***/ function(module, exports) {
+/***/ }),
+/* 92 */
+/***/ (function(module, exports) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
@@ -10389,6 +10862,7 @@
 	  boxFlexGroup: true,
 	  boxOrdinalGroup: true,
 	  columnCount: true,
+	  columns: true,
 	  flex: true,
 	  flexGrow: true,
 	  flexPositive: true,
@@ -10396,7 +10870,13 @@
 	  flexNegative: true,
 	  flexOrder: true,
 	  gridRow: true,
+	  gridRowEnd: true,
+	  gridRowSpan: true,
+	  gridRowStart: true,
 	  gridColumn: true,
+	  gridColumnEnd: true,
+	  gridColumnSpan: true,
+	  gridColumnStart: true,
 	  fontWeight: true,
 	  lineClamp: true,
 	  lineHeight: true,
@@ -10512,24 +10992,22 @@
 
 	module.exports = CSSProperty;
 
-/***/ },
-/* 89 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 93 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
 	 * Copyright (c) 2013-present, Facebook, Inc.
-	 * All rights reserved.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 * @typechecks
 	 */
 
 	'use strict';
 
-	var camelize = __webpack_require__(90);
+	var camelize = __webpack_require__(94);
 
 	var msPattern = /^-ms-/;
 
@@ -10556,19 +11034,17 @@
 
 	module.exports = camelizeStyleName;
 
-/***/ },
-/* 90 */
-/***/ function(module, exports) {
+/***/ }),
+/* 94 */
+/***/ (function(module, exports) {
 
 	"use strict";
 
 	/**
 	 * Copyright (c) 2013-present, Facebook, Inc.
-	 * All rights reserved.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 * @typechecks
 	 */
@@ -10592,24 +11068,22 @@
 
 	module.exports = camelize;
 
-/***/ },
-/* 91 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 95 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var CSSProperty = __webpack_require__(88);
-	var warning = __webpack_require__(11);
+	var CSSProperty = __webpack_require__(92);
+	var warning = __webpack_require__(8);
 
 	var isUnitlessNumber = CSSProperty.isUnitlessNumber;
 	var styleWarnings = {};
@@ -10624,7 +11098,7 @@
 	 * @param {ReactDOMComponent} component
 	 * @return {string} Normalized style value with dimensions applied.
 	 */
-	function dangerousStyleValue(name, value, component) {
+	function dangerousStyleValue(name, value, component, isCustomProperty) {
 	  // Note that we've removed escapeTextForBrowser() calls here since the
 	  // whole string will be escaped when the attribute is injected into
 	  // the markup. If you provide unsafe user data here they can inject
@@ -10641,7 +11115,7 @@
 	  }
 
 	  var isNonNumeric = isNaN(value);
-	  if (isNonNumeric || value === 0 || isUnitlessNumber.hasOwnProperty(name) && isUnitlessNumber[name]) {
+	  if (isCustomProperty || isNonNumeric || value === 0 || isUnitlessNumber.hasOwnProperty(name) && isUnitlessNumber[name]) {
 	    return '' + value; // cast to string
 	  }
 
@@ -10675,24 +11149,22 @@
 
 	module.exports = dangerousStyleValue;
 
-/***/ },
-/* 92 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 96 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
 	 * Copyright (c) 2013-present, Facebook, Inc.
-	 * All rights reserved.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 * @typechecks
 	 */
 
 	'use strict';
 
-	var hyphenate = __webpack_require__(93);
+	var hyphenate = __webpack_require__(97);
 
 	var msPattern = /^ms-/;
 
@@ -10718,19 +11190,17 @@
 
 	module.exports = hyphenateStyleName;
 
-/***/ },
-/* 93 */
-/***/ function(module, exports) {
+/***/ }),
+/* 97 */
+/***/ (function(module, exports) {
 
 	'use strict';
 
 	/**
 	 * Copyright (c) 2013-present, Facebook, Inc.
-	 * All rights reserved.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 * @typechecks
 	 */
@@ -10755,17 +11225,15 @@
 
 	module.exports = hyphenate;
 
-/***/ },
-/* 94 */
-/***/ function(module, exports) {
+/***/ }),
+/* 98 */
+/***/ (function(module, exports) {
 
 	/**
 	 * Copyright (c) 2013-present, Facebook, Inc.
-	 * All rights reserved.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 * 
 	 * @typechecks static-only
@@ -10789,28 +11257,26 @@
 
 	module.exports = memoizeStringOnly;
 
-/***/ },
-/* 95 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 99 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var DOMProperty = __webpack_require__(33);
-	var ReactDOMComponentTree = __webpack_require__(31);
-	var ReactInstrumentation = __webpack_require__(59);
+	var DOMProperty = __webpack_require__(36);
+	var ReactDOMComponentTree = __webpack_require__(34);
+	var ReactInstrumentation = __webpack_require__(62);
 
-	var quoteAttributeValueForBrowser = __webpack_require__(96);
-	var warning = __webpack_require__(11);
+	var quoteAttributeValueForBrowser = __webpack_require__(100);
+	var warning = __webpack_require__(8);
 
 	var VALID_ATTRIBUTE_NAME_REGEX = new RegExp('^[' + DOMProperty.ATTRIBUTE_NAME_START_CHAR + '][' + DOMProperty.ATTRIBUTE_NAME_CHAR + ']*$');
 	var illegalAttributeNameCache = {};
@@ -10840,7 +11306,6 @@
 	 * Operations for dealing with DOM properties.
 	 */
 	var DOMPropertyOperations = {
-
 	  /**
 	   * Creates markup for the ID property.
 	   *
@@ -11025,28 +11490,25 @@
 	      });
 	    }
 	  }
-
 	};
 
 	module.exports = DOMPropertyOperations;
 
-/***/ },
-/* 96 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 100 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var escapeTextContentForBrowser = __webpack_require__(78);
+	var escapeTextContentForBrowser = __webpack_require__(82);
 
 	/**
 	 * Escapes attribute value to prevent scripting attacks.
@@ -11060,17 +11522,15 @@
 
 	module.exports = quoteAttributeValueForBrowser;
 
-/***/ },
-/* 97 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 101 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
@@ -11078,12 +11538,12 @@
 
 	var _assign = __webpack_require__(4);
 
-	var EventPluginRegistry = __webpack_require__(40);
-	var ReactEventEmitterMixin = __webpack_require__(98);
-	var ViewportMetrics = __webpack_require__(68);
+	var EventPluginRegistry = __webpack_require__(43);
+	var ReactEventEmitterMixin = __webpack_require__(102);
+	var ViewportMetrics = __webpack_require__(72);
 
-	var getVendorPrefixedEventName = __webpack_require__(99);
-	var isEventSupported = __webpack_require__(62);
+	var getVendorPrefixedEventName = __webpack_require__(103);
+	var isEventSupported = __webpack_require__(66);
 
 	/**
 	 * Summary of `ReactBrowserEventEmitter` event handling:
@@ -11241,7 +11701,6 @@
 	 * @internal
 	 */
 	var ReactBrowserEventEmitter = _assign({}, ReactEventEmitterMixin, {
-
 	  /**
 	   * Injectable event backend
 	   */
@@ -11315,14 +11774,12 @@
 	            ReactBrowserEventEmitter.ReactEventListener.trapBubbledEvent('topWheel', 'DOMMouseScroll', mountAt);
 	          }
 	        } else if (dependency === 'topScroll') {
-
 	          if (isEventSupported('scroll', true)) {
 	            ReactBrowserEventEmitter.ReactEventListener.trapCapturedEvent('topScroll', 'scroll', mountAt);
 	          } else {
 	            ReactBrowserEventEmitter.ReactEventListener.trapBubbledEvent('topScroll', 'scroll', ReactBrowserEventEmitter.ReactEventListener.WINDOW_HANDLE);
 	          }
 	        } else if (dependency === 'topFocus' || dependency === 'topBlur') {
-
 	          if (isEventSupported('focus', true)) {
 	            ReactBrowserEventEmitter.ReactEventListener.trapCapturedEvent('topFocus', 'focus', mountAt);
 	            ReactBrowserEventEmitter.ReactEventListener.trapCapturedEvent('topBlur', 'blur', mountAt);
@@ -11387,28 +11844,25 @@
 	      isMonitoringScrollValue = true;
 	    }
 	  }
-
 	});
 
 	module.exports = ReactBrowserEventEmitter;
 
-/***/ },
-/* 98 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 102 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var EventPluginHub = __webpack_require__(39);
+	var EventPluginHub = __webpack_require__(42);
 
 	function runEventQueueInBatch(events) {
 	  EventPluginHub.enqueueEvents(events);
@@ -11416,7 +11870,6 @@
 	}
 
 	var ReactEventEmitterMixin = {
-
 	  /**
 	   * Streams a fired top-level event to `EventPluginHub` where plugins have the
 	   * opportunity to create `ReactEvent`s to be dispatched.
@@ -11429,23 +11882,21 @@
 
 	module.exports = ReactEventEmitterMixin;
 
-/***/ },
-/* 99 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 103 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var ExecutionEnvironment = __webpack_require__(45);
+	var ExecutionEnvironment = __webpack_require__(48);
 
 	/**
 	 * Generate a mapping of standard vendor prefixes using the defined style property and event name.
@@ -11534,32 +11985,30 @@
 
 	module.exports = getVendorPrefixedEventName;
 
-/***/ },
-/* 100 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 104 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var _prodInvariant = __webpack_require__(32),
+	var _prodInvariant = __webpack_require__(35),
 	    _assign = __webpack_require__(4);
 
-	var DOMPropertyOperations = __webpack_require__(95);
-	var LinkedValueUtils = __webpack_require__(101);
-	var ReactDOMComponentTree = __webpack_require__(31);
-	var ReactUpdates = __webpack_require__(53);
+	var DOMPropertyOperations = __webpack_require__(99);
+	var LinkedValueUtils = __webpack_require__(105);
+	var ReactDOMComponentTree = __webpack_require__(34);
+	var ReactUpdates = __webpack_require__(56);
 
-	var invariant = __webpack_require__(8);
-	var warning = __webpack_require__(11);
+	var invariant = __webpack_require__(12);
+	var warning = __webpack_require__(8);
 
 	var didWarnValueLink = false;
 	var didWarnCheckedLink = false;
@@ -11652,12 +12101,9 @@
 	      initialChecked: props.checked != null ? props.checked : props.defaultChecked,
 	      initialValue: props.value != null ? props.value : defaultValue,
 	      listeners: null,
-	      onChange: _handleChange.bind(inst)
+	      onChange: _handleChange.bind(inst),
+	      controlled: isControlled(props)
 	    };
-
-	    if (false) {
-	      inst._wrapperState.controlled = isControlled(props);
-	    }
 	  },
 
 	  updateWrapper: function (inst) {
@@ -11686,18 +12132,40 @@
 	    var node = ReactDOMComponentTree.getNodeFromInstance(inst);
 	    var value = LinkedValueUtils.getValue(props);
 	    if (value != null) {
+	      if (value === 0 && node.value === '') {
+	        node.value = '0';
+	        // Note: IE9 reports a number inputs as 'text', so check props instead.
+	      } else if (props.type === 'number') {
+	        // Simulate `input.valueAsNumber`. IE9 does not support it
+	        var valueAsNumber = parseFloat(node.value, 10) || 0;
 
-	      // Cast `value` to a string to ensure the value is set correctly. While
-	      // browsers typically do this as necessary, jsdom doesn't.
-	      var newValue = '' + value;
-
-	      // To avoid side effects (such as losing text selection), only set value if changed
-	      if (newValue !== node.value) {
-	        node.value = newValue;
+	        if (
+	        // eslint-disable-next-line
+	        value != valueAsNumber ||
+	        // eslint-disable-next-line
+	        value == valueAsNumber && node.value != value) {
+	          // Cast `value` to a string to ensure the value is set correctly. While
+	          // browsers typically do this as necessary, jsdom doesn't.
+	          node.value = '' + value;
+	        }
+	      } else if (node.value !== '' + value) {
+	        // Cast `value` to a string to ensure the value is set correctly. While
+	        // browsers typically do this as necessary, jsdom doesn't.
+	        node.value = '' + value;
 	      }
 	    } else {
 	      if (props.value == null && props.defaultValue != null) {
-	        node.defaultValue = '' + props.defaultValue;
+	        // In Chrome, assigning defaultValue to certain input types triggers input validation.
+	        // For number inputs, the display value loses trailing decimal points. For email inputs,
+	        // Chrome raises "The specified value <x> is not a valid email address".
+	        //
+	        // Here we check to see if the defaultValue has actually changed, avoiding these problems
+	        // when the user is inputting text
+	        //
+	        // https://github.com/facebook/react/issues/7253
+	        if (node.defaultValue !== '' + props.defaultValue) {
+	          node.defaultValue = '' + props.defaultValue;
+	        }
 	      }
 	      if (props.checked == null && props.defaultChecked != null) {
 	        node.defaultChecked = !!props.defaultChecked;
@@ -11806,38 +12274,39 @@
 
 	module.exports = ReactDOMInput;
 
-/***/ },
-/* 101 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 105 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var _prodInvariant = __webpack_require__(32);
+	var _prodInvariant = __webpack_require__(35);
+
+	var ReactPropTypesSecret = __webpack_require__(106);
+	var propTypesFactory = __webpack_require__(24);
 
 	var React = __webpack_require__(3);
-	var ReactPropTypesSecret = __webpack_require__(102);
+	var PropTypes = propTypesFactory(React.isValidElement);
 
-	var invariant = __webpack_require__(8);
-	var warning = __webpack_require__(11);
+	var invariant = __webpack_require__(12);
+	var warning = __webpack_require__(8);
 
 	var hasReadOnlyValue = {
-	  'button': true,
-	  'checkbox': true,
-	  'image': true,
-	  'hidden': true,
-	  'radio': true,
-	  'reset': true,
-	  'submit': true
+	  button: true,
+	  checkbox: true,
+	  image: true,
+	  hidden: true,
+	  radio: true,
+	  reset: true,
+	  submit: true
 	};
 
 	function _assertSingleLink(inputProps) {
@@ -11866,7 +12335,7 @@
 	    }
 	    return new Error('You provided a `checked` prop to a form field without an ' + '`onChange` handler. This will render a read-only field. If ' + 'the field should be mutable use `defaultChecked`. Otherwise, ' + 'set either `onChange` or `readOnly`.');
 	  },
-	  onChange: React.PropTypes.func
+	  onChange: PropTypes.func
 	};
 
 	var loggedTypeFailures = {};
@@ -11945,19 +12414,34 @@
 
 	module.exports = LinkedValueUtils;
 
-/***/ },
-/* 102 */
-26,
-/* 103 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 106 */
+/***/ (function(module, exports) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
+	 *
+	 * 
+	 */
+
+	'use strict';
+
+	var ReactPropTypesSecret = 'SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED';
+
+	module.exports = ReactPropTypesSecret;
+
+/***/ }),
+/* 107 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 *
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
@@ -11966,10 +12450,10 @@
 	var _assign = __webpack_require__(4);
 
 	var React = __webpack_require__(3);
-	var ReactDOMComponentTree = __webpack_require__(31);
-	var ReactDOMSelect = __webpack_require__(104);
+	var ReactDOMComponentTree = __webpack_require__(34);
+	var ReactDOMSelect = __webpack_require__(108);
 
-	var warning = __webpack_require__(11);
+	var warning = __webpack_require__(8);
 	var didWarnInvalidOptionChildren = false;
 
 	function flattenChildren(children) {
@@ -12069,22 +12553,19 @@
 
 	    return hostProps;
 	  }
-
 	};
 
 	module.exports = ReactDOMOption;
 
-/***/ },
-/* 104 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 108 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
@@ -12092,11 +12573,11 @@
 
 	var _assign = __webpack_require__(4);
 
-	var LinkedValueUtils = __webpack_require__(101);
-	var ReactDOMComponentTree = __webpack_require__(31);
-	var ReactUpdates = __webpack_require__(53);
+	var LinkedValueUtils = __webpack_require__(105);
+	var ReactDOMComponentTree = __webpack_require__(34);
+	var ReactUpdates = __webpack_require__(56);
 
-	var warning = __webpack_require__(11);
+	var warning = __webpack_require__(8);
 
 	var didWarnValueLink = false;
 	var didWarnValueDefaultValue = false;
@@ -12278,31 +12759,29 @@
 
 	module.exports = ReactDOMSelect;
 
-/***/ },
-/* 105 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 109 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var _prodInvariant = __webpack_require__(32),
+	var _prodInvariant = __webpack_require__(35),
 	    _assign = __webpack_require__(4);
 
-	var LinkedValueUtils = __webpack_require__(101);
-	var ReactDOMComponentTree = __webpack_require__(31);
-	var ReactUpdates = __webpack_require__(53);
+	var LinkedValueUtils = __webpack_require__(105);
+	var ReactDOMComponentTree = __webpack_require__(34);
+	var ReactUpdates = __webpack_require__(56);
 
-	var invariant = __webpack_require__(8);
-	var warning = __webpack_require__(11);
+	var invariant = __webpack_require__(12);
+	var warning = __webpack_require__(8);
 
 	var didWarnValueLink = false;
 	var didWarnValDefaultVal = false;
@@ -12421,9 +12900,15 @@
 	    // This is in postMount because we need access to the DOM node, which is not
 	    // available until after the component has mounted.
 	    var node = ReactDOMComponentTree.getNodeFromInstance(inst);
+	    var textContent = node.textContent;
 
-	    // Warning: node.value may be the empty string at this point (IE11) if placeholder is set.
-	    node.value = node.textContent; // Detach value from defaultValue
+	    // Only set node.value if textContent is equal to the expected
+	    // initial value. In IE10/IE11 there is a bug where the placeholder attribute
+	    // will populate textContent as well.
+	    // https://developer.microsoft.com/microsoft-edge/platform/issues/101525/
+	    if (textContent === inst._wrapperState.initialValue) {
+	      node.value = textContent;
+	    }
 	  }
 	};
 
@@ -12436,35 +12921,33 @@
 
 	module.exports = ReactDOMTextarea;
 
-/***/ },
-/* 106 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 110 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var _prodInvariant = __webpack_require__(32);
+	var _prodInvariant = __webpack_require__(35);
 
-	var ReactComponentEnvironment = __webpack_require__(107);
-	var ReactInstanceMap = __webpack_require__(108);
-	var ReactInstrumentation = __webpack_require__(59);
+	var ReactComponentEnvironment = __webpack_require__(111);
+	var ReactInstanceMap = __webpack_require__(112);
+	var ReactInstrumentation = __webpack_require__(62);
 
-	var ReactCurrentOwner = __webpack_require__(10);
-	var ReactReconciler = __webpack_require__(56);
-	var ReactChildReconciler = __webpack_require__(109);
+	var ReactCurrentOwner = __webpack_require__(17);
+	var ReactReconciler = __webpack_require__(59);
+	var ReactChildReconciler = __webpack_require__(113);
 
-	var emptyFunction = __webpack_require__(12);
-	var flattenChildren = __webpack_require__(124);
-	var invariant = __webpack_require__(8);
+	var emptyFunction = __webpack_require__(9);
+	var flattenChildren = __webpack_require__(128);
+	var invariant = __webpack_require__(12);
 
 	/**
 	 * Make an update for markup to be rendered and inserted at a supplied index.
@@ -12610,7 +13093,6 @@
 	 * @internal
 	 */
 	var ReactMultiChild = {
-
 	  /**
 	   * Provides common functionality for components that must reconcile multiple
 	   * children. This is used by `ReactDOMComponent` to mount, update, and
@@ -12619,7 +13101,6 @@
 	   * @lends {ReactMultiChild.prototype}
 	   */
 	  Mixin: {
-
 	    _reconcilerInstantiateChildren: function (nestedChildren, transaction, context) {
 	      if (false) {
 	        var selfDebugID = getDebugID(this);
@@ -12883,38 +13364,33 @@
 	      child._mountIndex = null;
 	      return update;
 	    }
-
 	  }
-
 	};
 
 	module.exports = ReactMultiChild;
 
-/***/ },
-/* 107 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 111 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2014-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2014-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 * 
 	 */
 
 	'use strict';
 
-	var _prodInvariant = __webpack_require__(32);
+	var _prodInvariant = __webpack_require__(35);
 
-	var invariant = __webpack_require__(8);
+	var invariant = __webpack_require__(12);
 
 	var injected = false;
 
 	var ReactComponentEnvironment = {
-
 	  /**
 	   * Optionally injectable hook for swapping out mount images in the middle of
 	   * the tree.
@@ -12935,22 +13411,19 @@
 	      injected = true;
 	    }
 	  }
-
 	};
 
 	module.exports = ReactComponentEnvironment;
 
-/***/ },
-/* 108 */
-/***/ function(module, exports) {
+/***/ }),
+/* 112 */
+/***/ (function(module, exports) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
@@ -12966,7 +13439,6 @@
 	// TODO: Replace this with ES6: var ReactInstanceMap = new Map();
 
 	var ReactInstanceMap = {
-
 	  /**
 	   * This API should be called `delete` but we'd have to make sure to always
 	   * transform these to strings for IE support. When this transform is fully
@@ -12987,34 +13459,31 @@
 	  set: function (key, value) {
 	    key._reactInternalInstance = value;
 	  }
-
 	};
 
 	module.exports = ReactInstanceMap;
 
-/***/ },
-/* 109 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 113 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
-	 * Copyright 2014-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2014-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var ReactReconciler = __webpack_require__(56);
+	var ReactReconciler = __webpack_require__(59);
 
-	var instantiateReactComponent = __webpack_require__(111);
-	var KeyEscapeUtils = __webpack_require__(119);
-	var shouldUpdateReactComponent = __webpack_require__(115);
-	var traverseAllChildren = __webpack_require__(120);
-	var warning = __webpack_require__(11);
+	var instantiateReactComponent = __webpack_require__(115);
+	var KeyEscapeUtils = __webpack_require__(123);
+	var shouldUpdateReactComponent = __webpack_require__(119);
+	var traverseAllChildren = __webpack_require__(124);
+	var warning = __webpack_require__(8);
 
 	var ReactComponentTreeHook;
 
@@ -13024,7 +13493,7 @@
 	  // https://github.com/facebook/react/issues/7240
 	  // Remove the inline requires when we don't need them anymore:
 	  // https://github.com/facebook/react/pull/7178
-	  ReactComponentTreeHook = __webpack_require__(123);
+	  ReactComponentTreeHook = __webpack_require__(127);
 	}
 
 	function instantiateChild(childInstances, child, name, selfDebugID) {
@@ -13057,8 +13526,8 @@
 	   * @return {?object} A set of child instances.
 	   * @internal
 	   */
-	  instantiateChildren: function (nestedChildNodes, transaction, context, selfDebugID // 0 in production and for roots
-	  ) {
+	  instantiateChildren: function (nestedChildNodes, transaction, context, selfDebugID) // 0 in production and for roots
+	  {
 	    if (nestedChildNodes == null) {
 	      return null;
 	    }
@@ -13084,8 +13553,8 @@
 	   * @return {?object} A new set of child instances.
 	   * @internal
 	   */
-	  updateChildren: function (prevChildren, nextChildren, mountImages, removedNodes, transaction, hostParent, hostContainerInfo, context, selfDebugID // 0 in production and for roots
-	  ) {
+	  updateChildren: function (prevChildren, nextChildren, mountImages, removedNodes, transaction, hostParent, hostContainerInfo, context, selfDebugID) // 0 in production and for roots
+	  {
 	    // We currently don't have a way to track moves here but if we use iterators
 	    // instead of for..in we can zip the iterators and check if an item has
 	    // moved.
@@ -13145,15 +13614,14 @@
 	      }
 	    }
 	  }
-
 	};
 
 	module.exports = ReactChildReconciler;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(110)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(114)))
 
-/***/ },
-/* 110 */
-/***/ function(module, exports) {
+/***/ }),
+/* 114 */
+/***/ (function(module, exports) {
 
 	// shim for using process in browser
 	var process = module.exports = {};
@@ -13325,6 +13793,10 @@
 	process.removeListener = noop;
 	process.removeAllListeners = noop;
 	process.emit = noop;
+	process.prependListener = noop;
+	process.prependOnceListener = noop;
+
+	process.listeners = function (name) { return [] }
 
 	process.binding = function (name) {
 	    throw new Error('process.binding is not supported');
@@ -13337,40 +13809,35 @@
 	process.umask = function() { return 0; };
 
 
-/***/ },
-/* 111 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 115 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var _prodInvariant = __webpack_require__(32),
+	var _prodInvariant = __webpack_require__(35),
 	    _assign = __webpack_require__(4);
 
-	var ReactCompositeComponent = __webpack_require__(112);
-	var ReactEmptyComponent = __webpack_require__(116);
-	var ReactHostComponent = __webpack_require__(117);
+	var ReactCompositeComponent = __webpack_require__(116);
+	var ReactEmptyComponent = __webpack_require__(120);
+	var ReactHostComponent = __webpack_require__(121);
 
-	var getNextDebugID = __webpack_require__(118);
-	var invariant = __webpack_require__(8);
-	var warning = __webpack_require__(11);
+	var getNextDebugID = __webpack_require__(122);
+	var invariant = __webpack_require__(12);
+	var warning = __webpack_require__(8);
 
 	// To avoid a cyclic dependency, we create the final class in this module
 	var ReactCompositeComponentWrapper = function (element) {
 	  this.construct(element);
 	};
-	_assign(ReactCompositeComponentWrapper.prototype, ReactCompositeComponent, {
-	  _instantiateReactComponent: instantiateReactComponent
-	});
 
 	function getDeclarationErrorAddendum(owner) {
 	  if (owner) {
@@ -13408,7 +13875,17 @@
 	    instance = ReactEmptyComponent.create(instantiateReactComponent);
 	  } else if (typeof node === 'object') {
 	    var element = node;
-	    !(element && (typeof element.type === 'function' || typeof element.type === 'string')) ?  false ? invariant(false, 'Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: %s.%s', element.type == null ? element.type : typeof element.type, getDeclarationErrorAddendum(element._owner)) : _prodInvariant('130', element.type == null ? element.type : typeof element.type, getDeclarationErrorAddendum(element._owner)) : void 0;
+	    var type = element.type;
+	    if (typeof type !== 'function' && typeof type !== 'string') {
+	      var info = '';
+	      if (false) {
+	        if (type === undefined || typeof type === 'object' && type !== null && Object.keys(type).length === 0) {
+	          info += ' You likely forgot to export your component from the file ' + "it's defined in.";
+	        }
+	      }
+	      info += getDeclarationErrorAddendum(element._owner);
+	       true ?  false ? invariant(false, 'Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: %s.%s', type == null ? type : typeof type, info) : _prodInvariant('130', type == null ? type : typeof type, info) : void 0;
+	    }
 
 	    // Special case string values
 	    if (typeof element.type === 'string') {
@@ -13457,45 +13934,47 @@
 	  return instance;
 	}
 
+	_assign(ReactCompositeComponentWrapper.prototype, ReactCompositeComponent, {
+	  _instantiateReactComponent: instantiateReactComponent
+	});
+
 	module.exports = instantiateReactComponent;
 
-/***/ },
-/* 112 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 116 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var _prodInvariant = __webpack_require__(32),
+	var _prodInvariant = __webpack_require__(35),
 	    _assign = __webpack_require__(4);
 
 	var React = __webpack_require__(3);
-	var ReactComponentEnvironment = __webpack_require__(107);
-	var ReactCurrentOwner = __webpack_require__(10);
-	var ReactErrorUtils = __webpack_require__(42);
-	var ReactInstanceMap = __webpack_require__(108);
-	var ReactInstrumentation = __webpack_require__(59);
-	var ReactNodeTypes = __webpack_require__(113);
-	var ReactReconciler = __webpack_require__(56);
+	var ReactComponentEnvironment = __webpack_require__(111);
+	var ReactCurrentOwner = __webpack_require__(17);
+	var ReactErrorUtils = __webpack_require__(45);
+	var ReactInstanceMap = __webpack_require__(112);
+	var ReactInstrumentation = __webpack_require__(62);
+	var ReactNodeTypes = __webpack_require__(117);
+	var ReactReconciler = __webpack_require__(59);
 
 	if (false) {
 	  var checkReactTypeSpec = require('./checkReactTypeSpec');
 	}
 
-	var emptyObject = __webpack_require__(20);
-	var invariant = __webpack_require__(8);
-	var shallowEqual = __webpack_require__(114);
-	var shouldUpdateReactComponent = __webpack_require__(115);
-	var warning = __webpack_require__(11);
+	var emptyObject = __webpack_require__(11);
+	var invariant = __webpack_require__(12);
+	var shallowEqual = __webpack_require__(118);
+	var shouldUpdateReactComponent = __webpack_require__(119);
+	var warning = __webpack_require__(8);
 
 	var CompositeTypes = {
 	  ImpureClass: 0,
@@ -13582,7 +14061,6 @@
 	 * @lends {ReactCompositeComponent.prototype}
 	 */
 	var ReactCompositeComponent = {
-
 	  /**
 	   * Base constructor for all composite component.
 	   *
@@ -13678,7 +14156,7 @@
 	      var propsMutated = inst.props !== publicProps;
 	      var componentName = Component.displayName || Component.name || 'Component';
 
-	      process.env.NODE_ENV !== 'production' ? warning(inst.props === undefined || !propsMutated, '%s(...): When calling super() in `%s`, make sure to pass ' + 'up the same props that your component\'s constructor was passed.', componentName, componentName) : void 0;
+	      process.env.NODE_ENV !== 'production' ? warning(inst.props === undefined || !propsMutated, '%s(...): When calling super() in `%s`, make sure to pass ' + "up the same props that your component's constructor was passed.", componentName, componentName) : void 0;
 	    }
 
 	    // These should be set up in the constructor, but as a convenience for
@@ -13697,7 +14175,7 @@
 	      // Since plain JS classes are defined without any special initialization
 	      // logic, we can not catch common errors early. Therefore, we have to
 	      // catch them here, at initialization time, instead.
-	      process.env.NODE_ENV !== 'production' ? warning(!inst.getInitialState || inst.getInitialState.isReactClassApproved, 'getInitialState was defined on %s, a plain JavaScript class. ' + 'This is only supported for classes created using React.createClass. ' + 'Did you mean to define a state property instead?', this.getName() || 'a component') : void 0;
+	      process.env.NODE_ENV !== 'production' ? warning(!inst.getInitialState || inst.getInitialState.isReactClassApproved || inst.state, 'getInitialState was defined on %s, a plain JavaScript class. ' + 'This is only supported for classes created using React.createClass. ' + 'Did you mean to define a state property instead?', this.getName() || 'a component') : void 0;
 	      process.env.NODE_ENV !== 'production' ? warning(!inst.getDefaultProps || inst.getDefaultProps.isReactClassApproved, 'getDefaultProps was defined on %s, a plain JavaScript class. ' + 'This is only supported for classes created using React.createClass. ' + 'Use a static property to define defaultProps instead.', this.getName() || 'a component') : void 0;
 	      process.env.NODE_ENV !== 'production' ? warning(!inst.propTypes, 'propTypes was defined as an instance property on %s. Use a static ' + 'property to define propTypes instead.', this.getName() || 'a component') : void 0;
 	      process.env.NODE_ENV !== 'production' ? warning(!inst.contextTypes, 'contextTypes was defined as an instance property on %s. Use a ' + 'static property to define contextTypes instead.', this.getName() || 'a component') : void 0;
@@ -13979,7 +14457,7 @@
 	    if (childContext) {
 	      !(typeof Component.childContextTypes === 'object') ?  false ? invariant(false, '%s.getChildContext(): childContextTypes must be defined in order to use getChildContext().', this.getName() || 'ReactCompositeComponent') : _prodInvariant('107', this.getName() || 'ReactCompositeComponent') : void 0;
 	      if (false) {
-	        this._checkContextTypes(Component.childContextTypes, childContext, 'childContext');
+	        this._checkContextTypes(Component.childContextTypes, childContext, 'child context');
 	      }
 	      for (var name in childContext) {
 	        !(name in Component.childContextTypes) ?  false ? invariant(false, '%s.getChildContext(): key "%s" is not defined in childContextTypes.', this.getName() || 'ReactCompositeComponent', name) : _prodInvariant('108', this.getName() || 'ReactCompositeComponent', name) : void 0;
@@ -14360,33 +14838,30 @@
 
 	  // Stub
 	  _instantiateReactComponent: null
-
 	};
 
 	module.exports = ReactCompositeComponent;
 
-/***/ },
-/* 113 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 117 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 * 
 	 */
 
 	'use strict';
 
-	var _prodInvariant = __webpack_require__(32);
+	var _prodInvariant = __webpack_require__(35);
 
 	var React = __webpack_require__(3);
 
-	var invariant = __webpack_require__(8);
+	var invariant = __webpack_require__(12);
 
 	var ReactNodeTypes = {
 	  HOST: 0,
@@ -14409,17 +14884,15 @@
 
 	module.exports = ReactNodeTypes;
 
-/***/ },
-/* 114 */
-/***/ function(module, exports) {
+/***/ }),
+/* 118 */
+/***/ (function(module, exports) {
 
 	/**
 	 * Copyright (c) 2013-present, Facebook, Inc.
-	 * All rights reserved.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 * @typechecks
 	 * 
@@ -14481,17 +14954,15 @@
 
 	module.exports = shallowEqual;
 
-/***/ },
-/* 115 */
-/***/ function(module, exports) {
+/***/ }),
+/* 119 */
+/***/ (function(module, exports) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
@@ -14527,17 +14998,15 @@
 
 	module.exports = shouldUpdateReactComponent;
 
-/***/ },
-/* 116 */
-/***/ function(module, exports) {
+/***/ }),
+/* 120 */
+/***/ (function(module, exports) {
 
 	/**
-	 * Copyright 2014-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2014-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
@@ -14561,30 +15030,25 @@
 
 	module.exports = ReactEmptyComponent;
 
-/***/ },
-/* 117 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 121 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2014-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2014-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var _prodInvariant = __webpack_require__(32),
-	    _assign = __webpack_require__(4);
+	var _prodInvariant = __webpack_require__(35);
 
-	var invariant = __webpack_require__(8);
+	var invariant = __webpack_require__(12);
 
 	var genericComponentClass = null;
-	// This registry keeps track of wrapper classes around host tags.
-	var tagToComponentClass = {};
 	var textComponentClass = null;
 
 	var ReactHostComponentInjection = {
@@ -14597,11 +15061,6 @@
 	  // rendered as props.
 	  injectTextComponentClass: function (componentClass) {
 	    textComponentClass = componentClass;
-	  },
-	  // This accepts a keyed object with classes as values. Each key represents a
-	  // tag. That particular tag will use this class instead of the generic one.
-	  injectComponentClasses: function (componentClasses) {
-	    _assign(tagToComponentClass, componentClasses);
 	  }
 	};
 
@@ -14641,17 +15100,15 @@
 
 	module.exports = ReactHostComponent;
 
-/***/ },
-/* 118 */
-/***/ function(module, exports) {
+/***/ }),
+/* 122 */
+/***/ (function(module, exports) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 * 
 	 */
@@ -14666,33 +15123,31 @@
 
 	module.exports = getNextDebugID;
 
-/***/ },
-/* 119 */
-17,
-/* 120 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 123 */
+21,
+/* 124 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var _prodInvariant = __webpack_require__(32);
+	var _prodInvariant = __webpack_require__(35);
 
-	var ReactCurrentOwner = __webpack_require__(10);
-	var REACT_ELEMENT_TYPE = __webpack_require__(121);
+	var ReactCurrentOwner = __webpack_require__(17);
+	var REACT_ELEMENT_TYPE = __webpack_require__(125);
 
-	var getIteratorFn = __webpack_require__(122);
-	var invariant = __webpack_require__(8);
-	var KeyEscapeUtils = __webpack_require__(119);
-	var warning = __webpack_require__(11);
+	var getIteratorFn = __webpack_require__(126);
+	var invariant = __webpack_require__(12);
+	var KeyEscapeUtils = __webpack_require__(123);
+	var warning = __webpack_require__(8);
 
 	var SEPARATOR = '.';
 	var SUBSEPARATOR = ':';
@@ -14805,7 +15260,7 @@
 	      if (false) {
 	        addendum = ' If you meant to render a collection of children, use an array ' + 'instead or wrap the object using createFragment(object) from the ' + 'React add-ons.';
 	        if (children._isReactElement) {
-	          addendum = ' It looks like you\'re using an element created by a different ' + 'version of React. Make sure to use only one copy of React.';
+	          addendum = " It looks like you're using an element created by a different " + 'version of React. Make sure to use only one copy of React.';
 	        }
 	        if (ReactCurrentOwner.current) {
 	          var name = ReactCurrentOwner.current.getName();
@@ -14848,33 +15303,31 @@
 
 	module.exports = traverseAllChildren;
 
-/***/ },
-/* 121 */
-14,
-/* 122 */
-16,
-/* 123 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 125 */
+18,
+/* 126 */
+20,
+/* 127 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2016-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2016-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 * 
 	 */
 
 	'use strict';
 
-	var _prodInvariant = __webpack_require__(7);
+	var _prodInvariant = __webpack_require__(6);
 
-	var ReactCurrentOwner = __webpack_require__(10);
+	var ReactCurrentOwner = __webpack_require__(17);
 
-	var invariant = __webpack_require__(8);
-	var warning = __webpack_require__(11);
+	var invariant = __webpack_require__(12);
+	var warning = __webpack_require__(8);
 
 	function isNative(fn) {
 	  // Based on isNative() from Lodash
@@ -14882,11 +15335,11 @@
 	  var hasOwnProperty = Object.prototype.hasOwnProperty;
 	  var reIsNative = RegExp('^' + funcToString
 	  // Take an example native function source for comparison
-	  .call(hasOwnProperty)
+	  .call(hasOwnProperty
 	  // Strip regex characters so we can use it for regex
-	  .replace(/[\\^$.*+?()[\]{}|]/g, '\\$&')
+	  ).replace(/[\\^$.*+?()[\]{}|]/g, '\\$&'
 	  // Remove hasOwnProperty from the template to make it generic
-	  .replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$');
+	  ).replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$');
 	  try {
 	    var source = funcToString.call(fn);
 	    return reIsNative.test(source);
@@ -15185,31 +15638,74 @@
 
 
 	  getRootIDs: getRootIDs,
-	  getRegisteredIDs: getItemIDs
+	  getRegisteredIDs: getItemIDs,
+
+	  pushNonStandardWarningStack: function (isCreatingElement, currentSource) {
+	    if (typeof console.reactStack !== 'function') {
+	      return;
+	    }
+
+	    var stack = [];
+	    var currentOwner = ReactCurrentOwner.current;
+	    var id = currentOwner && currentOwner._debugID;
+
+	    try {
+	      if (isCreatingElement) {
+	        stack.push({
+	          name: id ? ReactComponentTreeHook.getDisplayName(id) : null,
+	          fileName: currentSource ? currentSource.fileName : null,
+	          lineNumber: currentSource ? currentSource.lineNumber : null
+	        });
+	      }
+
+	      while (id) {
+	        var element = ReactComponentTreeHook.getElement(id);
+	        var parentID = ReactComponentTreeHook.getParentID(id);
+	        var ownerID = ReactComponentTreeHook.getOwnerID(id);
+	        var ownerName = ownerID ? ReactComponentTreeHook.getDisplayName(ownerID) : null;
+	        var source = element && element._source;
+	        stack.push({
+	          name: ownerName,
+	          fileName: source ? source.fileName : null,
+	          lineNumber: source ? source.lineNumber : null
+	        });
+	        id = parentID;
+	      }
+	    } catch (err) {
+	      // Internal state is messed up.
+	      // Stop building the stack (it's just a nice to have).
+	    }
+
+	    console.reactStack(stack);
+	  },
+	  popNonStandardWarningStack: function () {
+	    if (typeof console.reactStackEnd !== 'function') {
+	      return;
+	    }
+	    console.reactStackEnd();
+	  }
 	};
 
 	module.exports = ReactComponentTreeHook;
 
-/***/ },
-/* 124 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 128 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 * 
 	 */
 
 	'use strict';
 
-	var KeyEscapeUtils = __webpack_require__(119);
-	var traverseAllChildren = __webpack_require__(120);
-	var warning = __webpack_require__(11);
+	var KeyEscapeUtils = __webpack_require__(123);
+	var traverseAllChildren = __webpack_require__(124);
+	var warning = __webpack_require__(8);
 
 	var ReactComponentTreeHook;
 
@@ -15219,7 +15715,7 @@
 	  // https://github.com/facebook/react/issues/7240
 	  // Remove the inline requires when we don't need them anymore:
 	  // https://github.com/facebook/react/pull/7178
-	  ReactComponentTreeHook = __webpack_require__(123);
+	  ReactComponentTreeHook = __webpack_require__(127);
 	}
 
 	/**
@@ -15269,19 +15765,17 @@
 	}
 
 	module.exports = flattenChildren;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(110)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(114)))
 
-/***/ },
-/* 125 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 129 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2014-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2014-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
@@ -15289,10 +15783,10 @@
 
 	var _assign = __webpack_require__(4);
 
-	var PooledClass = __webpack_require__(47);
-	var Transaction = __webpack_require__(60);
-	var ReactInstrumentation = __webpack_require__(59);
-	var ReactServerUpdateQueue = __webpack_require__(126);
+	var PooledClass = __webpack_require__(50);
+	var Transaction = __webpack_require__(63);
+	var ReactInstrumentation = __webpack_require__(62);
+	var ReactServerUpdateQueue = __webpack_require__(130);
 
 	/**
 	 * Executed within the scope of the `Transaction` instance. Consider these as
@@ -15365,17 +15859,15 @@
 
 	module.exports = ReactServerRenderingTransaction;
 
-/***/ },
-/* 126 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 130 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2015-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2015-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 * 
 	 */
@@ -15384,9 +15876,9 @@
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var ReactUpdateQueue = __webpack_require__(127);
+	var ReactUpdateQueue = __webpack_require__(131);
 
-	var warning = __webpack_require__(11);
+	var warning = __webpack_require__(8);
 
 	function warnNoop(publicInstance, callerName) {
 	  if (false) {
@@ -15508,31 +16000,29 @@
 
 	module.exports = ReactServerUpdateQueue;
 
-/***/ },
-/* 127 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 131 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2015-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2015-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var _prodInvariant = __webpack_require__(32);
+	var _prodInvariant = __webpack_require__(35);
 
-	var ReactCurrentOwner = __webpack_require__(10);
-	var ReactInstanceMap = __webpack_require__(108);
-	var ReactInstrumentation = __webpack_require__(59);
-	var ReactUpdates = __webpack_require__(53);
+	var ReactCurrentOwner = __webpack_require__(17);
+	var ReactInstanceMap = __webpack_require__(112);
+	var ReactInstrumentation = __webpack_require__(62);
+	var ReactUpdates = __webpack_require__(56);
 
-	var invariant = __webpack_require__(8);
-	var warning = __webpack_require__(11);
+	var invariant = __webpack_require__(12);
+	var warning = __webpack_require__(8);
 
 	function enqueueUpdate(internalInstance) {
 	  ReactUpdates.enqueueUpdate(internalInstance);
@@ -15565,7 +16055,7 @@
 	  }
 
 	  if (false) {
-	    process.env.NODE_ENV !== 'production' ? warning(ReactCurrentOwner.current == null, '%s(...): Cannot update during an existing state transition (such as ' + 'within `render` or another component\'s constructor). Render methods ' + 'should be a pure function of props and state; constructor ' + 'side-effects are an anti-pattern, but can be moved to ' + '`componentWillMount`.', callerName) : void 0;
+	    process.env.NODE_ENV !== 'production' ? warning(ReactCurrentOwner.current == null, '%s(...): Cannot update during an existing state transition (such as ' + "within `render` or another component's constructor). Render methods " + 'should be a pure function of props and state; constructor ' + 'side-effects are an anti-pattern, but can be moved to ' + '`componentWillMount`.', callerName) : void 0;
 	  }
 
 	  return internalInstance;
@@ -15576,7 +16066,6 @@
 	 * reconciliation step.
 	 */
 	var ReactUpdateQueue = {
-
 	  /**
 	   * Checks whether or not this composite component is mounted.
 	   * @param {ReactClass} publicInstance The instance we want to test.
@@ -15682,7 +16171,7 @@
 	   * @param {object} completeState Next state.
 	   * @internal
 	   */
-	  enqueueReplaceState: function (publicInstance, completeState) {
+	  enqueueReplaceState: function (publicInstance, completeState, callback) {
 	    var internalInstance = getInternalInstanceReadyForUpdate(publicInstance, 'replaceState');
 
 	    if (!internalInstance) {
@@ -15691,6 +16180,16 @@
 
 	    internalInstance._pendingStateQueue = [completeState];
 	    internalInstance._pendingReplaceState = true;
+
+	    // Future-proof 15.5
+	    if (callback !== undefined && callback !== null) {
+	      ReactUpdateQueue.validateCallback(callback, 'replaceState');
+	      if (internalInstance._pendingCallbacks) {
+	        internalInstance._pendingCallbacks.push(callback);
+	      } else {
+	        internalInstance._pendingCallbacks = [callback];
+	      }
+	    }
 
 	    enqueueUpdate(internalInstance);
 	  },
@@ -15733,22 +16232,19 @@
 	  validateCallback: function (callback, callerName) {
 	    !(!callback || typeof callback === 'function') ?  false ? invariant(false, '%s(...): Expected the last optional `callback` argument to be a function. Instead received: %s.', callerName, formatUnexpectedArgument(callback)) : _prodInvariant('122', callerName, formatUnexpectedArgument(callback)) : void 0;
 	  }
-
 	};
 
 	module.exports = ReactUpdateQueue;
 
-/***/ },
-/* 128 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 132 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2015-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2015-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
@@ -15756,8 +16252,8 @@
 
 	var _assign = __webpack_require__(4);
 
-	var emptyFunction = __webpack_require__(12);
-	var warning = __webpack_require__(11);
+	var emptyFunction = __webpack_require__(9);
+	var warning = __webpack_require__(8);
 
 	var validateDOMNesting = emptyFunction;
 
@@ -15865,7 +16361,6 @@
 	      // but
 	      case 'option':
 	        return tag === '#text';
-
 	      // https://html.spec.whatwg.org/multipage/syntax.html#parsing-main-intd
 	      // https://html.spec.whatwg.org/multipage/syntax.html#parsing-main-incaption
 	      // No special behavior since these rules fall back to "in body" mode for
@@ -15874,25 +16369,20 @@
 	      // https://html.spec.whatwg.org/multipage/syntax.html#parsing-main-intr
 	      case 'tr':
 	        return tag === 'th' || tag === 'td' || tag === 'style' || tag === 'script' || tag === 'template';
-
 	      // https://html.spec.whatwg.org/multipage/syntax.html#parsing-main-intbody
 	      case 'tbody':
 	      case 'thead':
 	      case 'tfoot':
 	        return tag === 'tr' || tag === 'style' || tag === 'script' || tag === 'template';
-
 	      // https://html.spec.whatwg.org/multipage/syntax.html#parsing-main-incolgroup
 	      case 'colgroup':
 	        return tag === 'col' || tag === 'template';
-
 	      // https://html.spec.whatwg.org/multipage/syntax.html#parsing-main-intable
 	      case 'table':
 	        return tag === 'caption' || tag === 'colgroup' || tag === 'tbody' || tag === 'tfoot' || tag === 'thead' || tag === 'style' || tag === 'script' || tag === 'template';
-
 	      // https://html.spec.whatwg.org/multipage/syntax.html#parsing-main-inhead
 	      case 'head':
 	        return tag === 'base' || tag === 'basefont' || tag === 'bgsound' || tag === 'link' || tag === 'meta' || tag === 'title' || tag === 'noscript' || tag === 'noframes' || tag === 'style' || tag === 'script' || tag === 'template';
-
 	      // https://html.spec.whatwg.org/multipage/semantics.html#the-html-element
 	      case 'html':
 	        return tag === 'head' || tag === 'body';
@@ -15968,16 +16458,11 @@
 	      case 'section':
 	      case 'summary':
 	      case 'ul':
-
 	      case 'pre':
 	      case 'listing':
-
 	      case 'table':
-
 	      case 'hr':
-
 	      case 'xmp':
-
 	      case 'h1':
 	      case 'h2':
 	      case 'h3':
@@ -16093,7 +16578,7 @@
 	          tagDisplayName = 'Text nodes';
 	        } else {
 	          tagDisplayName = 'Whitespace text nodes';
-	          whitespaceInfo = ' Make sure you don\'t have any extra whitespace between tags on ' + 'each line of your source code.';
+	          whitespaceInfo = " Make sure you don't have any extra whitespace between tags on " + 'each line of your source code.';
 	        }
 	      } else {
 	        tagDisplayName = '<' + childTag + '>';
@@ -16124,17 +16609,15 @@
 
 	module.exports = validateDOMNesting;
 
-/***/ },
-/* 129 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 133 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2014-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2014-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
@@ -16142,8 +16625,8 @@
 
 	var _assign = __webpack_require__(4);
 
-	var DOMLazyTree = __webpack_require__(73);
-	var ReactDOMComponentTree = __webpack_require__(31);
+	var DOMLazyTree = __webpack_require__(77);
+	var ReactDOMComponentTree = __webpack_require__(34);
 
 	var ReactDOMEmptyComponent = function (instantiate) {
 	  // ReactCompositeComponent uses this:
@@ -16188,25 +16671,23 @@
 
 	module.exports = ReactDOMEmptyComponent;
 
-/***/ },
-/* 130 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 134 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2015-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2015-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var _prodInvariant = __webpack_require__(32);
+	var _prodInvariant = __webpack_require__(35);
 
-	var invariant = __webpack_require__(8);
+	var invariant = __webpack_require__(12);
 
 	/**
 	 * Return the lowest common ancestor of A and B, or null if they are in
@@ -16328,32 +16809,30 @@
 	  traverseEnterLeave: traverseEnterLeave
 	};
 
-/***/ },
-/* 131 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 135 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var _prodInvariant = __webpack_require__(32),
+	var _prodInvariant = __webpack_require__(35),
 	    _assign = __webpack_require__(4);
 
-	var DOMChildrenOperations = __webpack_require__(72);
-	var DOMLazyTree = __webpack_require__(73);
-	var ReactDOMComponentTree = __webpack_require__(31);
+	var DOMChildrenOperations = __webpack_require__(76);
+	var DOMLazyTree = __webpack_require__(77);
+	var ReactDOMComponentTree = __webpack_require__(34);
 
-	var escapeTextContentForBrowser = __webpack_require__(78);
-	var invariant = __webpack_require__(8);
-	var validateDOMNesting = __webpack_require__(128);
+	var escapeTextContentForBrowser = __webpack_require__(82);
+	var invariant = __webpack_require__(12);
+	var validateDOMNesting = __webpack_require__(132);
 
 	/**
 	 * Text nodes violate a couple assumptions that React makes about components:
@@ -16386,7 +16865,6 @@
 	};
 
 	_assign(ReactDOMTextComponent.prototype, {
-
 	  /**
 	   * Creates the markup for this text node. This node is not intended to have
 	   * any features besides containing text content.
@@ -16491,22 +16969,19 @@
 	    this._commentNodes = null;
 	    ReactDOMComponentTree.uncacheNode(this);
 	  }
-
 	});
 
 	module.exports = ReactDOMTextComponent;
 
-/***/ },
-/* 132 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 136 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
@@ -16514,10 +16989,10 @@
 
 	var _assign = __webpack_require__(4);
 
-	var ReactUpdates = __webpack_require__(53);
-	var Transaction = __webpack_require__(60);
+	var ReactUpdates = __webpack_require__(56);
+	var Transaction = __webpack_require__(63);
 
-	var emptyFunction = __webpack_require__(12);
+	var emptyFunction = __webpack_require__(9);
 
 	var RESET_BATCHED_UPDATES = {
 	  initialize: emptyFunction,
@@ -16568,17 +17043,15 @@
 
 	module.exports = ReactDefaultBatchingStrategy;
 
-/***/ },
-/* 133 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 137 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
@@ -16586,14 +17059,14 @@
 
 	var _assign = __webpack_require__(4);
 
-	var EventListener = __webpack_require__(134);
-	var ExecutionEnvironment = __webpack_require__(45);
-	var PooledClass = __webpack_require__(47);
-	var ReactDOMComponentTree = __webpack_require__(31);
-	var ReactUpdates = __webpack_require__(53);
+	var EventListener = __webpack_require__(138);
+	var ExecutionEnvironment = __webpack_require__(48);
+	var PooledClass = __webpack_require__(50);
+	var ReactDOMComponentTree = __webpack_require__(34);
+	var ReactUpdates = __webpack_require__(56);
 
-	var getEventTarget = __webpack_require__(61);
-	var getUnboundedScrollPosition = __webpack_require__(135);
+	var getEventTarget = __webpack_require__(65);
+	var getUnboundedScrollPosition = __webpack_require__(139);
 
 	/**
 	 * Find the deepest React component completely containing the root of the
@@ -16727,31 +17200,22 @@
 
 	module.exports = ReactEventListener;
 
-/***/ },
-/* 134 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 138 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	/**
 	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * Licensed under the Apache License, Version 2.0 (the "License");
-	 * you may not use this file except in compliance with the License.
-	 * You may obtain a copy of the License at
-	 *
-	 * http://www.apache.org/licenses/LICENSE-2.0
-	 *
-	 * Unless required by applicable law or agreed to in writing, software
-	 * distributed under the License is distributed on an "AS IS" BASIS,
-	 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-	 * See the License for the specific language governing permissions and
-	 * limitations under the License.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 * @typechecks
 	 */
 
-	var emptyFunction = __webpack_require__(12);
+	var emptyFunction = __webpack_require__(9);
 
 	/**
 	 * Upstream version of event listener. Does not take into account specific
@@ -16815,17 +17279,15 @@
 
 	module.exports = EventListener;
 
-/***/ },
-/* 135 */
-/***/ function(module, exports) {
+/***/ }),
+/* 139 */
+/***/ (function(module, exports) {
 
 	/**
 	 * Copyright (c) 2013-present, Facebook, Inc.
-	 * All rights reserved.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 * @typechecks
 	 */
@@ -16844,10 +17306,10 @@
 	 */
 
 	function getUnboundedScrollPosition(scrollable) {
-	  if (scrollable === window) {
+	  if (scrollable.Window && scrollable instanceof scrollable.Window) {
 	    return {
-	      x: window.pageXOffset || document.documentElement.scrollLeft,
-	      y: window.pageYOffset || document.documentElement.scrollTop
+	      x: scrollable.pageXOffset || scrollable.document.documentElement.scrollLeft,
+	      y: scrollable.pageYOffset || scrollable.document.documentElement.scrollTop
 	    };
 	  }
 	  return {
@@ -16858,30 +17320,28 @@
 
 	module.exports = getUnboundedScrollPosition;
 
-/***/ },
-/* 136 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 140 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var DOMProperty = __webpack_require__(33);
-	var EventPluginHub = __webpack_require__(39);
-	var EventPluginUtils = __webpack_require__(41);
-	var ReactComponentEnvironment = __webpack_require__(107);
-	var ReactEmptyComponent = __webpack_require__(116);
-	var ReactBrowserEventEmitter = __webpack_require__(97);
-	var ReactHostComponent = __webpack_require__(117);
-	var ReactUpdates = __webpack_require__(53);
+	var DOMProperty = __webpack_require__(36);
+	var EventPluginHub = __webpack_require__(42);
+	var EventPluginUtils = __webpack_require__(44);
+	var ReactComponentEnvironment = __webpack_require__(111);
+	var ReactEmptyComponent = __webpack_require__(120);
+	var ReactBrowserEventEmitter = __webpack_require__(101);
+	var ReactHostComponent = __webpack_require__(121);
+	var ReactUpdates = __webpack_require__(56);
 
 	var ReactInjection = {
 	  Component: ReactComponentEnvironment.injection,
@@ -16896,17 +17356,15 @@
 
 	module.exports = ReactInjection;
 
-/***/ },
-/* 137 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 141 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
@@ -16914,13 +17372,13 @@
 
 	var _assign = __webpack_require__(4);
 
-	var CallbackQueue = __webpack_require__(54);
-	var PooledClass = __webpack_require__(47);
-	var ReactBrowserEventEmitter = __webpack_require__(97);
-	var ReactInputSelection = __webpack_require__(138);
-	var ReactInstrumentation = __webpack_require__(59);
-	var Transaction = __webpack_require__(60);
-	var ReactUpdateQueue = __webpack_require__(127);
+	var CallbackQueue = __webpack_require__(57);
+	var PooledClass = __webpack_require__(50);
+	var ReactBrowserEventEmitter = __webpack_require__(101);
+	var ReactInputSelection = __webpack_require__(142);
+	var ReactInstrumentation = __webpack_require__(62);
+	var Transaction = __webpack_require__(63);
+	var ReactUpdateQueue = __webpack_require__(131);
 
 	/**
 	 * Ensures that, when possible, the selection range (currently selected text
@@ -17078,27 +17536,25 @@
 
 	module.exports = ReactReconcileTransaction;
 
-/***/ },
-/* 138 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 142 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var ReactDOMSelection = __webpack_require__(139);
+	var ReactDOMSelection = __webpack_require__(143);
 
-	var containsNode = __webpack_require__(141);
-	var focusNode = __webpack_require__(86);
-	var getActiveElement = __webpack_require__(144);
+	var containsNode = __webpack_require__(145);
+	var focusNode = __webpack_require__(90);
+	var getActiveElement = __webpack_require__(148);
 
 	function isInDocument(node) {
 	  return containsNode(document.documentElement, node);
@@ -17111,7 +17567,6 @@
 	 * Input selection module for React.
 	 */
 	var ReactInputSelection = {
-
 	  hasSelectionCapabilities: function (elem) {
 	    var nodeName = elem && elem.nodeName && elem.nodeName.toLowerCase();
 	    return nodeName && (nodeName === 'input' && elem.type === 'text' || nodeName === 'textarea' || elem.contentEditable === 'true');
@@ -17206,26 +17661,24 @@
 
 	module.exports = ReactInputSelection;
 
-/***/ },
-/* 139 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 143 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var ExecutionEnvironment = __webpack_require__(45);
+	var ExecutionEnvironment = __webpack_require__(48);
 
-	var getNodeForCharacterOffset = __webpack_require__(140);
-	var getTextContentAccessor = __webpack_require__(48);
+	var getNodeForCharacterOffset = __webpack_require__(144);
+	var getTextContentAccessor = __webpack_require__(51);
 
 	/**
 	 * While `isCollapsed` is available on the Selection object and `collapsed`
@@ -17422,17 +17875,15 @@
 
 	module.exports = ReactDOMSelection;
 
-/***/ },
-/* 140 */
-/***/ function(module, exports) {
+/***/ }),
+/* 144 */
+/***/ (function(module, exports) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
@@ -17500,24 +17951,22 @@
 
 	module.exports = getNodeForCharacterOffset;
 
-/***/ },
-/* 141 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 145 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	/**
 	 * Copyright (c) 2013-present, Facebook, Inc.
-	 * All rights reserved.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 * 
 	 */
 
-	var isTextNode = __webpack_require__(142);
+	var isTextNode = __webpack_require__(146);
 
 	/*eslint-disable no-bitwise */
 
@@ -17544,24 +17993,22 @@
 
 	module.exports = containsNode;
 
-/***/ },
-/* 142 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 146 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	/**
 	 * Copyright (c) 2013-present, Facebook, Inc.
-	 * All rights reserved.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 * @typechecks
 	 */
 
-	var isNode = __webpack_require__(143);
+	var isNode = __webpack_require__(147);
 
 	/**
 	 * @param {*} object The object to check.
@@ -17573,19 +18020,17 @@
 
 	module.exports = isTextNode;
 
-/***/ },
-/* 143 */
-/***/ function(module, exports) {
+/***/ }),
+/* 147 */
+/***/ (function(module, exports) {
 
 	'use strict';
 
 	/**
 	 * Copyright (c) 2013-present, Facebook, Inc.
-	 * All rights reserved.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 * @typechecks
 	 */
@@ -17595,24 +18040,24 @@
 	 * @return {boolean} Whether or not the object is a DOM node.
 	 */
 	function isNode(object) {
-	  return !!(object && (typeof Node === 'function' ? object instanceof Node : typeof object === 'object' && typeof object.nodeType === 'number' && typeof object.nodeName === 'string'));
+	  var doc = object ? object.ownerDocument || object : document;
+	  var defaultView = doc.defaultView || window;
+	  return !!(object && (typeof defaultView.Node === 'function' ? object instanceof defaultView.Node : typeof object === 'object' && typeof object.nodeType === 'number' && typeof object.nodeName === 'string'));
 	}
 
 	module.exports = isNode;
 
-/***/ },
-/* 144 */
-/***/ function(module, exports) {
+/***/ }),
+/* 148 */
+/***/ (function(module, exports) {
 
 	'use strict';
 
 	/**
 	 * Copyright (c) 2013-present, Facebook, Inc.
-	 * All rights reserved.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 * @typechecks
 	 */
@@ -17625,31 +18070,33 @@
 	 *
 	 * The activeElement will be null only if the document or document body is not
 	 * yet defined.
+	 *
+	 * @param {?DOMDocument} doc Defaults to current document.
+	 * @return {?DOMElement}
 	 */
-	function getActiveElement() /*?DOMElement*/{
-	  if (typeof document === 'undefined') {
+	function getActiveElement(doc) /*?DOMElement*/{
+	  doc = doc || (typeof document !== 'undefined' ? document : undefined);
+	  if (typeof doc === 'undefined') {
 	    return null;
 	  }
 	  try {
-	    return document.activeElement || document.body;
+	    return doc.activeElement || doc.body;
 	  } catch (e) {
-	    return document.body;
+	    return doc.body;
 	  }
 	}
 
 	module.exports = getActiveElement;
 
-/***/ },
-/* 145 */
-/***/ function(module, exports) {
+/***/ }),
+/* 149 */
+/***/ (function(module, exports) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
@@ -17945,31 +18392,29 @@
 
 	module.exports = SVGDOMPropertyConfig;
 
-/***/ },
-/* 146 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 150 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var EventPropagators = __webpack_require__(38);
-	var ExecutionEnvironment = __webpack_require__(45);
-	var ReactDOMComponentTree = __webpack_require__(31);
-	var ReactInputSelection = __webpack_require__(138);
-	var SyntheticEvent = __webpack_require__(50);
+	var EventPropagators = __webpack_require__(41);
+	var ExecutionEnvironment = __webpack_require__(48);
+	var ReactDOMComponentTree = __webpack_require__(34);
+	var ReactInputSelection = __webpack_require__(142);
+	var SyntheticEvent = __webpack_require__(53);
 
-	var getActiveElement = __webpack_require__(144);
-	var isTextInputElement = __webpack_require__(63);
-	var shallowEqual = __webpack_require__(114);
+	var getActiveElement = __webpack_require__(148);
+	var isTextInputElement = __webpack_require__(67);
+	var shallowEqual = __webpack_require__(118);
 
 	var skipSelectionChangeEvent = ExecutionEnvironment.canUseDOM && 'documentMode' in document && document.documentMode <= 11;
 
@@ -18074,7 +18519,6 @@
 	 * - Fires after user input.
 	 */
 	var SelectEventPlugin = {
-
 	  eventTypes: eventTypes,
 
 	  extractEvents: function (topLevelType, targetInst, nativeEvent, nativeEventTarget) {
@@ -18098,7 +18542,6 @@
 	        activeElementInst = null;
 	        lastSelection = null;
 	        break;
-
 	      // Don't fire the event while the user is dragging. This matches the
 	      // semantics of the native select event.
 	      case 'topMouseDown':
@@ -18108,7 +18551,6 @@
 	      case 'topMouseUp':
 	        mouseDown = false;
 	        return constructSelectEvent(nativeEvent, nativeEventTarget);
-
 	      // Chrome and IE fire non-standard event when selection is changed (and
 	      // sometimes when it hasn't). IE's event fires out of order with respect
 	      // to key and input events on deletion, so we discard it.
@@ -18140,43 +18582,41 @@
 
 	module.exports = SelectEventPlugin;
 
-/***/ },
-/* 147 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 151 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 * 
 	 */
 
 	'use strict';
 
-	var _prodInvariant = __webpack_require__(32);
+	var _prodInvariant = __webpack_require__(35);
 
-	var EventListener = __webpack_require__(134);
-	var EventPropagators = __webpack_require__(38);
-	var ReactDOMComponentTree = __webpack_require__(31);
-	var SyntheticAnimationEvent = __webpack_require__(148);
-	var SyntheticClipboardEvent = __webpack_require__(149);
-	var SyntheticEvent = __webpack_require__(50);
-	var SyntheticFocusEvent = __webpack_require__(150);
-	var SyntheticKeyboardEvent = __webpack_require__(151);
-	var SyntheticMouseEvent = __webpack_require__(66);
-	var SyntheticDragEvent = __webpack_require__(154);
-	var SyntheticTouchEvent = __webpack_require__(155);
-	var SyntheticTransitionEvent = __webpack_require__(156);
-	var SyntheticUIEvent = __webpack_require__(67);
-	var SyntheticWheelEvent = __webpack_require__(157);
+	var EventListener = __webpack_require__(138);
+	var EventPropagators = __webpack_require__(41);
+	var ReactDOMComponentTree = __webpack_require__(34);
+	var SyntheticAnimationEvent = __webpack_require__(152);
+	var SyntheticClipboardEvent = __webpack_require__(153);
+	var SyntheticEvent = __webpack_require__(53);
+	var SyntheticFocusEvent = __webpack_require__(154);
+	var SyntheticKeyboardEvent = __webpack_require__(155);
+	var SyntheticMouseEvent = __webpack_require__(70);
+	var SyntheticDragEvent = __webpack_require__(158);
+	var SyntheticTouchEvent = __webpack_require__(159);
+	var SyntheticTransitionEvent = __webpack_require__(160);
+	var SyntheticUIEvent = __webpack_require__(71);
+	var SyntheticWheelEvent = __webpack_require__(161);
 
-	var emptyFunction = __webpack_require__(12);
-	var getEventCharCode = __webpack_require__(152);
-	var invariant = __webpack_require__(8);
+	var emptyFunction = __webpack_require__(9);
+	var getEventCharCode = __webpack_require__(156);
+	var invariant = __webpack_require__(12);
 
 	/**
 	 * Turns
@@ -18227,7 +18667,6 @@
 	}
 
 	var SimpleEventPlugin = {
-
 	  eventTypes: eventTypes,
 
 	  extractEvents: function (topLevelType, targetInst, nativeEvent, nativeEventTarget) {
@@ -18367,28 +18806,25 @@
 	      delete onClickListeners[key];
 	    }
 	  }
-
 	};
 
 	module.exports = SimpleEventPlugin;
 
-/***/ },
-/* 148 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 152 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var SyntheticEvent = __webpack_require__(50);
+	var SyntheticEvent = __webpack_require__(53);
 
 	/**
 	 * @interface Event
@@ -18415,23 +18851,21 @@
 
 	module.exports = SyntheticAnimationEvent;
 
-/***/ },
-/* 149 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 153 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var SyntheticEvent = __webpack_require__(50);
+	var SyntheticEvent = __webpack_require__(53);
 
 	/**
 	 * @interface Event
@@ -18457,23 +18891,21 @@
 
 	module.exports = SyntheticClipboardEvent;
 
-/***/ },
-/* 150 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 154 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var SyntheticUIEvent = __webpack_require__(67);
+	var SyntheticUIEvent = __webpack_require__(71);
 
 	/**
 	 * @interface FocusEvent
@@ -18497,27 +18929,25 @@
 
 	module.exports = SyntheticFocusEvent;
 
-/***/ },
-/* 151 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 155 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var SyntheticUIEvent = __webpack_require__(67);
+	var SyntheticUIEvent = __webpack_require__(71);
 
-	var getEventCharCode = __webpack_require__(152);
-	var getEventKey = __webpack_require__(153);
-	var getEventModifierState = __webpack_require__(69);
+	var getEventCharCode = __webpack_require__(156);
+	var getEventKey = __webpack_require__(157);
+	var getEventModifierState = __webpack_require__(73);
 
 	/**
 	 * @interface KeyboardEvent
@@ -18585,17 +19015,15 @@
 
 	module.exports = SyntheticKeyboardEvent;
 
-/***/ },
-/* 152 */
-/***/ function(module, exports) {
+/***/ }),
+/* 156 */
+/***/ (function(module, exports) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
@@ -18639,41 +19067,39 @@
 
 	module.exports = getEventCharCode;
 
-/***/ },
-/* 153 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 157 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var getEventCharCode = __webpack_require__(152);
+	var getEventCharCode = __webpack_require__(156);
 
 	/**
 	 * Normalization of deprecated HTML5 `key` values
 	 * @see https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent#Key_names
 	 */
 	var normalizeKey = {
-	  'Esc': 'Escape',
-	  'Spacebar': ' ',
-	  'Left': 'ArrowLeft',
-	  'Up': 'ArrowUp',
-	  'Right': 'ArrowRight',
-	  'Down': 'ArrowDown',
-	  'Del': 'Delete',
-	  'Win': 'OS',
-	  'Menu': 'ContextMenu',
-	  'Apps': 'ContextMenu',
-	  'Scroll': 'ScrollLock',
-	  'MozPrintableKey': 'Unidentified'
+	  Esc: 'Escape',
+	  Spacebar: ' ',
+	  Left: 'ArrowLeft',
+	  Up: 'ArrowUp',
+	  Right: 'ArrowRight',
+	  Down: 'ArrowDown',
+	  Del: 'Delete',
+	  Win: 'OS',
+	  Menu: 'ContextMenu',
+	  Apps: 'ContextMenu',
+	  Scroll: 'ScrollLock',
+	  MozPrintableKey: 'Unidentified'
 	};
 
 	/**
@@ -18703,8 +19129,18 @@
 	  40: 'ArrowDown',
 	  45: 'Insert',
 	  46: 'Delete',
-	  112: 'F1', 113: 'F2', 114: 'F3', 115: 'F4', 116: 'F5', 117: 'F6',
-	  118: 'F7', 119: 'F8', 120: 'F9', 121: 'F10', 122: 'F11', 123: 'F12',
+	  112: 'F1',
+	  113: 'F2',
+	  114: 'F3',
+	  115: 'F4',
+	  116: 'F5',
+	  117: 'F6',
+	  118: 'F7',
+	  119: 'F8',
+	  120: 'F9',
+	  121: 'F10',
+	  122: 'F11',
+	  123: 'F12',
 	  144: 'NumLock',
 	  145: 'ScrollLock',
 	  224: 'Meta'
@@ -18745,23 +19181,21 @@
 
 	module.exports = getEventKey;
 
-/***/ },
-/* 154 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 158 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var SyntheticMouseEvent = __webpack_require__(66);
+	var SyntheticMouseEvent = __webpack_require__(70);
 
 	/**
 	 * @interface DragEvent
@@ -18785,25 +19219,23 @@
 
 	module.exports = SyntheticDragEvent;
 
-/***/ },
-/* 155 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 159 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var SyntheticUIEvent = __webpack_require__(67);
+	var SyntheticUIEvent = __webpack_require__(71);
 
-	var getEventModifierState = __webpack_require__(69);
+	var getEventModifierState = __webpack_require__(73);
 
 	/**
 	 * @interface TouchEvent
@@ -18834,23 +19266,21 @@
 
 	module.exports = SyntheticTouchEvent;
 
-/***/ },
-/* 156 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 160 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var SyntheticEvent = __webpack_require__(50);
+	var SyntheticEvent = __webpack_require__(53);
 
 	/**
 	 * @interface Event
@@ -18877,23 +19307,21 @@
 
 	module.exports = SyntheticTransitionEvent;
 
-/***/ },
-/* 157 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 161 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var SyntheticMouseEvent = __webpack_require__(66);
+	var SyntheticMouseEvent = __webpack_require__(70);
 
 	/**
 	 * @interface WheelEvent
@@ -18901,15 +19329,12 @@
 	 */
 	var WheelEventInterface = {
 	  deltaX: function (event) {
-	    return 'deltaX' in event ? event.deltaX :
-	    // Fallback to `wheelDeltaX` for Webkit and normalize (right is positive).
+	    return 'deltaX' in event ? event.deltaX : // Fallback to `wheelDeltaX` for Webkit and normalize (right is positive).
 	    'wheelDeltaX' in event ? -event.wheelDeltaX : 0;
 	  },
 	  deltaY: function (event) {
-	    return 'deltaY' in event ? event.deltaY :
-	    // Fallback to `wheelDeltaY` for Webkit and normalize (down is positive).
-	    'wheelDeltaY' in event ? -event.wheelDeltaY :
-	    // Fallback to `wheelDelta` for IE<9 and normalize (down is positive).
+	    return 'deltaY' in event ? event.deltaY : // Fallback to `wheelDeltaY` for Webkit and normalize (down is positive).
+	    'wheelDeltaY' in event ? -event.wheelDeltaY : // Fallback to `wheelDelta` for IE<9 and normalize (down is positive).
 	    'wheelDelta' in event ? -event.wheelDelta : 0;
 	  },
 	  deltaZ: null,
@@ -18935,46 +19360,44 @@
 
 	module.exports = SyntheticWheelEvent;
 
-/***/ },
-/* 158 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 162 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var _prodInvariant = __webpack_require__(32);
+	var _prodInvariant = __webpack_require__(35);
 
-	var DOMLazyTree = __webpack_require__(73);
-	var DOMProperty = __webpack_require__(33);
+	var DOMLazyTree = __webpack_require__(77);
+	var DOMProperty = __webpack_require__(36);
 	var React = __webpack_require__(3);
-	var ReactBrowserEventEmitter = __webpack_require__(97);
-	var ReactCurrentOwner = __webpack_require__(10);
-	var ReactDOMComponentTree = __webpack_require__(31);
-	var ReactDOMContainerInfo = __webpack_require__(159);
-	var ReactDOMFeatureFlags = __webpack_require__(160);
-	var ReactFeatureFlags = __webpack_require__(55);
-	var ReactInstanceMap = __webpack_require__(108);
-	var ReactInstrumentation = __webpack_require__(59);
-	var ReactMarkupChecksum = __webpack_require__(161);
-	var ReactReconciler = __webpack_require__(56);
-	var ReactUpdateQueue = __webpack_require__(127);
-	var ReactUpdates = __webpack_require__(53);
+	var ReactBrowserEventEmitter = __webpack_require__(101);
+	var ReactCurrentOwner = __webpack_require__(17);
+	var ReactDOMComponentTree = __webpack_require__(34);
+	var ReactDOMContainerInfo = __webpack_require__(163);
+	var ReactDOMFeatureFlags = __webpack_require__(164);
+	var ReactFeatureFlags = __webpack_require__(58);
+	var ReactInstanceMap = __webpack_require__(112);
+	var ReactInstrumentation = __webpack_require__(62);
+	var ReactMarkupChecksum = __webpack_require__(165);
+	var ReactReconciler = __webpack_require__(59);
+	var ReactUpdateQueue = __webpack_require__(131);
+	var ReactUpdates = __webpack_require__(56);
 
-	var emptyObject = __webpack_require__(20);
-	var instantiateReactComponent = __webpack_require__(111);
-	var invariant = __webpack_require__(8);
-	var setInnerHTML = __webpack_require__(75);
-	var shouldUpdateReactComponent = __webpack_require__(115);
-	var warning = __webpack_require__(11);
+	var emptyObject = __webpack_require__(11);
+	var instantiateReactComponent = __webpack_require__(115);
+	var invariant = __webpack_require__(12);
+	var setInnerHTML = __webpack_require__(79);
+	var shouldUpdateReactComponent = __webpack_require__(119);
+	var warning = __webpack_require__(8);
 
 	var ATTR_NAME = DOMProperty.ID_ATTRIBUTE_NAME;
 	var ROOT_ATTR_NAME = DOMProperty.ROOT_ATTRIBUTE_NAME;
@@ -19197,7 +19620,6 @@
 	 * Inside of `container`, the first element rendered is the "reactRoot".
 	 */
 	var ReactMount = {
-
 	  TopLevelWrapper: TopLevelWrapper,
 
 	  /**
@@ -19286,13 +19708,14 @@
 
 	  _renderSubtreeIntoContainer: function (parentComponent, nextElement, container, callback) {
 	    ReactUpdateQueue.validateCallback(callback, 'ReactDOM.render');
-	    !React.isValidElement(nextElement) ?  false ? invariant(false, 'ReactDOM.render(): Invalid component element.%s', typeof nextElement === 'string' ? ' Instead of passing a string like \'div\', pass ' + 'React.createElement(\'div\') or <div />.' : typeof nextElement === 'function' ? ' Instead of passing a class like Foo, pass ' + 'React.createElement(Foo) or <Foo />.' :
-	    // Check if it quacks like an element
-	    nextElement != null && nextElement.props !== undefined ? ' This may be caused by unintentionally loading two independent ' + 'copies of React.' : '') : _prodInvariant('39', typeof nextElement === 'string' ? ' Instead of passing a string like \'div\', pass ' + 'React.createElement(\'div\') or <div />.' : typeof nextElement === 'function' ? ' Instead of passing a class like Foo, pass ' + 'React.createElement(Foo) or <Foo />.' : nextElement != null && nextElement.props !== undefined ? ' This may be caused by unintentionally loading two independent ' + 'copies of React.' : '') : void 0;
+	    !React.isValidElement(nextElement) ?  false ? invariant(false, 'ReactDOM.render(): Invalid component element.%s', typeof nextElement === 'string' ? " Instead of passing a string like 'div', pass " + "React.createElement('div') or <div />." : typeof nextElement === 'function' ? ' Instead of passing a class like Foo, pass ' + 'React.createElement(Foo) or <Foo />.' : // Check if it quacks like an element
+	    nextElement != null && nextElement.props !== undefined ? ' This may be caused by unintentionally loading two independent ' + 'copies of React.' : '') : _prodInvariant('39', typeof nextElement === 'string' ? " Instead of passing a string like 'div', pass " + "React.createElement('div') or <div />." : typeof nextElement === 'function' ? ' Instead of passing a class like Foo, pass ' + 'React.createElement(Foo) or <Foo />.' : nextElement != null && nextElement.props !== undefined ? ' This may be caused by unintentionally loading two independent ' + 'copies of React.' : '') : void 0;
 
 	     false ? warning(!container || !container.tagName || container.tagName.toUpperCase() !== 'BODY', 'render(): Rendering components directly into document.body is ' + 'discouraged, since its children are often manipulated by third-party ' + 'scripts and browser extensions. This may lead to subtle ' + 'reconciliation issues. Try rendering into a container element created ' + 'for your app.') : void 0;
 
-	    var nextWrappedElement = React.createElement(TopLevelWrapper, { child: nextElement });
+	    var nextWrappedElement = React.createElement(TopLevelWrapper, {
+	      child: nextElement
+	    });
 
 	    var nextContext;
 	    if (parentComponent) {
@@ -19381,7 +19804,7 @@
 	    !isValidContainer(container) ?  false ? invariant(false, 'unmountComponentAtNode(...): Target container is not a DOM element.') : _prodInvariant('40') : void 0;
 
 	    if (false) {
-	      process.env.NODE_ENV !== 'production' ? warning(!nodeIsRenderedByOtherInstance(container), 'unmountComponentAtNode(): The node you\'re attempting to unmount ' + 'was rendered by another copy of React.') : void 0;
+	      process.env.NODE_ENV !== 'production' ? warning(!nodeIsRenderedByOtherInstance(container), "unmountComponentAtNode(): The node you're attempting to unmount " + 'was rendered by another copy of React.') : void 0;
 	    }
 
 	    var prevComponent = getTopLevelWrapperInContainer(container);
@@ -19394,7 +19817,7 @@
 	      var isContainerReactRoot = container.nodeType === 1 && container.hasAttribute(ROOT_ATTR_NAME);
 
 	      if (false) {
-	        process.env.NODE_ENV !== 'production' ? warning(!containerHasNonRootReactChild, 'unmountComponentAtNode(): The node you\'re attempting to unmount ' + 'was rendered by React and is not a top-level container. %s', isContainerReactRoot ? 'You may have accidentally passed in a React root node instead ' + 'of its container.' : 'Instead, have the parent component update its state and ' + 'rerender in order to remove this component.') : void 0;
+	        process.env.NODE_ENV !== 'production' ? warning(!containerHasNonRootReactChild, "unmountComponentAtNode(): The node you're attempting to unmount " + 'was rendered by React and is not a top-level container. %s', isContainerReactRoot ? 'You may have accidentally passed in a React root node instead ' + 'of its container.' : 'Instead, have the parent component update its state and ' + 'rerender in order to remove this component.') : void 0;
 	      }
 
 	      return false;
@@ -19477,23 +19900,21 @@
 
 	module.exports = ReactMount;
 
-/***/ },
-/* 159 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 163 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var validateDOMNesting = __webpack_require__(128);
+	var validateDOMNesting = __webpack_require__(132);
 
 	var DOC_NODE_TYPE = 9;
 
@@ -19514,17 +19935,15 @@
 
 	module.exports = ReactDOMContainerInfo;
 
-/***/ },
-/* 160 */
-/***/ function(module, exports) {
+/***/ }),
+/* 164 */
+/***/ (function(module, exports) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
@@ -19537,23 +19956,21 @@
 
 	module.exports = ReactDOMFeatureFlags;
 
-/***/ },
-/* 161 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 165 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var adler32 = __webpack_require__(162);
+	var adler32 = __webpack_require__(166);
 
 	var TAG_END = /\/?>/;
 	var COMMENT_START = /^<\!\-\-/;
@@ -19591,17 +20008,15 @@
 
 	module.exports = ReactMarkupChecksum;
 
-/***/ },
-/* 162 */
-/***/ function(module, exports) {
+/***/ }),
+/* 166 */
+/***/ (function(module, exports) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 * 
 	 */
@@ -19639,33 +20054,31 @@
 
 	module.exports = adler32;
 
-/***/ },
-/* 163 */
-27,
-/* 164 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 167 */
+28,
+/* 168 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var _prodInvariant = __webpack_require__(32);
+	var _prodInvariant = __webpack_require__(35);
 
-	var ReactCurrentOwner = __webpack_require__(10);
-	var ReactDOMComponentTree = __webpack_require__(31);
-	var ReactInstanceMap = __webpack_require__(108);
+	var ReactCurrentOwner = __webpack_require__(17);
+	var ReactDOMComponentTree = __webpack_require__(34);
+	var ReactInstanceMap = __webpack_require__(112);
 
-	var getHostComponentFromComposite = __webpack_require__(165);
-	var invariant = __webpack_require__(8);
-	var warning = __webpack_require__(11);
+	var getHostComponentFromComposite = __webpack_require__(169);
+	var invariant = __webpack_require__(12);
+	var warning = __webpack_require__(8);
 
 	/**
 	 * Returns the DOM node rendered by this element.
@@ -19705,23 +20118,21 @@
 
 	module.exports = findDOMNode;
 
-/***/ },
-/* 165 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 169 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var ReactNodeTypes = __webpack_require__(113);
+	var ReactNodeTypes = __webpack_require__(117);
 
 	function getHostComponentFromComposite(inst) {
 	  var type;
@@ -19739,29 +20150,27 @@
 
 	module.exports = getHostComponentFromComposite;
 
-/***/ },
-/* 166 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 170 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 */
 
 	'use strict';
 
-	var ReactMount = __webpack_require__(158);
+	var ReactMount = __webpack_require__(162);
 
 	module.exports = ReactMount.renderSubtreeIntoContainer;
 
-/***/ },
-/* 167 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 171 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -19773,11 +20182,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _example_components = __webpack_require__(168);
+	var _example_components = __webpack_require__(172);
 
 	var _example_components2 = _interopRequireDefault(_example_components);
 
-	var _hero_example = __webpack_require__(627);
+	var _hero_example = __webpack_require__(655);
 
 	var _hero_example2 = _interopRequireDefault(_hero_example);
 
@@ -19889,9 +20298,9 @@
 	  }
 	});
 
-/***/ },
-/* 168 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 172 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -19903,129 +20312,129 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _highlight = __webpack_require__(169);
+	var _highlight = __webpack_require__(173);
 
 	var _highlight2 = _interopRequireDefault(_highlight);
 
-	var _default = __webpack_require__(339);
+	var _default = __webpack_require__(351);
 
 	var _default2 = _interopRequireDefault(_default);
 
-	var _code_example_component = __webpack_require__(597);
+	var _code_example_component = __webpack_require__(625);
 
 	var _code_example_component2 = _interopRequireDefault(_code_example_component);
 
-	var _custom_date_format = __webpack_require__(598);
+	var _custom_date_format = __webpack_require__(626);
 
 	var _custom_date_format2 = _interopRequireDefault(_custom_date_format);
 
-	var _custom_class_name = __webpack_require__(599);
+	var _custom_class_name = __webpack_require__(627);
 
 	var _custom_class_name2 = _interopRequireDefault(_custom_class_name);
 
-	var _placeholder_text = __webpack_require__(600);
+	var _placeholder_text = __webpack_require__(628);
 
 	var _placeholder_text2 = _interopRequireDefault(_placeholder_text);
 
-	var _specific_date_range = __webpack_require__(601);
+	var _specific_date_range = __webpack_require__(629);
 
 	var _specific_date_range2 = _interopRequireDefault(_specific_date_range);
 
-	var _locale = __webpack_require__(602);
+	var _locale = __webpack_require__(630);
 
 	var _locale2 = _interopRequireDefault(_locale);
 
-	var _exclude_dates = __webpack_require__(603);
+	var _exclude_dates = __webpack_require__(631);
 
 	var _exclude_dates2 = _interopRequireDefault(_exclude_dates);
 
-	var _highlight_dates = __webpack_require__(604);
+	var _highlight_dates = __webpack_require__(632);
 
 	var _highlight_dates2 = _interopRequireDefault(_highlight_dates);
 
-	var _include_dates = __webpack_require__(605);
+	var _include_dates = __webpack_require__(633);
 
 	var _include_dates2 = _interopRequireDefault(_include_dates);
 
-	var _filter_dates = __webpack_require__(606);
+	var _filter_dates = __webpack_require__(634);
 
 	var _filter_dates2 = _interopRequireDefault(_filter_dates);
 
-	var _disabled = __webpack_require__(607);
+	var _disabled = __webpack_require__(635);
 
 	var _disabled2 = _interopRequireDefault(_disabled);
 
-	var _clear_input = __webpack_require__(608);
+	var _clear_input = __webpack_require__(636);
 
 	var _clear_input2 = _interopRequireDefault(_clear_input);
 
-	var _on_blur_callbacks = __webpack_require__(609);
+	var _on_blur_callbacks = __webpack_require__(637);
 
 	var _on_blur_callbacks2 = _interopRequireDefault(_on_blur_callbacks);
 
-	var _placement = __webpack_require__(610);
+	var _placement = __webpack_require__(638);
 
 	var _placement2 = _interopRequireDefault(_placement);
 
-	var _date_range = __webpack_require__(611);
+	var _date_range = __webpack_require__(639);
 
 	var _date_range2 = _interopRequireDefault(_date_range);
 
-	var _tab_index = __webpack_require__(612);
+	var _tab_index = __webpack_require__(640);
 
 	var _tab_index2 = _interopRequireDefault(_tab_index);
 
-	var _year_dropdown = __webpack_require__(613);
+	var _year_dropdown = __webpack_require__(641);
 
 	var _year_dropdown2 = _interopRequireDefault(_year_dropdown);
 
-	var _year_select_dropdown = __webpack_require__(614);
+	var _year_select_dropdown = __webpack_require__(642);
 
 	var _year_select_dropdown2 = _interopRequireDefault(_year_select_dropdown);
 
-	var _today = __webpack_require__(615);
+	var _today = __webpack_require__(643);
 
 	var _today2 = _interopRequireDefault(_today);
 
-	var _timezone_date = __webpack_require__(616);
+	var _timezone_date = __webpack_require__(644);
 
 	var _timezone_date2 = _interopRequireDefault(_timezone_date);
 
-	var _inline = __webpack_require__(617);
+	var _inline = __webpack_require__(645);
 
 	var _inline2 = _interopRequireDefault(_inline);
 
-	var _open_to_date = __webpack_require__(618);
+	var _open_to_date = __webpack_require__(646);
 
 	var _open_to_date2 = _interopRequireDefault(_open_to_date);
 
-	var _fixed_calendar = __webpack_require__(619);
+	var _fixed_calendar = __webpack_require__(647);
 
 	var _fixed_calendar2 = _interopRequireDefault(_fixed_calendar);
 
-	var _week_numbers = __webpack_require__(620);
+	var _week_numbers = __webpack_require__(648);
 
 	var _week_numbers2 = _interopRequireDefault(_week_numbers);
 
-	var _custom_input = __webpack_require__(621);
+	var _custom_input = __webpack_require__(649);
 
 	var _custom_input2 = _interopRequireDefault(_custom_input);
 
-	var _multi_month = __webpack_require__(622);
+	var _multi_month = __webpack_require__(650);
 
 	var _multi_month2 = _interopRequireDefault(_multi_month);
 
-	var _multi_month_drp = __webpack_require__(623);
+	var _multi_month_drp = __webpack_require__(651);
 
 	var _multi_month_drp2 = _interopRequireDefault(_multi_month_drp);
 
-	var _hijri_calendar = __webpack_require__(624);
+	var _hijri_calendar = __webpack_require__(652);
 
 	var _hijri_calendar2 = _interopRequireDefault(_hijri_calendar);
 
-	__webpack_require__(625);
+	__webpack_require__(653);
 
-	__webpack_require__(626);
+	__webpack_require__(654);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -20168,186 +20577,194 @@
 	  }
 	});
 
-/***/ },
-/* 169 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 173 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var hljs = __webpack_require__(170);
+	var hljs = __webpack_require__(174);
 
-	hljs.registerLanguage('1c', __webpack_require__(171));
-	hljs.registerLanguage('abnf', __webpack_require__(172));
-	hljs.registerLanguage('accesslog', __webpack_require__(173));
-	hljs.registerLanguage('actionscript', __webpack_require__(174));
-	hljs.registerLanguage('ada', __webpack_require__(175));
-	hljs.registerLanguage('apache', __webpack_require__(176));
-	hljs.registerLanguage('applescript', __webpack_require__(177));
-	hljs.registerLanguage('cpp', __webpack_require__(178));
-	hljs.registerLanguage('arduino', __webpack_require__(179));
-	hljs.registerLanguage('armasm', __webpack_require__(180));
-	hljs.registerLanguage('xml', __webpack_require__(181));
-	hljs.registerLanguage('asciidoc', __webpack_require__(182));
-	hljs.registerLanguage('aspectj', __webpack_require__(183));
-	hljs.registerLanguage('autohotkey', __webpack_require__(184));
-	hljs.registerLanguage('autoit', __webpack_require__(185));
-	hljs.registerLanguage('avrasm', __webpack_require__(186));
-	hljs.registerLanguage('awk', __webpack_require__(187));
-	hljs.registerLanguage('axapta', __webpack_require__(188));
-	hljs.registerLanguage('bash', __webpack_require__(189));
-	hljs.registerLanguage('basic', __webpack_require__(190));
-	hljs.registerLanguage('bnf', __webpack_require__(191));
-	hljs.registerLanguage('brainfuck', __webpack_require__(192));
-	hljs.registerLanguage('cal', __webpack_require__(193));
-	hljs.registerLanguage('capnproto', __webpack_require__(194));
-	hljs.registerLanguage('ceylon', __webpack_require__(195));
-	hljs.registerLanguage('clean', __webpack_require__(196));
-	hljs.registerLanguage('clojure', __webpack_require__(197));
-	hljs.registerLanguage('clojure-repl', __webpack_require__(198));
-	hljs.registerLanguage('cmake', __webpack_require__(199));
-	hljs.registerLanguage('coffeescript', __webpack_require__(200));
-	hljs.registerLanguage('coq', __webpack_require__(201));
-	hljs.registerLanguage('cos', __webpack_require__(202));
-	hljs.registerLanguage('crmsh', __webpack_require__(203));
-	hljs.registerLanguage('crystal', __webpack_require__(204));
-	hljs.registerLanguage('cs', __webpack_require__(205));
-	hljs.registerLanguage('csp', __webpack_require__(206));
-	hljs.registerLanguage('css', __webpack_require__(207));
-	hljs.registerLanguage('d', __webpack_require__(208));
-	hljs.registerLanguage('markdown', __webpack_require__(209));
-	hljs.registerLanguage('dart', __webpack_require__(210));
-	hljs.registerLanguage('delphi', __webpack_require__(211));
-	hljs.registerLanguage('diff', __webpack_require__(212));
-	hljs.registerLanguage('django', __webpack_require__(213));
-	hljs.registerLanguage('dns', __webpack_require__(214));
-	hljs.registerLanguage('dockerfile', __webpack_require__(215));
-	hljs.registerLanguage('dos', __webpack_require__(216));
-	hljs.registerLanguage('dsconfig', __webpack_require__(217));
-	hljs.registerLanguage('dts', __webpack_require__(218));
-	hljs.registerLanguage('dust', __webpack_require__(219));
-	hljs.registerLanguage('ebnf', __webpack_require__(220));
-	hljs.registerLanguage('elixir', __webpack_require__(221));
-	hljs.registerLanguage('elm', __webpack_require__(222));
-	hljs.registerLanguage('ruby', __webpack_require__(223));
-	hljs.registerLanguage('erb', __webpack_require__(224));
-	hljs.registerLanguage('erlang-repl', __webpack_require__(225));
-	hljs.registerLanguage('erlang', __webpack_require__(226));
-	hljs.registerLanguage('excel', __webpack_require__(227));
-	hljs.registerLanguage('fix', __webpack_require__(228));
-	hljs.registerLanguage('flix', __webpack_require__(229));
-	hljs.registerLanguage('fortran', __webpack_require__(230));
-	hljs.registerLanguage('fsharp', __webpack_require__(231));
-	hljs.registerLanguage('gams', __webpack_require__(232));
-	hljs.registerLanguage('gauss', __webpack_require__(233));
-	hljs.registerLanguage('gcode', __webpack_require__(234));
-	hljs.registerLanguage('gherkin', __webpack_require__(235));
-	hljs.registerLanguage('glsl', __webpack_require__(236));
-	hljs.registerLanguage('go', __webpack_require__(237));
-	hljs.registerLanguage('golo', __webpack_require__(238));
-	hljs.registerLanguage('gradle', __webpack_require__(239));
-	hljs.registerLanguage('groovy', __webpack_require__(240));
-	hljs.registerLanguage('haml', __webpack_require__(241));
-	hljs.registerLanguage('handlebars', __webpack_require__(242));
-	hljs.registerLanguage('haskell', __webpack_require__(243));
-	hljs.registerLanguage('haxe', __webpack_require__(244));
-	hljs.registerLanguage('hsp', __webpack_require__(245));
-	hljs.registerLanguage('htmlbars', __webpack_require__(246));
-	hljs.registerLanguage('http', __webpack_require__(247));
-	hljs.registerLanguage('inform7', __webpack_require__(248));
-	hljs.registerLanguage('ini', __webpack_require__(249));
-	hljs.registerLanguage('irpf90', __webpack_require__(250));
-	hljs.registerLanguage('java', __webpack_require__(251));
-	hljs.registerLanguage('javascript', __webpack_require__(252));
-	hljs.registerLanguage('json', __webpack_require__(253));
-	hljs.registerLanguage('julia', __webpack_require__(254));
-	hljs.registerLanguage('kotlin', __webpack_require__(255));
-	hljs.registerLanguage('lasso', __webpack_require__(256));
-	hljs.registerLanguage('ldif', __webpack_require__(257));
-	hljs.registerLanguage('less', __webpack_require__(258));
-	hljs.registerLanguage('lisp', __webpack_require__(259));
-	hljs.registerLanguage('livecodeserver', __webpack_require__(260));
-	hljs.registerLanguage('livescript', __webpack_require__(261));
-	hljs.registerLanguage('lsl', __webpack_require__(262));
-	hljs.registerLanguage('lua', __webpack_require__(263));
-	hljs.registerLanguage('makefile', __webpack_require__(264));
-	hljs.registerLanguage('mathematica', __webpack_require__(265));
-	hljs.registerLanguage('matlab', __webpack_require__(266));
-	hljs.registerLanguage('maxima', __webpack_require__(267));
-	hljs.registerLanguage('mel', __webpack_require__(268));
-	hljs.registerLanguage('mercury', __webpack_require__(269));
-	hljs.registerLanguage('mipsasm', __webpack_require__(270));
-	hljs.registerLanguage('mizar', __webpack_require__(271));
-	hljs.registerLanguage('perl', __webpack_require__(272));
-	hljs.registerLanguage('mojolicious', __webpack_require__(273));
-	hljs.registerLanguage('monkey', __webpack_require__(274));
-	hljs.registerLanguage('moonscript', __webpack_require__(275));
-	hljs.registerLanguage('nginx', __webpack_require__(276));
-	hljs.registerLanguage('nimrod', __webpack_require__(277));
-	hljs.registerLanguage('nix', __webpack_require__(278));
-	hljs.registerLanguage('nsis', __webpack_require__(279));
-	hljs.registerLanguage('objectivec', __webpack_require__(280));
-	hljs.registerLanguage('ocaml', __webpack_require__(281));
-	hljs.registerLanguage('openscad', __webpack_require__(282));
-	hljs.registerLanguage('oxygene', __webpack_require__(283));
-	hljs.registerLanguage('parser3', __webpack_require__(284));
-	hljs.registerLanguage('pf', __webpack_require__(285));
-	hljs.registerLanguage('php', __webpack_require__(286));
-	hljs.registerLanguage('pony', __webpack_require__(287));
-	hljs.registerLanguage('powershell', __webpack_require__(288));
-	hljs.registerLanguage('processing', __webpack_require__(289));
-	hljs.registerLanguage('profile', __webpack_require__(290));
-	hljs.registerLanguage('prolog', __webpack_require__(291));
-	hljs.registerLanguage('protobuf', __webpack_require__(292));
-	hljs.registerLanguage('puppet', __webpack_require__(293));
-	hljs.registerLanguage('purebasic', __webpack_require__(294));
-	hljs.registerLanguage('python', __webpack_require__(295));
-	hljs.registerLanguage('q', __webpack_require__(296));
-	hljs.registerLanguage('qml', __webpack_require__(297));
-	hljs.registerLanguage('r', __webpack_require__(298));
-	hljs.registerLanguage('rib', __webpack_require__(299));
-	hljs.registerLanguage('roboconf', __webpack_require__(300));
-	hljs.registerLanguage('rsl', __webpack_require__(301));
-	hljs.registerLanguage('ruleslanguage', __webpack_require__(302));
-	hljs.registerLanguage('rust', __webpack_require__(303));
-	hljs.registerLanguage('scala', __webpack_require__(304));
-	hljs.registerLanguage('scheme', __webpack_require__(305));
-	hljs.registerLanguage('scilab', __webpack_require__(306));
-	hljs.registerLanguage('scss', __webpack_require__(307));
-	hljs.registerLanguage('smali', __webpack_require__(308));
-	hljs.registerLanguage('smalltalk', __webpack_require__(309));
-	hljs.registerLanguage('sml', __webpack_require__(310));
-	hljs.registerLanguage('sqf', __webpack_require__(311));
-	hljs.registerLanguage('sql', __webpack_require__(312));
-	hljs.registerLanguage('stan', __webpack_require__(313));
-	hljs.registerLanguage('stata', __webpack_require__(314));
-	hljs.registerLanguage('step21', __webpack_require__(315));
-	hljs.registerLanguage('stylus', __webpack_require__(316));
-	hljs.registerLanguage('subunit', __webpack_require__(317));
-	hljs.registerLanguage('swift', __webpack_require__(318));
-	hljs.registerLanguage('taggerscript', __webpack_require__(319));
-	hljs.registerLanguage('yaml', __webpack_require__(320));
-	hljs.registerLanguage('tap', __webpack_require__(321));
-	hljs.registerLanguage('tcl', __webpack_require__(322));
-	hljs.registerLanguage('tex', __webpack_require__(323));
-	hljs.registerLanguage('thrift', __webpack_require__(324));
-	hljs.registerLanguage('tp', __webpack_require__(325));
-	hljs.registerLanguage('twig', __webpack_require__(326));
-	hljs.registerLanguage('typescript', __webpack_require__(327));
-	hljs.registerLanguage('vala', __webpack_require__(328));
-	hljs.registerLanguage('vbnet', __webpack_require__(329));
-	hljs.registerLanguage('vbscript', __webpack_require__(330));
-	hljs.registerLanguage('vbscript-html', __webpack_require__(331));
-	hljs.registerLanguage('verilog', __webpack_require__(332));
-	hljs.registerLanguage('vhdl', __webpack_require__(333));
-	hljs.registerLanguage('vim', __webpack_require__(334));
-	hljs.registerLanguage('x86asm', __webpack_require__(335));
-	hljs.registerLanguage('xl', __webpack_require__(336));
-	hljs.registerLanguage('xquery', __webpack_require__(337));
-	hljs.registerLanguage('zephir', __webpack_require__(338));
+	hljs.registerLanguage('1c', __webpack_require__(175));
+	hljs.registerLanguage('abnf', __webpack_require__(176));
+	hljs.registerLanguage('accesslog', __webpack_require__(177));
+	hljs.registerLanguage('actionscript', __webpack_require__(178));
+	hljs.registerLanguage('ada', __webpack_require__(179));
+	hljs.registerLanguage('apache', __webpack_require__(180));
+	hljs.registerLanguage('applescript', __webpack_require__(181));
+	hljs.registerLanguage('cpp', __webpack_require__(182));
+	hljs.registerLanguage('arduino', __webpack_require__(183));
+	hljs.registerLanguage('armasm', __webpack_require__(184));
+	hljs.registerLanguage('xml', __webpack_require__(185));
+	hljs.registerLanguage('asciidoc', __webpack_require__(186));
+	hljs.registerLanguage('aspectj', __webpack_require__(187));
+	hljs.registerLanguage('autohotkey', __webpack_require__(188));
+	hljs.registerLanguage('autoit', __webpack_require__(189));
+	hljs.registerLanguage('avrasm', __webpack_require__(190));
+	hljs.registerLanguage('awk', __webpack_require__(191));
+	hljs.registerLanguage('axapta', __webpack_require__(192));
+	hljs.registerLanguage('bash', __webpack_require__(193));
+	hljs.registerLanguage('basic', __webpack_require__(194));
+	hljs.registerLanguage('bnf', __webpack_require__(195));
+	hljs.registerLanguage('brainfuck', __webpack_require__(196));
+	hljs.registerLanguage('cal', __webpack_require__(197));
+	hljs.registerLanguage('capnproto', __webpack_require__(198));
+	hljs.registerLanguage('ceylon', __webpack_require__(199));
+	hljs.registerLanguage('clean', __webpack_require__(200));
+	hljs.registerLanguage('clojure', __webpack_require__(201));
+	hljs.registerLanguage('clojure-repl', __webpack_require__(202));
+	hljs.registerLanguage('cmake', __webpack_require__(203));
+	hljs.registerLanguage('coffeescript', __webpack_require__(204));
+	hljs.registerLanguage('coq', __webpack_require__(205));
+	hljs.registerLanguage('cos', __webpack_require__(206));
+	hljs.registerLanguage('crmsh', __webpack_require__(207));
+	hljs.registerLanguage('crystal', __webpack_require__(208));
+	hljs.registerLanguage('cs', __webpack_require__(209));
+	hljs.registerLanguage('csp', __webpack_require__(210));
+	hljs.registerLanguage('css', __webpack_require__(211));
+	hljs.registerLanguage('d', __webpack_require__(212));
+	hljs.registerLanguage('markdown', __webpack_require__(213));
+	hljs.registerLanguage('dart', __webpack_require__(214));
+	hljs.registerLanguage('delphi', __webpack_require__(215));
+	hljs.registerLanguage('diff', __webpack_require__(216));
+	hljs.registerLanguage('django', __webpack_require__(217));
+	hljs.registerLanguage('dns', __webpack_require__(218));
+	hljs.registerLanguage('dockerfile', __webpack_require__(219));
+	hljs.registerLanguage('dos', __webpack_require__(220));
+	hljs.registerLanguage('dsconfig', __webpack_require__(221));
+	hljs.registerLanguage('dts', __webpack_require__(222));
+	hljs.registerLanguage('dust', __webpack_require__(223));
+	hljs.registerLanguage('ebnf', __webpack_require__(224));
+	hljs.registerLanguage('elixir', __webpack_require__(225));
+	hljs.registerLanguage('elm', __webpack_require__(226));
+	hljs.registerLanguage('ruby', __webpack_require__(227));
+	hljs.registerLanguage('erb', __webpack_require__(228));
+	hljs.registerLanguage('erlang-repl', __webpack_require__(229));
+	hljs.registerLanguage('erlang', __webpack_require__(230));
+	hljs.registerLanguage('excel', __webpack_require__(231));
+	hljs.registerLanguage('fix', __webpack_require__(232));
+	hljs.registerLanguage('flix', __webpack_require__(233));
+	hljs.registerLanguage('fortran', __webpack_require__(234));
+	hljs.registerLanguage('fsharp', __webpack_require__(235));
+	hljs.registerLanguage('gams', __webpack_require__(236));
+	hljs.registerLanguage('gauss', __webpack_require__(237));
+	hljs.registerLanguage('gcode', __webpack_require__(238));
+	hljs.registerLanguage('gherkin', __webpack_require__(239));
+	hljs.registerLanguage('glsl', __webpack_require__(240));
+	hljs.registerLanguage('go', __webpack_require__(241));
+	hljs.registerLanguage('golo', __webpack_require__(242));
+	hljs.registerLanguage('gradle', __webpack_require__(243));
+	hljs.registerLanguage('groovy', __webpack_require__(244));
+	hljs.registerLanguage('haml', __webpack_require__(245));
+	hljs.registerLanguage('handlebars', __webpack_require__(246));
+	hljs.registerLanguage('haskell', __webpack_require__(247));
+	hljs.registerLanguage('haxe', __webpack_require__(248));
+	hljs.registerLanguage('hsp', __webpack_require__(249));
+	hljs.registerLanguage('htmlbars', __webpack_require__(250));
+	hljs.registerLanguage('http', __webpack_require__(251));
+	hljs.registerLanguage('hy', __webpack_require__(252));
+	hljs.registerLanguage('inform7', __webpack_require__(253));
+	hljs.registerLanguage('ini', __webpack_require__(254));
+	hljs.registerLanguage('irpf90', __webpack_require__(255));
+	hljs.registerLanguage('java', __webpack_require__(256));
+	hljs.registerLanguage('javascript', __webpack_require__(257));
+	hljs.registerLanguage('jboss-cli', __webpack_require__(258));
+	hljs.registerLanguage('json', __webpack_require__(259));
+	hljs.registerLanguage('julia', __webpack_require__(260));
+	hljs.registerLanguage('julia-repl', __webpack_require__(261));
+	hljs.registerLanguage('kotlin', __webpack_require__(262));
+	hljs.registerLanguage('lasso', __webpack_require__(263));
+	hljs.registerLanguage('ldif', __webpack_require__(264));
+	hljs.registerLanguage('leaf', __webpack_require__(265));
+	hljs.registerLanguage('less', __webpack_require__(266));
+	hljs.registerLanguage('lisp', __webpack_require__(267));
+	hljs.registerLanguage('livecodeserver', __webpack_require__(268));
+	hljs.registerLanguage('livescript', __webpack_require__(269));
+	hljs.registerLanguage('llvm', __webpack_require__(270));
+	hljs.registerLanguage('lsl', __webpack_require__(271));
+	hljs.registerLanguage('lua', __webpack_require__(272));
+	hljs.registerLanguage('makefile', __webpack_require__(273));
+	hljs.registerLanguage('mathematica', __webpack_require__(274));
+	hljs.registerLanguage('matlab', __webpack_require__(275));
+	hljs.registerLanguage('maxima', __webpack_require__(276));
+	hljs.registerLanguage('mel', __webpack_require__(277));
+	hljs.registerLanguage('mercury', __webpack_require__(278));
+	hljs.registerLanguage('mipsasm', __webpack_require__(279));
+	hljs.registerLanguage('mizar', __webpack_require__(280));
+	hljs.registerLanguage('perl', __webpack_require__(281));
+	hljs.registerLanguage('mojolicious', __webpack_require__(282));
+	hljs.registerLanguage('monkey', __webpack_require__(283));
+	hljs.registerLanguage('moonscript', __webpack_require__(284));
+	hljs.registerLanguage('n1ql', __webpack_require__(285));
+	hljs.registerLanguage('nginx', __webpack_require__(286));
+	hljs.registerLanguage('nimrod', __webpack_require__(287));
+	hljs.registerLanguage('nix', __webpack_require__(288));
+	hljs.registerLanguage('nsis', __webpack_require__(289));
+	hljs.registerLanguage('objectivec', __webpack_require__(290));
+	hljs.registerLanguage('ocaml', __webpack_require__(291));
+	hljs.registerLanguage('openscad', __webpack_require__(292));
+	hljs.registerLanguage('oxygene', __webpack_require__(293));
+	hljs.registerLanguage('parser3', __webpack_require__(294));
+	hljs.registerLanguage('pf', __webpack_require__(295));
+	hljs.registerLanguage('php', __webpack_require__(296));
+	hljs.registerLanguage('pony', __webpack_require__(297));
+	hljs.registerLanguage('powershell', __webpack_require__(298));
+	hljs.registerLanguage('processing', __webpack_require__(299));
+	hljs.registerLanguage('profile', __webpack_require__(300));
+	hljs.registerLanguage('prolog', __webpack_require__(301));
+	hljs.registerLanguage('protobuf', __webpack_require__(302));
+	hljs.registerLanguage('puppet', __webpack_require__(303));
+	hljs.registerLanguage('purebasic', __webpack_require__(304));
+	hljs.registerLanguage('python', __webpack_require__(305));
+	hljs.registerLanguage('q', __webpack_require__(306));
+	hljs.registerLanguage('qml', __webpack_require__(307));
+	hljs.registerLanguage('r', __webpack_require__(308));
+	hljs.registerLanguage('rib', __webpack_require__(309));
+	hljs.registerLanguage('roboconf', __webpack_require__(310));
+	hljs.registerLanguage('routeros', __webpack_require__(311));
+	hljs.registerLanguage('rsl', __webpack_require__(312));
+	hljs.registerLanguage('ruleslanguage', __webpack_require__(313));
+	hljs.registerLanguage('rust', __webpack_require__(314));
+	hljs.registerLanguage('scala', __webpack_require__(315));
+	hljs.registerLanguage('scheme', __webpack_require__(316));
+	hljs.registerLanguage('scilab', __webpack_require__(317));
+	hljs.registerLanguage('scss', __webpack_require__(318));
+	hljs.registerLanguage('shell', __webpack_require__(319));
+	hljs.registerLanguage('smali', __webpack_require__(320));
+	hljs.registerLanguage('smalltalk', __webpack_require__(321));
+	hljs.registerLanguage('sml', __webpack_require__(322));
+	hljs.registerLanguage('sqf', __webpack_require__(323));
+	hljs.registerLanguage('sql', __webpack_require__(324));
+	hljs.registerLanguage('stan', __webpack_require__(325));
+	hljs.registerLanguage('stata', __webpack_require__(326));
+	hljs.registerLanguage('step21', __webpack_require__(327));
+	hljs.registerLanguage('stylus', __webpack_require__(328));
+	hljs.registerLanguage('subunit', __webpack_require__(329));
+	hljs.registerLanguage('swift', __webpack_require__(330));
+	hljs.registerLanguage('taggerscript', __webpack_require__(331));
+	hljs.registerLanguage('yaml', __webpack_require__(332));
+	hljs.registerLanguage('tap', __webpack_require__(333));
+	hljs.registerLanguage('tcl', __webpack_require__(334));
+	hljs.registerLanguage('tex', __webpack_require__(335));
+	hljs.registerLanguage('thrift', __webpack_require__(336));
+	hljs.registerLanguage('tp', __webpack_require__(337));
+	hljs.registerLanguage('twig', __webpack_require__(338));
+	hljs.registerLanguage('typescript', __webpack_require__(339));
+	hljs.registerLanguage('vala', __webpack_require__(340));
+	hljs.registerLanguage('vbnet', __webpack_require__(341));
+	hljs.registerLanguage('vbscript', __webpack_require__(342));
+	hljs.registerLanguage('vbscript-html', __webpack_require__(343));
+	hljs.registerLanguage('verilog', __webpack_require__(344));
+	hljs.registerLanguage('vhdl', __webpack_require__(345));
+	hljs.registerLanguage('vim', __webpack_require__(346));
+	hljs.registerLanguage('x86asm', __webpack_require__(347));
+	hljs.registerLanguage('xl', __webpack_require__(348));
+	hljs.registerLanguage('xquery', __webpack_require__(349));
+	hljs.registerLanguage('zephir', __webpack_require__(350));
 
 	module.exports = hljs;
 
-/***/ },
-/* 170 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 174 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/*
 	Syntax highlighting with language autodetection.
@@ -20402,19 +20819,11 @@
 	    languages: undefined
 	  };
 
-	  // Object map that is used to escape some common HTML characters.
-	  var escapeRegexMap = {
-	    '&': '&amp;',
-	    '<': '&lt;',
-	    '>': '&gt;'
-	  };
 
 	  /* Utility functions */
 
 	  function escape(value) {
-	    return value.replace(/[&<>]/gm, function(character) {
-	      return escapeRegexMap[character];
-	    });
+	    return value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 	  }
 
 	  function tag(node) {
@@ -20453,15 +20862,17 @@
 	    }
 	  }
 
-	  function inherit(parent, obj) {
+	  function inherit(parent) {  // inherit(parent, override_obj, override_obj, ...)
 	    var key;
 	    var result = {};
+	    var objects = Array.prototype.slice.call(arguments, 1);
 
 	    for (key in parent)
 	      result[key] = parent[key];
-	    if (obj)
+	    objects.forEach(function(obj) {
 	      for (key in obj)
 	        result[key] = obj[key];
+	    });
 	    return result;
 	  }
 
@@ -20529,7 +20940,7 @@
 	    }
 
 	    function open(node) {
-	      function attr_str(a) {return ' ' + a.nodeName + '="' + escape(a.value) + '"';}
+	      function attr_str(a) {return ' ' + a.nodeName + '="' + escape(a.value).replace('"', '&quot;') + '"';}
 	      result += '<' + tag(node) + ArrayProto.map.call(node.attributes, attr_str).join('') + '>';
 	    }
 
@@ -20543,7 +20954,7 @@
 
 	    while (original.length || highlighted.length) {
 	      var stream = selectStream();
-	      result += escape(value.substr(processed, stream[0].offset - processed));
+	      result += escape(value.substring(processed, stream[0].offset));
 	      processed = stream[0].offset;
 	      if (stream === original) {
 	        /*
@@ -20571,6 +20982,15 @@
 	  }
 
 	  /* Initialization */
+
+	  function expand_mode(mode) {
+	    if (mode.variants && !mode.cached_variants) {
+	      mode.cached_variants = mode.variants.map(function(variant) {
+	        return inherit(mode, {variants: null}, variant);
+	      });
+	    }
+	    return mode.cached_variants || (mode.endsWithParent && [inherit(mode)]) || [mode];
+	  }
 
 	  function compileLanguage(language) {
 
@@ -20637,15 +21057,9 @@
 	      if (!mode.contains) {
 	        mode.contains = [];
 	      }
-	      var expanded_contains = [];
-	      mode.contains.forEach(function(c) {
-	        if (c.variants) {
-	          c.variants.forEach(function(v) {expanded_contains.push(inherit(c, v));});
-	        } else {
-	          expanded_contains.push(c === 'self' ? mode : c);
-	        }
-	      });
-	      mode.contains = expanded_contains;
+	      mode.contains = Array.prototype.concat.apply([], mode.contains.map(function(c) {
+	        return expand_mode(c === 'self' ? mode : c)
+	      }));
 	      mode.contains.forEach(function(c) {compileMode(c, mode);});
 
 	      if (mode.starts) {
@@ -20729,7 +21143,7 @@
 	      match = top.lexemesRe.exec(mode_buffer);
 
 	      while (match) {
-	        result += escape(mode_buffer.substr(last_index, match.index - last_index));
+	        result += escape(mode_buffer.substring(last_index, match.index));
 	        keyword_match = keywordMatch(top, match);
 	        if (keyword_match) {
 	          relevance += keyword_match[1];
@@ -20866,7 +21280,7 @@
 	        match = top.terminators.exec(value);
 	        if (!match)
 	          break;
-	        count = processLexeme(value.substr(index, match.index - index), match[0]);
+	        count = processLexeme(value.substring(index, match.index), match[0]);
 	        index = match.index + count;
 	      }
 	      processLexeme(value.substr(index));
@@ -20944,6 +21358,7 @@
 	          } else if (options.tabReplace) {
 	            return p1.replace(/\t/g, options.tabReplace);
 	          }
+	          return '';
 	      });
 	  }
 
@@ -21086,7 +21501,7 @@
 	    contains: [hljs.BACKSLASH_ESCAPE]
 	  };
 	  hljs.PHRASAL_WORDS_MODE = {
-	    begin: /\b(a|an|the|are|I'm|isn't|don't|doesn't|won't|but|just|should|pretty|simply|enough|gonna|going|wtf|so|such|will|you|your|like)\b/
+	    begin: /\b(a|an|the|are|I'm|isn't|don't|doesn't|won't|but|just|should|pretty|simply|enough|gonna|going|wtf|so|such|will|you|your|they|like|more)\b/
 	  };
 	  hljs.COMMENT = function (begin, end, inherits) {
 	    var mode = hljs.inherit(
@@ -21169,92 +21584,523 @@
 	}));
 
 
-/***/ },
-/* 171 */
-/***/ function(module, exports) {
+/***/ }),
+/* 175 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs){
-	  var IDENT_RE_RU = '[a-zA-Zа-яА-Я][a-zA-Z0-9_а-яА-Я]*';
-	  var OneS_KEYWORDS = 'возврат дата для если и или иначе иначеесли исключение конецесли ' +
-	    'конецпопытки конецпроцедуры конецфункции конеццикла константа не перейти перем ' +
-	    'перечисление по пока попытка прервать продолжить процедура строка тогда фс функция цикл ' +
-	    'число экспорт';
-	  var OneS_BUILT_IN = 'ansitooem oemtoansi ввестивидсубконто ввестидату ввестизначение ' +
-	    'ввестиперечисление ввестипериод ввестиплансчетов ввестистроку ввестичисло вопрос ' +
-	    'восстановитьзначение врег выбранныйплансчетов вызватьисключение датагод датамесяц ' +
-	    'датачисло добавитьмесяц завершитьработусистемы заголовоксистемы записьжурналарегистрации ' +
-	    'запуститьприложение зафиксироватьтранзакцию значениевстроку значениевстрокувнутр ' +
-	    'значениевфайл значениеизстроки значениеизстрокивнутр значениеизфайла имякомпьютера ' +
-	    'имяпользователя каталогвременныхфайлов каталогиб каталогпользователя каталогпрограммы ' +
-	    'кодсимв командасистемы конгода конецпериодаби конецрассчитанногопериодаби ' +
-	    'конецстандартногоинтервала конквартала конмесяца коннедели лев лог лог10 макс ' +
-	    'максимальноеколичествосубконто мин монопольныйрежим названиеинтерфейса названиенабораправ ' +
-	    'назначитьвид назначитьсчет найти найтипомеченныенаудаление найтиссылки началопериодаби ' +
-	    'началостандартногоинтервала начатьтранзакцию начгода начквартала начмесяца начнедели ' +
-	    'номерднягода номерднянедели номернеделигода нрег обработкаожидания окр описаниеошибки ' +
-	    'основнойжурналрасчетов основнойплансчетов основнойязык открытьформу открытьформумодально ' +
-	    'отменитьтранзакцию очиститьокносообщений периодстр полноеимяпользователя получитьвремята ' +
-	    'получитьдатута получитьдокументта получитьзначенияотбора получитьпозициюта ' +
-	    'получитьпустоезначение получитьта прав праводоступа предупреждение префиксавтонумерации ' +
-	    'пустаястрока пустоезначение рабочаядаттьпустоезначение рабочаядата разделительстраниц ' +
-	    'разделительстрок разм разобратьпозициюдокумента рассчитатьрегистрына ' +
-	    'рассчитатьрегистрыпо сигнал симв символтабуляции создатьобъект сокрл сокрлп сокрп ' +
-	    'сообщить состояние сохранитьзначение сред статусвозврата стрдлина стрзаменить ' +
-	    'стрколичествострок стрполучитьстроку  стрчисловхождений сформироватьпозициюдокумента ' +
-	    'счетпокоду текущаядата текущеевремя типзначения типзначениястр удалитьобъекты ' +
-	    'установитьтана установитьтапо фиксшаблон формат цел шаблон';
-	  var DQUOTE =  {begin: '""'};
-	  var STR_START = {
-	      className: 'string',
-	      begin: '"', end: '"|$',
-	      contains: [DQUOTE]
-	    };
-	  var STR_CONT = {
+
+	  // общий паттерн для определения идентификаторов
+	  var UNDERSCORE_IDENT_RE = '[A-Za-zА-Яа-яёЁ_][A-Za-zА-Яа-яёЁ_0-9]+';
+	  
+	  // v7 уникальные ключевые слова, отсутствующие в v8 ==> keyword
+	  var v7_keywords =
+	  'далее ';
+
+	  // v8 ключевые слова ==> keyword
+	  var v8_keywords =
+	  'возврат вызватьисключение выполнить для если и из или иначе иначеесли исключение каждого конецесли ' +
+	  'конецпопытки конеццикла не новый перейти перем по пока попытка прервать продолжить тогда цикл экспорт ';
+
+	  // keyword : ключевые слова
+	  var KEYWORD = v7_keywords + v8_keywords;
+	  
+	  // v7 уникальные директивы, отсутствующие в v8 ==> meta-keyword
+	  var v7_meta_keywords =
+	  'загрузитьизфайла ';
+
+	  // v8 ключевые слова в инструкциях препроцессора, директивах компиляции, аннотациях ==> meta-keyword
+	  var v8_meta_keywords =
+	  'вебклиент вместо внешнеесоединение клиент конецобласти мобильноеприложениеклиент мобильноеприложениесервер ' +
+	  'наклиенте наклиентенасервере наклиентенасерверебезконтекста насервере насерверебезконтекста область перед ' +
+	  'после сервер толстыйклиентобычноеприложение толстыйклиентуправляемоеприложение тонкийклиент ';
+
+	  // meta-keyword : ключевые слова в инструкциях препроцессора, директивах компиляции, аннотациях
+	  var METAKEYWORD = v7_meta_keywords + v8_meta_keywords;
+
+	  // v7 системные константы ==> built_in
+	  var v7_system_constants =
+	  'разделительстраниц разделительстрок символтабуляции ';
+	  
+	  // v7 уникальные методы глобального контекста, отсутствующие в v8 ==> built_in
+	  var v7_global_context_methods =
+	  'ansitooem oemtoansi ввестивидсубконто ввестиперечисление ввестипериод ввестиплансчетов выбранныйплансчетов ' +
+	  'датагод датамесяц датачисло заголовоксистемы значениевстроку значениеизстроки каталогиб каталогпользователя ' +
+	  'кодсимв конгода конецпериодаби конецрассчитанногопериодаби конецстандартногоинтервала конквартала конмесяца ' +
+	  'коннедели лог лог10 максимальноеколичествосубконто названиеинтерфейса названиенабораправ назначитьвид ' +
+	  'назначитьсчет найтиссылки началопериодаби началостандартногоинтервала начгода начквартала начмесяца ' +
+	  'начнедели номерднягода номерднянедели номернеделигода обработкаожидания основнойжурналрасчетов ' +
+	  'основнойплансчетов основнойязык очиститьокносообщений периодстр получитьвремята получитьдатута ' +
+	  'получитьдокументта получитьзначенияотбора получитьпозициюта получитьпустоезначение получитьта ' +
+	  'префиксавтонумерации пропись пустоезначение разм разобратьпозициюдокумента рассчитатьрегистрына ' +
+	  'рассчитатьрегистрыпо симв создатьобъект статусвозврата стрколичествострок сформироватьпозициюдокумента ' +
+	  'счетпокоду текущеевремя типзначения типзначениястр установитьтана установитьтапо фиксшаблон шаблон ';
+	  
+	  // v8 методы глобального контекста ==> built_in
+	  var v8_global_context_methods =
+	  'acos asin atan base64значение base64строка cos exp log log10 pow sin sqrt tan xmlзначение xmlстрока ' +
+	  'xmlтип xmlтипзнч активноеокно безопасныйрежим безопасныйрежимразделенияданных булево ввестидату ввестизначение ' +
+	  'ввестистроку ввестичисло возможностьчтенияxml вопрос восстановитьзначение врег выгрузитьжурналрегистрации ' +
+	  'выполнитьобработкуоповещения выполнитьпроверкуправдоступа вычислить год данныеформывзначение дата день деньгода ' +
+	  'деньнедели добавитьмесяц заблокироватьданныедляредактирования заблокироватьработупользователя завершитьработусистемы ' +
+	  'загрузитьвнешнююкомпоненту закрытьсправку записатьjson записатьxml записатьдатуjson записьжурналарегистрации ' +
+	  'заполнитьзначениясвойств запроситьразрешениепользователя запуститьприложение запуститьсистему зафиксироватьтранзакцию ' +
+	  'значениевданныеформы значениевстрокувнутр значениевфайл значениезаполнено значениеизстрокивнутр значениеизфайла ' +
+	  'изxmlтипа импортмоделиxdto имякомпьютера имяпользователя инициализироватьпредопределенныеданные информацияобошибке ' +
+	  'каталогбиблиотекимобильногоустройства каталогвременныхфайлов каталогдокументов каталогпрограммы кодироватьстроку ' +
+	  'кодлокализацииинформационнойбазы кодсимвола командасистемы конецгода конецдня конецквартала конецмесяца конецминуты ' +
+	  'конецнедели конецчаса конфигурациябазыданныхизмененадинамически конфигурацияизменена копироватьданныеформы ' +
+	  'копироватьфайл краткоепредставлениеошибки лев макс местноевремя месяц мин минута монопольныйрежим найти ' +
+	  'найтинедопустимыесимволыxml найтиокнопонавигационнойссылке найтипомеченныенаудаление найтипоссылкам найтифайлы ' +
+	  'началогода началодня началоквартала началомесяца началоминуты началонедели началочаса начатьзапросразрешенияпользователя ' +
+	  'начатьзапускприложения начатькопированиефайла начатьперемещениефайла начатьподключениевнешнейкомпоненты ' +
+	  'начатьподключениерасширенияработыскриптографией начатьподключениерасширенияработысфайлами начатьпоискфайлов ' +
+	  'начатьполучениекаталогавременныхфайлов начатьполучениекаталогадокументов начатьполучениерабочегокаталогаданныхпользователя ' +
+	  'начатьполучениефайлов начатьпомещениефайла начатьпомещениефайлов начатьсозданиедвоичныхданныхизфайла начатьсозданиекаталога ' +
+	  'начатьтранзакцию начатьудалениефайлов начатьустановкувнешнейкомпоненты начатьустановкурасширенияработыскриптографией ' +
+	  'начатьустановкурасширенияработысфайлами неделягода необходимостьзавершениясоединения номерсеансаинформационнойбазы ' +
+	  'номерсоединенияинформационнойбазы нрег нстр обновитьинтерфейс обновитьнумерациюобъектов обновитьповторноиспользуемыезначения ' +
+	  'обработкапрерыванияпользователя объединитьфайлы окр описаниеошибки оповестить оповеститьобизменении ' +
+	  'отключитьобработчикзапросанастроекклиенталицензирования отключитьобработчикожидания отключитьобработчикоповещения ' +
+	  'открытьзначение открытьиндекссправки открытьсодержаниесправки открытьсправку открытьформу открытьформумодально ' +
+	  'отменитьтранзакцию очиститьжурналрегистрации очиститьнастройкипользователя очиститьсообщения параметрыдоступа ' +
+	  'перейтипонавигационнойссылке переместитьфайл подключитьвнешнююкомпоненту ' +
+	  'подключитьобработчикзапросанастроекклиенталицензирования подключитьобработчикожидания подключитьобработчикоповещения ' +
+	  'подключитьрасширениеработыскриптографией подключитьрасширениеработысфайлами подробноепредставлениеошибки ' +
+	  'показатьвводдаты показатьвводзначения показатьвводстроки показатьвводчисла показатьвопрос показатьзначение ' +
+	  'показатьинформациюобошибке показатьнакарте показатьоповещениепользователя показатьпредупреждение полноеимяпользователя ' +
+	  'получитьcomобъект получитьxmlтип получитьадреспоместоположению получитьблокировкусеансов получитьвремязавершенияспящегосеанса ' +
+	  'получитьвремязасыпанияпассивногосеанса получитьвремяожиданияблокировкиданных получитьданныевыбора ' +
+	  'получитьдополнительныйпараметрклиенталицензирования получитьдопустимыекодылокализации получитьдопустимыечасовыепояса ' +
+	  'получитьзаголовокклиентскогоприложения получитьзаголовоксистемы получитьзначенияотборажурналарегистрации ' +
+	  'получитьидентификаторконфигурации получитьизвременногохранилища получитьимявременногофайла ' +
+	  'получитьимяклиенталицензирования получитьинформациюэкрановклиента получитьиспользованиежурналарегистрации ' +
+	  'получитьиспользованиесобытияжурналарегистрации получитькраткийзаголовокприложения получитьмакетоформления ' +
+	  'получитьмаскувсефайлы получитьмаскувсефайлыклиента получитьмаскувсефайлысервера получитьместоположениепоадресу ' +
+	  'получитьминимальнуюдлинупаролейпользователей получитьнавигационнуюссылку получитьнавигационнуюссылкуинформационнойбазы ' +
+	  'получитьобновлениеконфигурациибазыданных получитьобновлениепредопределенныхданныхинформационнойбазы получитьобщиймакет ' +
+	  'получитьобщуюформу получитьокна получитьоперативнуюотметкувремени получитьотключениебезопасногорежима ' +
+	  'получитьпараметрыфункциональныхопцийинтерфейса получитьполноеимяпредопределенногозначения ' +
+	  'получитьпредставлениянавигационныхссылок получитьпроверкусложностипаролейпользователей получитьразделительпути ' +
+	  'получитьразделительпутиклиента получитьразделительпутисервера получитьсеансыинформационнойбазы ' +
+	  'получитьскоростьклиентскогосоединения получитьсоединенияинформационнойбазы получитьсообщенияпользователю ' +
+	  'получитьсоответствиеобъектаиформы получитьсоставстандартногоинтерфейсаodata получитьструктурухранениябазыданных ' +
+	  'получитьтекущийсеансинформационнойбазы получитьфайл получитьфайлы получитьформу получитьфункциональнуюопцию ' +
+	  'получитьфункциональнуюопциюинтерфейса получитьчасовойпоясинформационнойбазы пользователиос поместитьвовременноехранилище ' +
+	  'поместитьфайл поместитьфайлы прав праводоступа предопределенноезначение представлениекодалокализации представлениепериода ' +
+	  'представлениеправа представлениеприложения представлениесобытияжурналарегистрации представлениечасовогопояса предупреждение ' +
+	  'прекратитьработусистемы привилегированныйрежим продолжитьвызов прочитатьjson прочитатьxml прочитатьдатуjson пустаястрока ' +
+	  'рабочийкаталогданныхпользователя разблокироватьданныедляредактирования разделитьфайл разорватьсоединениесвнешнимисточникомданных ' +
+	  'раскодироватьстроку рольдоступна секунда сигнал символ скопироватьжурналрегистрации смещениелетнеговремени ' +
+	  'смещениестандартноговремени соединитьбуферыдвоичныхданных создатькаталог создатьфабрикуxdto сокрл сокрлп сокрп сообщить ' +
+	  'состояние сохранитьзначение сохранитьнастройкипользователя сред стрдлина стрзаканчиваетсяна стрзаменить стрнайти стрначинаетсяс ' +
+	  'строка строкасоединенияинформационнойбазы стрполучитьстроку стрразделить стрсоединить стрсравнить стрчисловхождений '+
+	  'стрчислострок стршаблон текущаядата текущаядатасеанса текущаяуниверсальнаядата текущаяуниверсальнаядатавмиллисекундах ' +
+	  'текущийвариантинтерфейсаклиентскогоприложения текущийвариантосновногошрифтаклиентскогоприложения текущийкодлокализации ' +
+	  'текущийрежимзапуска текущийязык текущийязыксистемы тип типзнч транзакцияактивна трег удалитьданныеинформационнойбазы ' +
+	  'удалитьизвременногохранилища удалитьобъекты удалитьфайлы универсальноевремя установитьбезопасныйрежим ' +
+	  'установитьбезопасныйрежимразделенияданных установитьблокировкусеансов установитьвнешнююкомпоненту ' +
+	  'установитьвремязавершенияспящегосеанса установитьвремязасыпанияпассивногосеанса установитьвремяожиданияблокировкиданных ' +
+	  'установитьзаголовокклиентскогоприложения установитьзаголовоксистемы установитьиспользованиежурналарегистрации ' +
+	  'установитьиспользованиесобытияжурналарегистрации установитькраткийзаголовокприложения ' +
+	  'установитьминимальнуюдлинупаролейпользователей установитьмонопольныйрежим установитьнастройкиклиенталицензирования ' +
+	  'установитьобновлениепредопределенныхданныхинформационнойбазы установитьотключениебезопасногорежима ' +
+	  'установитьпараметрыфункциональныхопцийинтерфейса установитьпривилегированныйрежим ' +
+	  'установитьпроверкусложностипаролейпользователей установитьрасширениеработыскриптографией ' +
+	  'установитьрасширениеработысфайлами установитьсоединениесвнешнимисточникомданных установитьсоответствиеобъектаиформы ' +
+	  'установитьсоставстандартногоинтерфейсаodata установитьчасовойпоясинформационнойбазы установитьчасовойпояссеанса ' +
+	  'формат цел час часовойпояс часовойпояссеанса число числопрописью этоадресвременногохранилища ';
+
+	  // v8 свойства глобального контекста ==> built_in
+	  var v8_global_context_property =
+	  'wsссылки библиотекакартинок библиотекамакетовоформлениякомпоновкиданных библиотекастилей бизнеспроцессы ' +
+	  'внешниеисточникиданных внешниеобработки внешниеотчеты встроенныепокупки главныйинтерфейс главныйстиль ' +
+	  'документы доставляемыеуведомления журналыдокументов задачи информацияобинтернетсоединении использованиерабочейдаты ' +
+	  'историяработыпользователя константы критерииотбора метаданные обработки отображениерекламы отправкадоставляемыхуведомлений ' +
+	  'отчеты панельзадачос параметрзапуска параметрысеанса перечисления планывидоврасчета планывидовхарактеристик ' +
+	  'планыобмена планысчетов полнотекстовыйпоиск пользователиинформационнойбазы последовательности проверкавстроенныхпокупок ' +
+	  'рабочаядата расширенияконфигурации регистрыбухгалтерии регистрынакопления регистрырасчета регистрысведений ' +
+	  'регламентныезадания сериализаторxdto справочники средствагеопозиционирования средствакриптографии средствамультимедиа ' +
+	  'средстваотображениярекламы средствапочты средствателефонии фабрикаxdto файловыепотоки фоновыезадания хранилищанастроек ' +
+	  'хранилищевариантовотчетов хранилищенастроекданныхформ хранилищеобщихнастроек хранилищепользовательскихнастроекдинамическихсписков ' +
+	  'хранилищепользовательскихнастроекотчетов хранилищесистемныхнастроек ';
+
+	  // built_in : встроенные или библиотечные объекты (константы, классы, функции)
+	  var BUILTIN =
+	  v7_system_constants +
+	  v7_global_context_methods + v8_global_context_methods +
+	  v8_global_context_property;
+	  
+	  // v8 системные наборы значений ==> class
+	  var v8_system_sets_of_values =
+	  'webцвета windowsцвета windowsшрифты библиотекакартинок рамкистиля символы цветастиля шрифтыстиля ';
+
+	  // v8 системные перечисления - интерфейсные ==> class
+	  var v8_system_enums_interface =
+	  'автоматическоесохранениеданныхформывнастройках автонумерациявформе автораздвижениесерий ' +
+	  'анимациядиаграммы вариантвыравниванияэлементовизаголовков вариантуправлениявысотойтаблицы ' +
+	  'вертикальнаяпрокруткаформы вертикальноеположение вертикальноеположениеэлемента видгруппыформы ' +
+	  'виддекорацииформы виддополненияэлементаформы видизмененияданных видкнопкиформы видпереключателя ' +
+	  'видподписейкдиаграмме видполяформы видфлажка влияниеразмеранапузырекдиаграммы горизонтальноеположение ' +
+	  'горизонтальноеположениеэлемента группировкаколонок группировкаподчиненныхэлементовформы ' +
+	  'группыиэлементы действиеперетаскивания дополнительныйрежимотображения допустимыедействияперетаскивания ' +
+	  'интервалмеждуэлементамиформы использованиевывода использованиеполосыпрокрутки ' +
+	  'используемоезначениеточкибиржевойдиаграммы историявыборапривводе источникзначенийоситочекдиаграммы ' +
+	  'источникзначенияразмерапузырькадиаграммы категориягруппыкоманд максимумсерий начальноеотображениедерева ' +
+	  'начальноеотображениесписка обновлениетекстаредактирования ориентациядендрограммы ориентациядиаграммы ' +
+	  'ориентацияметокдиаграммы ориентацияметоксводнойдиаграммы ориентацияэлементаформы отображениевдиаграмме ' +
+	  'отображениевлегендедиаграммы отображениегруппыкнопок отображениезаголовкашкалыдиаграммы ' +
+	  'отображениезначенийсводнойдиаграммы отображениезначенияизмерительнойдиаграммы ' +
+	  'отображениеинтерваладиаграммыганта отображениекнопки отображениекнопкивыбора отображениеобсужденийформы ' +
+	  'отображениеобычнойгруппы отображениеотрицательныхзначенийпузырьковойдиаграммы отображениепанелипоиска ' +
+	  'отображениеподсказки отображениепредупрежденияприредактировании отображениеразметкиполосырегулирования ' +
+	  'отображениестраницформы отображениетаблицы отображениетекстазначениядиаграммыганта ' +
+	  'отображениеуправленияобычнойгруппы отображениефигурыкнопки палитрацветовдиаграммы поведениеобычнойгруппы ' +
+	  'поддержкамасштабадендрограммы поддержкамасштабадиаграммыганта поддержкамасштабасводнойдиаграммы ' +
+	  'поисквтаблицепривводе положениезаголовкаэлементаформы положениекартинкикнопкиформы ' +
+	  'положениекартинкиэлементаграфическойсхемы положениекоманднойпанелиформы положениекоманднойпанелиэлементаформы ' +
+	  'положениеопорнойточкиотрисовки положениеподписейкдиаграмме положениеподписейшкалызначенийизмерительнойдиаграммы ' +
+	  'положениесостоянияпросмотра положениестрокипоиска положениетекстасоединительнойлинии положениеуправленияпоиском ' +
+	  'положениешкалывремени порядокотображенияточекгоризонтальнойгистограммы порядоксерийвлегендедиаграммы ' +
+	  'размеркартинки расположениезаголовкашкалыдиаграммы растягиваниеповертикалидиаграммыганта ' +
+	  'режимавтоотображениясостояния режимвводастроктаблицы режимвыборанезаполненного режимвыделениядаты ' +
+	  'режимвыделениястрокитаблицы режимвыделениятаблицы режимизмененияразмера режимизменениясвязанногозначения ' +
+	  'режимиспользованиядиалогапечати режимиспользованияпараметракоманды режиммасштабированияпросмотра ' +
+	  'режимосновногоокнаклиентскогоприложения режимоткрытияокнаформы режимотображениявыделения ' +
+	  'режимотображениягеографическойсхемы режимотображениязначенийсерии режимотрисовкисеткиграфическойсхемы ' +
+	  'режимполупрозрачностидиаграммы режимпробеловдиаграммы режимразмещениянастранице режимредактированияколонки ' +
+	  'режимсглаживаниядиаграммы режимсглаживанияиндикатора режимсписказадач сквозноевыравнивание ' +
+	  'сохранениеданныхформывнастройках способзаполнениятекстазаголовкашкалыдиаграммы ' +
+	  'способопределенияограничивающегозначениядиаграммы стандартнаягруппакоманд стандартноеоформление ' +
+	  'статусоповещенияпользователя стильстрелки типаппроксимациилиниитрендадиаграммы типдиаграммы ' +
+	  'типединицышкалывремени типимпортасерийслоягеографическойсхемы типлиниигеографическойсхемы типлиниидиаграммы ' +
+	  'типмаркерагеографическойсхемы типмаркерадиаграммы типобластиоформления ' +
+	  'типорганизацииисточникаданныхгеографическойсхемы типотображениясериислоягеографическойсхемы ' +
+	  'типотображенияточечногообъектагеографическойсхемы типотображенияшкалыэлементалегендыгеографическойсхемы ' +
+	  'типпоискаобъектовгеографическойсхемы типпроекциигеографическойсхемы типразмещенияизмерений ' +
+	  'типразмещенияреквизитовизмерений типрамкиэлементауправления типсводнойдиаграммы ' +
+	  'типсвязидиаграммыганта типсоединениязначенийпосериямдиаграммы типсоединенияточекдиаграммы ' +
+	  'типсоединительнойлинии типстороныэлементаграфическойсхемы типформыотчета типшкалырадарнойдиаграммы ' +
+	  'факторлиниитрендадиаграммы фигуракнопки фигурыграфическойсхемы фиксациявтаблице форматдняшкалывремени ' +
+	  'форматкартинки ширинаподчиненныхэлементовформы ';
+
+	  // v8 системные перечисления - свойства прикладных объектов ==> class
+	  var v8_system_enums_objects_properties =
+	  'виддвижениябухгалтерии виддвижениянакопления видпериодарегистрарасчета видсчета видточкимаршрутабизнеспроцесса ' +
+	  'использованиеагрегатарегистранакопления использованиегруппиэлементов использованиережимапроведения ' +
+	  'использованиесреза периодичностьагрегатарегистранакопления режимавтовремя режимзаписидокумента режимпроведениядокумента ';
+
+	  // v8 системные перечисления - планы обмена ==> class
+	  var v8_system_enums_exchange_plans =
+	  'авторегистрацияизменений допустимыйномерсообщения отправкаэлементаданных получениеэлементаданных ';
+
+	  // v8 системные перечисления - табличный документ ==> class
+	  var v8_system_enums_tabular_document =
+	  'использованиерасшифровкитабличногодокумента ориентациястраницы положениеитоговколоноксводнойтаблицы ' +
+	  'положениеитоговстроксводнойтаблицы положениетекстаотносительнокартинки расположениезаголовкагруппировкитабличногодокумента ' +
+	  'способчтениязначенийтабличногодокумента типдвустороннейпечати типзаполненияобластитабличногодокумента ' +
+	  'типкурсоровтабличногодокумента типлиниирисункатабличногодокумента типлинииячейкитабличногодокумента ' +
+	  'типнаправленияпереходатабличногодокумента типотображениявыделениятабличногодокумента типотображениялинийсводнойтаблицы ' +
+	  'типразмещениятекстатабличногодокумента типрисункатабличногодокумента типсмещениятабличногодокумента ' +
+	  'типузоратабличногодокумента типфайлатабличногодокумента точностьпечати чередованиерасположениястраниц ';
+
+	  // v8 системные перечисления - планировщик ==> class
+	  var v8_system_enums_sheduler =
+	  'отображениевремениэлементовпланировщика ';
+
+	  // v8 системные перечисления - форматированный документ ==> class
+	  var v8_system_enums_formatted_document =
+	  'типфайлаформатированногодокумента ';
+
+	  // v8 системные перечисления - запрос ==> class
+	  var v8_system_enums_query =
+	  'обходрезультатазапроса типзаписизапроса ';
+
+	  // v8 системные перечисления - построитель отчета ==> class
+	  var v8_system_enums_report_builder =
+	  'видзаполнениярасшифровкипостроителяотчета типдобавленияпредставлений типизмеренияпостроителяотчета типразмещенияитогов ';
+
+	  // v8 системные перечисления - работа с файлами ==> class
+	  var v8_system_enums_files =
+	  'доступкфайлу режимдиалогавыборафайла режимоткрытияфайла ';
+
+	  // v8 системные перечисления - построитель запроса ==> class
+	  var v8_system_enums_query_builder =
+	  'типизмеренияпостроителязапроса ';
+
+	  // v8 системные перечисления - анализ данных ==> class
+	  var v8_system_enums_data_analysis =
+	  'видданныханализа методкластеризации типединицыинтервалавременианализаданных типзаполнениятаблицырезультатаанализаданных ' +
+	  'типиспользованиячисловыхзначенийанализаданных типисточникаданныхпоискаассоциаций типколонкианализаданныхдереворешений ' +
+	  'типколонкианализаданныхкластеризация типколонкианализаданныхобщаястатистика типколонкианализаданныхпоискассоциаций ' +
+	  'типколонкианализаданныхпоискпоследовательностей типколонкимоделипрогноза типмерырасстоянияанализаданных ' +
+	  'типотсеченияправилассоциации типполяанализаданных типстандартизациианализаданных типупорядочиванияправилассоциациианализаданных ' +
+	  'типупорядочиванияшаблоновпоследовательностейанализаданных типупрощениядереварешений ';
+
+	  // v8 системные перечисления - xml, json, xs, dom, xdto, web-сервисы ==> class
+	  var v8_system_enums_xml_json_xs_dom_xdto_ws =
+	  'wsнаправлениепараметра вариантxpathxs вариантзаписидатыjson вариантпростоготипаxs видгруппымоделиxs видфасетаxdto ' +
+	  'действиепостроителяdom завершенностьпростоготипаxs завершенностьсоставноготипаxs завершенностьсхемыxs запрещенныеподстановкиxs ' +
+	  'исключениягруппподстановкиxs категорияиспользованияатрибутаxs категорияограниченияидентичностиxs категорияограниченияпространствименxs ' +
+	  'методнаследованияxs модельсодержимогоxs назначениетипаxml недопустимыеподстановкиxs обработкапробельныхсимволовxs обработкасодержимогоxs ' +
+	  'ограничениезначенияxs параметрыотбораузловdom переносстрокjson позициявдокументеdom пробельныесимволыxml типатрибутаxml типзначенияjson ' +
+	  'типканоническогоxml типкомпонентыxs типпроверкиxml типрезультатаdomxpath типузлаdom типузлаxml формаxml формапредставленияxs ' +
+	  'форматдатыjson экранированиесимволовjson ';
+
+	  // v8 системные перечисления - система компоновки данных ==> class
+	  var v8_system_enums_data_composition_system =
+	  'видсравнениякомпоновкиданных действиеобработкирасшифровкикомпоновкиданных направлениесортировкикомпоновкиданных ' +
+	  'расположениевложенныхэлементоврезультатакомпоновкиданных расположениеитоговкомпоновкиданных расположениегруппировкикомпоновкиданных ' +
+	  'расположениеполейгруппировкикомпоновкиданных расположениеполякомпоновкиданных расположениереквизитовкомпоновкиданных ' +
+	  'расположениересурсовкомпоновкиданных типбухгалтерскогоостаткакомпоновкиданных типвыводатекстакомпоновкиданных ' +
+	  'типгруппировкикомпоновкиданных типгруппыэлементовотборакомпоновкиданных типдополненияпериодакомпоновкиданных ' +
+	  'типзаголовкаполейкомпоновкиданных типмакетагруппировкикомпоновкиданных типмакетаобластикомпоновкиданных типостаткакомпоновкиданных ' +
+	  'типпериодакомпоновкиданных типразмещениятекстакомпоновкиданных типсвязинаборовданныхкомпоновкиданных типэлементарезультатакомпоновкиданных ' +
+	  'расположениелегендыдиаграммыкомпоновкиданных типпримененияотборакомпоновкиданных режимотображенияэлементанастройкикомпоновкиданных ' +
+	  'режимотображениянастроеккомпоновкиданных состояниеэлементанастройкикомпоновкиданных способвосстановлениянастроеккомпоновкиданных ' +
+	  'режимкомпоновкирезультата использованиепараметракомпоновкиданных автопозицияресурсовкомпоновкиданных '+
+	  'вариантиспользованиягруппировкикомпоновкиданных расположениересурсоввдиаграммекомпоновкиданных фиксациякомпоновкиданных ' +
+	  'использованиеусловногооформлениякомпоновкиданных ';
+
+	  // v8 системные перечисления - почта ==> class
+	  var v8_system_enums_email =
+	  'важностьинтернетпочтовогосообщения обработкатекстаинтернетпочтовогосообщения способкодированияинтернетпочтовоговложения ' +
+	  'способкодированиянеasciiсимволовинтернетпочтовогосообщения типтекстапочтовогосообщения протоколинтернетпочты ' +
+	  'статусразборапочтовогосообщения ';
+
+	  // v8 системные перечисления - журнал регистрации ==> class
+	  var v8_system_enums_logbook =
+	  'режимтранзакциизаписижурналарегистрации статустранзакциизаписижурналарегистрации уровеньжурналарегистрации ';
+
+	  // v8 системные перечисления - криптография ==> class
+	  var v8_system_enums_cryptography =
+	  'расположениехранилищасертификатовкриптографии режимвключениясертификатовкриптографии режимпроверкисертификатакриптографии ' +
+	  'типхранилищасертификатовкриптографии ';
+
+	  // v8 системные перечисления - ZIP ==> class
+	  var v8_system_enums_zip =
+	  'кодировкаименфайловвzipфайле методсжатияzip методшифрованияzip режимвосстановленияпутейфайловzip режимобработкиподкаталоговzip ' +
+	  'режимсохраненияпутейzip уровеньсжатияzip ';
+
+	  // v8 системные перечисления - 
+	  // Блокировка данных, Фоновые задания, Автоматизированное тестирование,
+	  // Доставляемые уведомления, Встроенные покупки, Интернет, Работа с двоичными данными ==> class
+	  var v8_system_enums_other =
+	  'звуковоеоповещение направлениепереходакстроке позициявпотоке порядокбайтов режимблокировкиданных режимуправленияблокировкойданных ' +
+	  'сервисвстроенныхпокупок состояниефоновогозадания типподписчикадоставляемыхуведомлений уровеньиспользованиязащищенногосоединенияftp ';
+
+	  // v8 системные перечисления - схема запроса ==> class
+	  var v8_system_enums_request_schema =
+	  'направлениепорядкасхемызапроса типдополненияпериодамисхемызапроса типконтрольнойточкисхемызапроса типобъединениясхемызапроса ' +
+	  'типпараметрадоступнойтаблицысхемызапроса типсоединениясхемызапроса ';
+
+	  // v8 системные перечисления - свойства объектов метаданных ==> class
+	  var v8_system_enums_properties_of_metadata_objects =
+	  'httpметод автоиспользованиеобщегореквизита автопрефиксномеразадачи вариантвстроенногоязыка видиерархии видрегистранакопления ' +
+	  'видтаблицывнешнегоисточникаданных записьдвиженийприпроведении заполнениепоследовательностей индексирование ' +
+	  'использованиебазыпланавидоврасчета использованиебыстроговыбора использованиеобщегореквизита использованиеподчинения ' +
+	  'использованиеполнотекстовогопоиска использованиеразделяемыхданныхобщегореквизита использованиереквизита ' +
+	  'назначениеиспользованияприложения назначениерасширенияконфигурации направлениепередачи обновлениепредопределенныхданных ' +
+	  'оперативноепроведение основноепредставлениевидарасчета основноепредставлениевидахарактеристики основноепредставлениезадачи ' +
+	  'основноепредставлениепланаобмена основноепредставлениесправочника основноепредставлениесчета перемещениеграницыприпроведении ' +
+	  'периодичностьномерабизнеспроцесса периодичностьномерадокумента периодичностьрегистрарасчета периодичностьрегистрасведений ' +
+	  'повторноеиспользованиевозвращаемыхзначений полнотекстовыйпоискпривводепостроке принадлежностьобъекта проведение ' +
+	  'разделениеаутентификацииобщегореквизита разделениеданныхобщегореквизита разделениерасширенийконфигурацииобщегореквизита '+
+	  'режимавтонумерацииобъектов режимзаписирегистра режимиспользованиямодальности ' +
+	  'режимиспользованиясинхронныхвызововрасширенийплатформыивнешнихкомпонент режимповторногоиспользованиясеансов ' +
+	  'режимполученияданныхвыборапривводепостроке режимсовместимости режимсовместимостиинтерфейса ' +
+	  'режимуправленияблокировкойданныхпоумолчанию сериикодовпланавидовхарактеристик сериикодовпланасчетов ' +
+	  'сериикодовсправочника созданиепривводе способвыбора способпоискастрокипривводепостроке способредактирования ' +
+	  'типданныхтаблицывнешнегоисточникаданных типкодапланавидоврасчета типкодасправочника типмакета типномерабизнеспроцесса ' +
+	  'типномерадокумента типномеразадачи типформы удалениедвижений ';
+
+	  // v8 системные перечисления - разные ==> class
+	  var v8_system_enums_differents =
+	  'важностьпроблемыприменениярасширенияконфигурации вариантинтерфейсаклиентскогоприложения вариантмасштабаформклиентскогоприложения ' +
+	  'вариантосновногошрифтаклиентскогоприложения вариантстандартногопериода вариантстандартнойдатыначала видграницы видкартинки ' +
+	  'видотображенияполнотекстовогопоиска видрамки видсравнения видцвета видчисловогозначения видшрифта допустимаядлина допустимыйзнак ' +
+	  'использованиеbyteordermark использованиеметаданныхполнотекстовогопоиска источникрасширенийконфигурации клавиша кодвозвратадиалога ' +
+	  'кодировкаxbase кодировкатекста направлениепоиска направлениесортировки обновлениепредопределенныхданных обновлениеприизмененииданных ' +
+	  'отображениепанелиразделов проверказаполнения режимдиалогавопрос режимзапускаклиентскогоприложения режимокругления режимоткрытияформприложения ' +
+	  'режимполнотекстовогопоиска скоростьклиентскогосоединения состояниевнешнегоисточникаданных состояниеобновленияконфигурациибазыданных ' +
+	  'способвыборасертификатаwindows способкодированиястроки статуссообщения типвнешнейкомпоненты типплатформы типповеденияклавишиenter ' +
+	  'типэлементаинформацииовыполненииобновленияконфигурациибазыданных уровеньизоляциитранзакций хешфункция частидаты';
+
+	  // class: встроенные наборы значений, системные перечисления (содержат дочерние значения, обращения к которым через разыменование)
+	  var CLASS =
+	  v8_system_sets_of_values +
+	  v8_system_enums_interface +
+	  v8_system_enums_objects_properties +
+	  v8_system_enums_exchange_plans +
+	  v8_system_enums_tabular_document +
+	  v8_system_enums_sheduler +
+	  v8_system_enums_formatted_document +
+	  v8_system_enums_query +
+	  v8_system_enums_report_builder +
+	  v8_system_enums_files +
+	  v8_system_enums_query_builder +
+	  v8_system_enums_data_analysis +
+	  v8_system_enums_xml_json_xs_dom_xdto_ws +
+	  v8_system_enums_data_composition_system +
+	  v8_system_enums_email +
+	  v8_system_enums_logbook +
+	  v8_system_enums_cryptography +
+	  v8_system_enums_zip +
+	  v8_system_enums_other +
+	  v8_system_enums_request_schema +
+	  v8_system_enums_properties_of_metadata_objects +
+	  v8_system_enums_differents;
+
+	  // v8 общие объекты (у объектов есть конструктор, экземпляры создаются методом НОВЫЙ) ==> type
+	  var v8_shared_object =
+	  'comобъект ftpсоединение httpзапрос httpсервисответ httpсоединение wsопределения wsпрокси xbase анализданных аннотацияxs ' +
+	  'блокировкаданных буфердвоичныхданных включениеxs выражениекомпоновкиданных генераторслучайныхчисел географическаясхема ' +
+	  'географическиекоординаты графическаясхема группамоделиxs данныерасшифровкикомпоновкиданных двоичныеданные дендрограмма ' +
+	  'диаграмма диаграммаганта диалогвыборафайла диалогвыборацвета диалогвыборашрифта диалограсписаниярегламентногозадания ' +
+	  'диалогредактированиястандартногопериода диапазон документdom документhtml документацияxs доставляемоеуведомление ' +
+	  'записьdom записьfastinfoset записьhtml записьjson записьxml записьzipфайла записьданных записьтекста записьузловdom ' +
+	  'запрос защищенноесоединениеopenssl значенияполейрасшифровкикомпоновкиданных извлечениетекста импортxs интернетпочта ' +
+	  'интернетпочтовоесообщение интернетпочтовыйпрофиль интернетпрокси интернетсоединение информациядляприложенияxs ' +
+	  'использованиеатрибутаxs использованиесобытияжурналарегистрации источникдоступныхнастроеккомпоновкиданных ' +
+	  'итераторузловdom картинка квалификаторыдаты квалификаторыдвоичныхданных квалификаторыстроки квалификаторычисла ' +
+	  'компоновщикмакетакомпоновкиданных компоновщикнастроеккомпоновкиданных конструктормакетаоформлениякомпоновкиданных ' +
+	  'конструкторнастроеккомпоновкиданных конструкторформатнойстроки линия макеткомпоновкиданных макетобластикомпоновкиданных ' +
+	  'макетоформлениякомпоновкиданных маскаxs менеджеркриптографии наборсхемxml настройкикомпоновкиданных настройкисериализацииjson ' +
+	  'обработкакартинок обработкарасшифровкикомпоновкиданных обходдереваdom объявлениеатрибутаxs объявлениенотацииxs ' +
+	  'объявлениеэлементаxs описаниеиспользованиясобытиядоступжурналарегистрации ' +
+	  'описаниеиспользованиясобытияотказвдоступежурналарегистрации описаниеобработкирасшифровкикомпоновкиданных ' +
+	  'описаниепередаваемогофайла описаниетипов определениегруппыатрибутовxs определениегруппымоделиxs ' +
+	  'определениеограниченияидентичностиxs определениепростоготипаxs определениесоставноготипаxs определениетипадокументаdom ' +
+	  'определенияxpathxs отборкомпоновкиданных пакетотображаемыхдокументов параметрвыбора параметркомпоновкиданных ' +
+	  'параметрызаписиjson параметрызаписиxml параметрычтенияxml переопределениеxs планировщик полеанализаданных ' +
+	  'полекомпоновкиданных построительdom построительзапроса построительотчета построительотчетаанализаданных ' +
+	  'построительсхемxml поток потоквпамяти почта почтовоесообщение преобразованиеxsl преобразованиекканоническомуxml ' +
+	  'процессорвыводарезультатакомпоновкиданныхвколлекциюзначений процессорвыводарезультатакомпоновкиданныхвтабличныйдокумент ' +
+	  'процессоркомпоновкиданных разыменовательпространствименdom рамка расписаниерегламентногозадания расширенноеимяxml ' +
+	  'результатчтенияданных своднаядиаграмма связьпараметравыбора связьпотипу связьпотипукомпоновкиданных сериализаторxdto ' +
+	  'сертификатклиентаwindows сертификатклиентафайл сертификаткриптографии сертификатыудостоверяющихцентровwindows ' +
+	  'сертификатыудостоверяющихцентровфайл сжатиеданных системнаяинформация сообщениепользователю сочетаниеклавиш ' +
+	  'сравнениезначений стандартнаядатаначала стандартныйпериод схемаxml схемакомпоновкиданных табличныйдокумент ' +
+	  'текстовыйдокумент тестируемоеприложение типданныхxml уникальныйидентификатор фабрикаxdto файл файловыйпоток ' +
+	  'фасетдлиныxs фасетколичестваразрядовдробнойчастиxs фасетмаксимальноговключающегозначенияxs ' +
+	  'фасетмаксимальногоисключающегозначенияxs фасетмаксимальнойдлиныxs фасетминимальноговключающегозначенияxs ' +
+	  'фасетминимальногоисключающегозначенияxs фасетминимальнойдлиныxs фасетобразцаxs фасетобщегоколичестваразрядовxs ' +
+	  'фасетперечисленияxs фасетпробельныхсимволовxs фильтрузловdom форматированнаястрока форматированныйдокумент ' +
+	  'фрагментxs хешированиеданных хранилищезначения цвет чтениеfastinfoset чтениеhtml чтениеjson чтениеxml чтениеzipфайла ' +
+	  'чтениеданных чтениетекста чтениеузловdom шрифт элементрезультатакомпоновкиданных ';
+
+	  // v8 универсальные коллекции значений ==> type
+	  var v8_universal_collection =
+	  'comsafearray деревозначений массив соответствие списокзначений структура таблицазначений фиксированнаяструктура ' +
+	  'фиксированноесоответствие фиксированныймассив ';
+
+	  // type : встроенные типы
+	  var TYPE =
+	  v8_shared_object +
+	  v8_universal_collection;
+
+	  // literal : примитивные типы
+	  var LITERAL = 'null истина ложь неопределено';
+	  
+	  // number : числа
+	  var NUMBERS = hljs.inherit(hljs.NUMBER_MODE);
+
+	  // string : строки
+	  var STRINGS = {
 	    className: 'string',
-	    begin: '\\|', end: '"|$',
-	    contains: [DQUOTE]
+	    begin: '"|\\|', end: '"|$',
+	    contains: [{begin: '""'}]
+	  };
+
+	  // number : даты
+	  var DATE = {
+	    begin: "'", end: "'", excludeBegin: true, excludeEnd: true,
+	    contains: [
+	      {
+	        className: 'number',
+	        begin: '\\d{4}([\\.\\\\/:-]?\\d{2}){0,5}'
+	      }
+	    ]
+	  };
+	  
+	  // comment : комментарии
+	  var COMMENTS = hljs.inherit(hljs.C_LINE_COMMENT_MODE);
+	  
+	  // meta : инструкции препроцессора, директивы компиляции
+	  var META = {
+	    className: 'meta',
+	    lexemes: UNDERSCORE_IDENT_RE,
+	    begin: '#|&', end: '$',
+	    keywords: {'meta-keyword': KEYWORD + METAKEYWORD},
+	    contains: [
+	      COMMENTS
+	    ]
+	  };
+	  
+	  // symbol : метка goto
+	  var SYMBOL = {
+	    className: 'symbol',
+	    begin: '~', end: ';|:', excludeEnd: true
+	  };  
+	  
+	  // function : объявление процедур и функций
+	  var FUNCTION = {
+	    className: 'function',
+	    lexemes: UNDERSCORE_IDENT_RE,
+	    variants: [
+	      {begin: 'процедура|функция', end: '\\)', keywords: 'процедура функция'},
+	      {begin: 'конецпроцедуры|конецфункции', keywords: 'конецпроцедуры конецфункции'}
+	    ],
+	    contains: [
+	      {
+	        begin: '\\(', end: '\\)', endsParent : true,
+	        contains: [
+	          {
+	            className: 'params',
+	            lexemes: UNDERSCORE_IDENT_RE,
+	            begin: UNDERSCORE_IDENT_RE, end: ',', excludeEnd: true, endsWithParent: true,
+	            keywords: {
+	              keyword: 'знач',
+	              literal: LITERAL
+	            },
+	            contains: [
+	              NUMBERS,
+	              STRINGS,
+	              DATE
+	            ]
+	          },
+	          COMMENTS
+	        ]
+	      },
+	      hljs.inherit(hljs.TITLE_MODE, {begin: UNDERSCORE_IDENT_RE})
+	    ]
 	  };
 
 	  return {
 	    case_insensitive: true,
-	    lexemes: IDENT_RE_RU,
-	    keywords: {keyword: OneS_KEYWORDS, built_in: OneS_BUILT_IN},
+	    lexemes: UNDERSCORE_IDENT_RE,
+	    keywords: {
+	      keyword: KEYWORD,
+	      built_in: BUILTIN,
+	      class: CLASS,
+	      type: TYPE,
+	      literal: LITERAL
+	    },
 	    contains: [
-	      hljs.C_LINE_COMMENT_MODE,
-	      hljs.NUMBER_MODE,
-	      STR_START, STR_CONT,
-	      {
-	        className: 'function',
-	        begin: '(процедура|функция)', end: '$',
-	        lexemes: IDENT_RE_RU,
-	        keywords: 'процедура функция',
-	        contains: [
-	          {
-	            begin: 'экспорт', endsWithParent: true,
-	            lexemes: IDENT_RE_RU,
-	            keywords: 'экспорт',
-	            contains: [hljs.C_LINE_COMMENT_MODE]
-	          },
-	          {
-	            className: 'params',
-	            begin: '\\(', end: '\\)',
-	            lexemes: IDENT_RE_RU,
-	            keywords: 'знач',
-	            contains: [STR_START, STR_CONT]
-	          },
-	          hljs.C_LINE_COMMENT_MODE,
-	          hljs.inherit(hljs.TITLE_MODE, {begin: IDENT_RE_RU})
-	        ]
-	      },
-	      {className: 'meta', begin: '#', end: '$'},
-	      {className: 'number', begin: '\'\\d{2}\\.\\d{2}\\.(\\d{2}|\\d{4})\''} // date
-	    ]
-	  };
+	      META,
+	      FUNCTION,
+	      COMMENTS,
+	      SYMBOL,
+	      NUMBERS,
+	      STRINGS,
+	      DATE
+	    ]  
+	  }
 	};
 
-/***/ },
-/* 172 */
-/***/ function(module, exports) {
+/***/ }),
+/* 176 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	    var regexes = {
@@ -21327,9 +22173,9 @@
 	    };
 	};
 
-/***/ },
-/* 173 */
-/***/ function(module, exports) {
+/***/ }),
+/* 177 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  return {
@@ -21369,9 +22215,9 @@
 	  };
 	};
 
-/***/ },
-/* 174 */
-/***/ function(module, exports) {
+/***/ }),
+/* 178 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var IDENT_RE = '[a-zA-Z_$][a-zA-Z0-9_$]*';
@@ -21447,9 +22293,9 @@
 	  };
 	};
 
-/***/ },
-/* 175 */
-/***/ function(module, exports) {
+/***/ }),
+/* 179 */
+/***/ (function(module, exports) {
 
 	module.exports = // We try to support full Ada2012
 	//
@@ -21624,9 +22470,9 @@
 	    };
 	};
 
-/***/ },
-/* 176 */
-/***/ function(module, exports) {
+/***/ }),
+/* 180 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var NUMBER = {className: 'number', begin: '[\\$%]\\d+'};
@@ -21674,9 +22520,9 @@
 	  };
 	};
 
-/***/ },
-/* 177 */
-/***/ function(module, exports) {
+/***/ }),
+/* 181 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var STRING = hljs.inherit(hljs.QUOTE_STRING_MODE, {illegal: ''});
@@ -21764,9 +22610,9 @@
 	  };
 	};
 
-/***/ },
-/* 178 */
-/***/ function(module, exports) {
+/***/ }),
+/* 182 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var CPP_PRIMITIVE_TYPES = {
@@ -21797,7 +22643,7 @@
 	    className: 'number',
 	    variants: [
 	      { begin: '\\b(0b[01\']+)' },
-	      { begin: '\\b([\\d\']+(\\.[\\d\']*)?|\\.[\\d\']+)(u|U|l|L|ul|UL|f|F|b|B)' },
+	      { begin: '(-?)\\b([\\d\']+(\\.[\\d\']*)?|\\.[\\d\']+)(u|U|l|L|ul|UL|f|F|b|B)' },
 	      { begin: '(-?)(\\b0[xX][a-fA-F0-9\']+|(\\b[\\d\']+(\\.[\\d\']*)?|\\.[\\d\']+)([eE][-+]?[\\d\']+)?)' }
 	    ],
 	    relevance: 0
@@ -21818,7 +22664,7 @@
 	      hljs.inherit(STRINGS, {className: 'meta-string'}),
 	      {
 	        className: 'meta-string',
-	        begin: '<', end: '>',
+	        begin: /<[^\n>]*>/, end: /$/,
 	        illegal: '\\n',
 	      },
 	      hljs.C_LINE_COMMENT_MODE,
@@ -21830,15 +22676,16 @@
 
 	  var CPP_KEYWORDS = {
 	    keyword: 'int float while private char catch import module export virtual operator sizeof ' +
-	      'dynamic_cast|10 typedef const_cast|10 const struct for static_cast|10 union namespace ' +
+	      'dynamic_cast|10 typedef const_cast|10 const for static_cast|10 union namespace ' +
 	      'unsigned long volatile static protected bool template mutable if public friend ' +
-	      'do goto auto void enum else break extern using class asm case typeid ' +
+	      'do goto auto void enum else break extern using asm case typeid ' +
 	      'short reinterpret_cast|10 default double register explicit signed typename try this ' +
 	      'switch continue inline delete alignof constexpr decltype ' +
 	      'noexcept static_assert thread_local restrict _Bool complex _Complex _Imaginary ' +
 	      'atomic_bool atomic_char atomic_schar ' +
 	      'atomic_uchar atomic_short atomic_ushort atomic_int atomic_uint atomic_long atomic_ulong atomic_llong ' +
-	      'atomic_ullong new throw return',
+	      'atomic_ullong new throw return ' +
+	      'and or not',
 	    built_in: 'std string cin cout cerr clog stdin stdout stderr stringstream istringstream ostringstream ' +
 	      'auto_ptr deque list queue stack vector map set bitset multiset multimap unordered_set ' +
 	      'unordered_map unordered_multiset unordered_multimap array shared_ptr abort abs acos ' +
@@ -21924,6 +22771,14 @@
 	          hljs.C_BLOCK_COMMENT_MODE,
 	          PREPROCESSOR
 	        ]
+	      },
+	      {
+	        className: 'class',
+	        beginKeywords: 'class struct', end: /[{;:]/,
+	        contains: [
+	          {begin: /</, end: />/, contains: ['self']}, // skip generic stuff
+	          hljs.TITLE_MODE
+	        ]
 	      }
 	    ]),
 	    exports: {
@@ -21934,9 +22789,9 @@
 	  };
 	};
 
-/***/ },
-/* 179 */
-/***/ function(module, exports) {
+/***/ }),
+/* 183 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var CPP = hljs.getLanguage('cpp').exports;
@@ -22038,9 +22893,9 @@
 	  };
 	};
 
-/***/ },
-/* 180 */
-/***/ function(module, exports) {
+/***/ }),
+/* 184 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	    //local labels: %?[FB]?[AT]?\d{1,2}\w+
@@ -22134,9 +22989,9 @@
 	  };
 	};
 
-/***/ },
-/* 181 */
-/***/ function(module, exports) {
+/***/ }),
+/* 185 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var XML_IDENT_RE = '[A-Za-z0-9\\._:-]+';
@@ -22241,9 +23096,9 @@
 	  };
 	};
 
-/***/ },
-/* 182 */
-/***/ function(module, exports) {
+/***/ }),
+/* 186 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  return {
@@ -22433,9 +23288,9 @@
 	  };
 	};
 
-/***/ },
-/* 183 */
-/***/ function(module, exports) {
+/***/ }),
+/* 187 */
+/***/ (function(module, exports) {
 
 	module.exports = function (hljs) {
 	  var KEYWORDS =
@@ -22530,7 +23385,8 @@
 	        contains : [
 	          {
 	            begin : hljs.UNDERSCORE_IDENT_RE + '\\s*\\(',
-	            keywords : KEYWORDS + ' ' + SHORTKEYS
+	            keywords : KEYWORDS + ' ' + SHORTKEYS,
+	            relevance: 0
 	          },
 	          hljs.QUOTE_STRING_MODE
 	        ]
@@ -22581,19 +23437,20 @@
 	  };
 	};
 
-/***/ },
-/* 184 */
-/***/ function(module, exports) {
+/***/ }),
+/* 188 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var BACKTICK_ESCAPE = {
-	    begin: /`[\s\S]/
+	    begin: '`[\\s\\S]'
 	  };
 
 	  return {
 	    case_insensitive: true,
+	    aliases: [ 'ahk' ],
 	    keywords: {
-	      keyword: 'Break Continue Else Gosub If Loop Return While',
+	      keyword: 'Break Continue Critical Exit ExitApp Gosub Goto New OnExit Pause return SetBatchLines SetTimer Suspend Thread Throw Until ahk_id ahk_class ahk_pid ahk_exe ahk_group',
 	      literal: 'A|0 true false NOT AND OR',
 	      built_in: 'ComSpec Clipboard ClipboardAll ErrorLevel',
 	    },
@@ -22605,16 +23462,26 @@
 	      BACKTICK_ESCAPE,
 	      hljs.inherit(hljs.QUOTE_STRING_MODE, {contains: [BACKTICK_ESCAPE]}),
 	      hljs.COMMENT(';', '$', {relevance: 0}),
+	      hljs.C_BLOCK_COMMENT_MODE,
 	      {
 	        className: 'number',
 	        begin: hljs.NUMBER_RE,
 	        relevance: 0
 	      },
 	      {
-	        className: 'variable', // FIXME
-	        begin: '%', end: '%',
-	        illegal: '\\n',
-	        contains: [BACKTICK_ESCAPE]
+	        className: 'subst', // FIXED
+	        begin: '%(?=[a-zA-Z0-9#_$@])', end: '%',
+	        illegal: '[^a-zA-Z0-9#_$@]'
+	      },
+	      {
+	        className: 'built_in',
+	        begin: '^\\s*\\w+\\s*,'
+	        //I don't really know if this is totally relevant
+	      },
+	      {
+	        className: 'meta', 
+	        begin: '^\\s*#\w+', end:'$',
+	        relevance: 0
 	      },
 	      {
 	        className: 'symbol',
@@ -22633,9 +23500,9 @@
 	  }
 	};
 
-/***/ },
-/* 185 */
-/***/ function(module, exports) {
+/***/ }),
+/* 189 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	    var KEYWORDS = 'ByRef Case Const ContinueCase ContinueLoop ' +
@@ -22773,9 +23640,9 @@
 	    }
 	};
 
-/***/ },
-/* 186 */
-/***/ function(module, exports) {
+/***/ }),
+/* 190 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  return {
@@ -22839,9 +23706,9 @@
 	  };
 	};
 
-/***/ },
-/* 187 */
-/***/ function(module, exports) {
+/***/ }),
+/* 191 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var VARIABLE = {
@@ -22896,9 +23763,9 @@
 	  }
 	};
 
-/***/ },
-/* 188 */
-/***/ function(module, exports) {
+/***/ }),
+/* 192 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  return {
@@ -22931,9 +23798,9 @@
 	  };
 	};
 
-/***/ },
-/* 189 */
-/***/ function(module, exports) {
+/***/ }),
+/* 193 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var VAR = {
@@ -22963,7 +23830,7 @@
 
 	  return {
 	    aliases: ['sh', 'zsh'],
-	    lexemes: /-?[a-z\._]+/,
+	    lexemes: /\b-?[a-z\._]+\b/,
 	    keywords: {
 	      keyword:
 	        'if then else elif fi for while in do done case esac function',
@@ -23010,9 +23877,9 @@
 	  };
 	};
 
-/***/ },
-/* 190 */
-/***/ function(module, exports) {
+/***/ }),
+/* 194 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  return {
@@ -23065,9 +23932,9 @@
 	  };
 	};
 
-/***/ },
-/* 191 */
-/***/ function(module, exports) {
+/***/ }),
+/* 195 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs){
 	  return {
@@ -23098,9 +23965,9 @@
 	  };
 	};
 
-/***/ },
-/* 192 */
-/***/ function(module, exports) {
+/***/ }),
+/* 196 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs){
 	  var LITERAL = {
@@ -23139,9 +24006,9 @@
 	  };
 	};
 
-/***/ },
-/* 193 */
-/***/ function(module, exports) {
+/***/ }),
+/* 197 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var KEYWORDS =
@@ -23223,9 +24090,9 @@
 	  };
 	};
 
-/***/ },
-/* 194 */
-/***/ function(module, exports) {
+/***/ }),
+/* 198 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  return {
@@ -23276,9 +24143,9 @@
 	  };
 	};
 
-/***/ },
-/* 195 */
-/***/ function(module, exports) {
+/***/ }),
+/* 199 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  // 2.3. Identifiers and keywords
@@ -23347,9 +24214,9 @@
 	  };
 	};
 
-/***/ },
-/* 196 */
-/***/ function(module, exports) {
+/***/ }),
+/* 200 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  return {
@@ -23376,9 +24243,9 @@
 	  };
 	};
 
-/***/ },
-/* 197 */
-/***/ function(module, exports) {
+/***/ }),
+/* 201 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var keywords = {
@@ -23467,6 +24334,7 @@
 	  LIST.contains = [hljs.COMMENT('comment', ''), NAME, BODY];
 	  BODY.contains = DEFAULT_CONTAINS;
 	  COLLECTION.contains = DEFAULT_CONTAINS;
+	  HINT_COL.contains = [COLLECTION];
 
 	  return {
 	    aliases: ['clj'],
@@ -23475,9 +24343,9 @@
 	  }
 	};
 
-/***/ },
-/* 198 */
-/***/ function(module, exports) {
+/***/ }),
+/* 202 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  return {
@@ -23494,9 +24362,9 @@
 	  }
 	};
 
-/***/ },
-/* 199 */
-/***/ function(module, exports) {
+/***/ }),
+/* 203 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  return {
@@ -23536,16 +24404,16 @@
 	  };
 	};
 
-/***/ },
-/* 200 */
-/***/ function(module, exports) {
+/***/ }),
+/* 204 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var KEYWORDS = {
 	    keyword:
 	      // JS keywords
 	      'in if for while finally new do return else break catch instanceof throw try this ' +
-	      'switch continue typeof delete debugger super ' +
+	      'switch continue typeof delete debugger super yield import export from as default await ' +
 	      // Coffee keywords
 	      'then unless until loop of by when and or is isnt not',
 	    literal:
@@ -23608,9 +24476,16 @@
 	      begin: '@' + JS_IDENT_RE // relevance booster
 	    },
 	    {
-	      begin: '`', end: '`',
+	      subLanguage: 'javascript',
 	      excludeBegin: true, excludeEnd: true,
-	      subLanguage: 'javascript'
+	      variants: [
+	        {
+	          begin: '```', end: '```',
+	        },
+	        {
+	          begin: '`', end: '`',
+	        }
+	      ]
 	    }
 	  ];
 	  SUBST.contains = EXPRESSIONS;
@@ -23679,9 +24554,9 @@
 	  };
 	};
 
-/***/ },
-/* 201 */
-/***/ function(module, exports) {
+/***/ }),
+/* 205 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  return {
@@ -23750,9 +24625,9 @@
 	  };
 	};
 
-/***/ },
-/* 202 */
-/***/ function(module, exports) {
+/***/ }),
+/* 206 */
+/***/ (function(module, exports) {
 
 	module.exports = function cos (hljs) {
 
@@ -23878,9 +24753,9 @@
 	  };
 	};
 
-/***/ },
-/* 203 */
-/***/ function(module, exports) {
+/***/ }),
+/* 207 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var RESOURCES = 'primitive rsc_template';
@@ -23976,9 +24851,9 @@
 	  };
 	};
 
-/***/ },
-/* 204 */
-/***/ function(module, exports) {
+/***/ }),
+/* 208 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var NUM_SUFFIX = '(_[uif](8|16|32|64))?';
@@ -23988,10 +24863,10 @@
 	  var CRYSTAL_METHOD_RE = '[a-zA-Z_]\\w*[!?=]?|[-+~]\\@|<<|>>|=~|===?|<=>|[<>]=?|\\*\\*|[-/+%^&*~`|]|\\[\\][=?]?';
 	  var CRYSTAL_KEYWORDS = {
 	    keyword:
-	      'abstract alias as asm begin break case class def do else elsif end ensure enum extend for fun if ifdef ' +
-	      'include instance_sizeof is_a? lib macro module next of out pointerof private protected rescue responds_to? ' +
-	      'return require self sizeof struct super then type typeof union unless until when while with yield ' +
-	      '__DIR__ __FILE__ __LINE__',
+	      'abstract alias as as? asm begin break case class def do else elsif end ensure enum extend for fun if ' +
+	      'include instance_sizeof is_a? lib macro module next nil? of out pointerof private protected rescue responds_to? ' +
+	      'return require select self sizeof struct super then type typeof union uninitialized unless until when while with yield ' +
+	      '__DIR__ __END_LINE__ __FILE__ __LINE__',
 	    literal: 'false nil true'
 	  };
 	  var SUBST = {
@@ -24029,6 +24904,22 @@
 	      {begin: '%w?%', end: '%'},
 	      {begin: '%w?-', end: '-'},
 	      {begin: '%w?\\|', end: '\\|'},
+	      {begin: /<<-\w+$/, end: /^\s*\w+$/},
+	    ],
+	    relevance: 0,
+	  };
+	  var Q_STRING = {
+	    className: 'string',
+	    variants: [
+	      {begin: '%q\\(', end: '\\)', contains: recursiveParen('\\(', '\\)')},
+	      {begin: '%q\\[', end: '\\]', contains: recursiveParen('\\[', '\\]')},
+	      {begin: '%q{', end: '}', contains: recursiveParen('{', '}')},
+	      {begin: '%q<', end: '>', contains: recursiveParen('<', '>')},
+	      {begin: '%q/', end: '/'},
+	      {begin: '%q%', end: '%'},
+	      {begin: '%q-', end: '-'},
+	      {begin: '%q\\|', end: '\\|'},
+	      {begin: /<<-'\w+'$/, end: /^\s*\w+$/},
 	    ],
 	    relevance: 0,
 	  };
@@ -24079,6 +24970,7 @@
 	  var CRYSTAL_DEFAULT_CONTAINS = [
 	    EXPANSION,
 	    STRING,
+	    Q_STRING,
 	    REGEXP,
 	    REGEXP2,
 	    ATTRIBUTE,
@@ -24157,21 +25049,20 @@
 	  };
 	};
 
-/***/ },
-/* 205 */
-/***/ function(module, exports) {
+/***/ }),
+/* 209 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var KEYWORDS = {
 	    keyword:
 	      // Normal keywords.
 	      'abstract as base bool break byte case catch char checked const continue decimal ' +
-	      'default delegate do double else enum event explicit extern finally fixed float ' +
-	      'for foreach goto if implicit in int interface internal is lock long ' +
+	      'default delegate do double enum event explicit extern finally fixed float ' +
+	      'for foreach goto if implicit in int interface internal is lock long nameof ' +
 	      'object operator out override params private protected public readonly ref sbyte ' +
 	      'sealed short sizeof stackalloc static string struct switch this try typeof ' +
 	      'uint ulong unchecked unsafe ushort using virtual void volatile while ' +
-	      'nameof ' +
 	      // Contextual keywords.
 	      'add alias ascending async await by descending dynamic equals from get global group into join ' +
 	      'let on orderby partial remove select set value var where yield',
@@ -24235,6 +25126,7 @@
 	  };
 
 	  var TYPE_IDENT_RE = hljs.IDENT_RE + '(<' + hljs.IDENT_RE + '(\\s*,\\s*' + hljs.IDENT_RE + ')*>)?(\\[\\])?';
+
 	  return {
 	    aliases: ['csharp'],
 	    keywords: KEYWORDS,
@@ -24268,7 +25160,9 @@
 	      {
 	        className: 'meta',
 	        begin: '#', end: '$',
-	        keywords: {'meta-keyword': 'if else elif endif define undef warning error line region endregion pragma checksum'}
+	        keywords: {
+	          'meta-keyword': 'if else elif endif define undef warning error line region endregion pragma checksum'
+	        }
 	      },
 	      STRING,
 	      hljs.C_NUMBER_MODE,
@@ -24291,15 +25185,23 @@
 	        ]
 	      },
 	      {
+	        // [Attributes("")]
+	        className: 'meta',
+	        begin: '^\\s*\\[', excludeBegin: true, end: '\\]', excludeEnd: true,
+	        contains: [
+	          {className: 'meta-string', begin: /"/, end: /"/}
+	        ]
+	      },
+	      {
 	        // Expression keywords prevent 'keyword Name(...)' from being
 	        // recognized as a function definition
-	        beginKeywords: 'new return throw await',
+	        beginKeywords: 'new return throw await else',
 	        relevance: 0
 	      },
 	      {
 	        className: 'function',
-	        begin: '(' + TYPE_IDENT_RE + '\\s+)+' + hljs.IDENT_RE + '\\s*\\(', returnBegin: true, end: /[{;=]/,
-	        excludeEnd: true,
+	        begin: '(' + TYPE_IDENT_RE + '\\s+)+' + hljs.IDENT_RE + '\\s*\\(', returnBegin: true,
+	        end: /[{;=]/, excludeEnd: true,
 	        keywords: KEYWORDS,
 	        contains: [
 	          {
@@ -24328,9 +25230,9 @@
 	  };
 	};
 
-/***/ },
-/* 206 */
-/***/ function(module, exports) {
+/***/ }),
+/* 210 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  return {
@@ -24354,9 +25256,9 @@
 	  };
 	};
 
-/***/ },
-/* 207 */
-/***/ function(module, exports) {
+/***/ }),
+/* 211 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var IDENT_RE = '[a-zA-Z-][a-zA-Z0-9_-]*';
@@ -24463,9 +25365,9 @@
 	  };
 	};
 
-/***/ },
-/* 208 */
-/***/ function(module, exports) {
+/***/ }),
+/* 212 */
+/***/ (function(module, exports) {
 
 	module.exports = /**
 	 * Known issues:
@@ -24725,9 +25627,9 @@
 	  };
 	};
 
-/***/ },
-/* 209 */
-/***/ function(module, exports) {
+/***/ }),
+/* 213 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  return {
@@ -24837,9 +25739,9 @@
 	  };
 	};
 
-/***/ },
-/* 210 */
-/***/ function(module, exports) {
+/***/ }),
+/* 214 */
+/***/ (function(module, exports) {
 
 	module.exports = function (hljs) {
 	  var SUBST = {
@@ -24942,9 +25844,9 @@
 	  }
 	};
 
-/***/ },
-/* 211 */
-/***/ function(module, exports) {
+/***/ }),
+/* 215 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var KEYWORDS =
@@ -24961,21 +25863,16 @@
 	    'specialize strict unaligned varargs ';
 	  var COMMENT_MODES = [
 	    hljs.C_LINE_COMMENT_MODE,
-	    hljs.COMMENT(
-	      /\{/,
-	      /\}/,
-	      {
-	        relevance: 0
-	      }
-	    ),
-	    hljs.COMMENT(
-	      /\(\*/,
-	      /\*\)/,
-	      {
-	        relevance: 10
-	      }
-	    )
+	    hljs.COMMENT(/\{/, /\}/, {relevance: 0}),
+	    hljs.COMMENT(/\(\*/, /\*\)/, {relevance: 10})
 	  ];
+	  var DIRECTIVE = {
+	    className: 'meta',
+	    variants: [
+	      {begin: /\{\$/, end: /\}/},
+	      {begin: /\(\*\$/, end: /\*\)/}
+	    ]
+	  };
 	  var STRING = {
 	    className: 'string',
 	    begin: /'/, end: /'/,
@@ -25000,8 +25897,9 @@
 	        className: 'params',
 	        begin: /\(/, end: /\)/,
 	        keywords: KEYWORDS,
-	        contains: [STRING, CHAR_STRING]
-	      }
+	        contains: [STRING, CHAR_STRING, DIRECTIVE].concat(COMMENT_MODES)
+	      },
+	      DIRECTIVE
 	    ].concat(COMMENT_MODES)
 	  };
 	  return {
@@ -25013,14 +25911,15 @@
 	      STRING, CHAR_STRING,
 	      hljs.NUMBER_MODE,
 	      CLASS,
-	      FUNCTION
+	      FUNCTION,
+	      DIRECTIVE
 	    ].concat(COMMENT_MODES)
 	  };
 	};
 
-/***/ },
-/* 212 */
-/***/ function(module, exports) {
+/***/ }),
+/* 216 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  return {
@@ -25062,9 +25961,9 @@
 	  };
 	};
 
-/***/ },
-/* 213 */
-/***/ function(module, exports) {
+/***/ }),
+/* 217 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var FILTER = {
@@ -25130,9 +26029,9 @@
 	  };
 	};
 
-/***/ },
-/* 214 */
-/***/ function(module, exports) {
+/***/ }),
+/* 218 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  return {
@@ -25163,22 +26062,22 @@
 	  };
 	};
 
-/***/ },
-/* 215 */
-/***/ function(module, exports) {
+/***/ }),
+/* 219 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  return {
 	    aliases: ['docker'],
 	    case_insensitive: true,
-	    keywords: 'from maintainer expose env user onbuild',
+	    keywords: 'from maintainer expose env arg user onbuild stopsignal',
 	    contains: [
 	      hljs.HASH_COMMENT_MODE,
 	      hljs.APOS_STRING_MODE,
 	      hljs.QUOTE_STRING_MODE,
 	      hljs.NUMBER_MODE,
 	      {
-	        beginKeywords: 'run cmd entrypoint volume add copy workdir label healthcheck',
+	        beginKeywords: 'run cmd entrypoint volume add copy workdir label healthcheck shell',
 	        starts: {
 	          end: /[^\\]\n/,
 	          subLanguage: 'bash'
@@ -25189,9 +26088,9 @@
 	  }
 	};
 
-/***/ },
-/* 216 */
-/***/ function(module, exports) {
+/***/ }),
+/* 220 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var COMMENT = hljs.COMMENT(
@@ -25245,9 +26144,9 @@
 	  };
 	};
 
-/***/ },
-/* 217 */
-/***/ function(module, exports) {
+/***/ }),
+/* 221 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var QUOTED_PROPERTY = {
@@ -25296,9 +26195,9 @@
 	  };
 	};
 
-/***/ },
-/* 218 */
-/***/ function(module, exports) {
+/***/ }),
+/* 222 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var STRINGS = {
@@ -25424,9 +26323,9 @@
 	  };
 	};
 
-/***/ },
-/* 219 */
-/***/ function(module, exports) {
+/***/ }),
+/* 223 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var EXPRESSION_KEYWORDS = 'if eq ne lt lte gt gte select default math sep';
@@ -25460,9 +26359,9 @@
 	  };
 	};
 
-/***/ },
-/* 220 */
-/***/ function(module, exports) {
+/***/ }),
+/* 224 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	    var commentMode = hljs.COMMENT(/\(\*/, /\*\)/);
@@ -25497,9 +26396,9 @@
 	    };
 	};
 
-/***/ },
-/* 221 */
-/***/ function(module, exports) {
+/***/ }),
+/* 225 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var ELIXIR_IDENT_RE = '[a-zA-Z_][a-zA-Z0-9_]*(\\!|\\?)?';
@@ -25598,9 +26497,9 @@
 	  };
 	};
 
-/***/ },
-/* 222 */
-/***/ function(module, exports) {
+/***/ }),
+/* 226 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var COMMENT = {
@@ -25681,13 +26580,14 @@
 	      COMMENT,
 
 	      {begin: '->|<-'} // No markup, relevance booster
-	    ]
+	    ],
+	    illegal: /;/
 	  };
 	};
 
-/***/ },
-/* 223 */
-/***/ function(module, exports) {
+/***/ }),
+/* 227 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var RUBY_METHOD_RE = '[a-zA-Z_]\\w*[!?=]?|[-+~]\\@|<<|>>|=~|===?|<=>|[<>]=?|\\*\\*|[-/+%^&*~`|]|\\[\\]=?';
@@ -25814,7 +26714,8 @@
 	      keywords: RUBY_KEYWORDS
 	    },
 	    { // regexp container
-	      begin: '(' + hljs.RE_STARTERS_RE + ')\\s*',
+	      begin: '(' + hljs.RE_STARTERS_RE + '|unless)\\s*',
+	      keywords: 'unless',
 	      contains: [
 	        IRB_OBJECT,
 	        {
@@ -25865,9 +26766,9 @@
 	  };
 	};
 
-/***/ },
-/* 224 */
-/***/ function(module, exports) {
+/***/ }),
+/* 228 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  return {
@@ -25884,9 +26785,9 @@
 	  };
 	};
 
-/***/ },
-/* 225 */
-/***/ function(module, exports) {
+/***/ }),
+/* 229 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  return {
@@ -25934,9 +26835,9 @@
 	  };
 	};
 
-/***/ },
-/* 226 */
-/***/ function(module, exports) {
+/***/ }),
+/* 230 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var BASIC_ATOM_RE = '[a-z\'][a-zA-Z0-9_\']*';
@@ -26084,9 +26985,9 @@
 	  };
 	};
 
-/***/ },
-/* 227 */
-/***/ function(module, exports) {
+/***/ }),
+/* 231 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  return {
@@ -26136,9 +27037,9 @@
 	  };
 	};
 
-/***/ },
-/* 228 */
-/***/ function(module, exports) {
+/***/ }),
+/* 232 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  return {
@@ -26169,9 +27070,9 @@
 	  };
 	};
 
-/***/ },
-/* 229 */
-/***/ function(module, exports) {
+/***/ }),
+/* 233 */
+/***/ (function(module, exports) {
 
 	module.exports = function (hljs) {
 
@@ -26218,9 +27119,9 @@
 	    };
 	};
 
-/***/ },
-/* 230 */
-/***/ function(module, exports) {
+/***/ }),
+/* 234 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var PARAMS = {
@@ -26293,9 +27194,9 @@
 	  };
 	};
 
-/***/ },
-/* 231 */
-/***/ function(module, exports) {
+/***/ }),
+/* 235 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var TYPEPARAM = {
@@ -26356,9 +27257,9 @@
 	  };
 	};
 
-/***/ },
-/* 232 */
-/***/ function(module, exports) {
+/***/ }),
+/* 236 */
+/***/ (function(module, exports) {
 
 	module.exports = function (hljs) {
 	  var KEYWORDS = {
@@ -26502,7 +27403,7 @@
 	        contains: [
 	              { // Function title
 	                className: 'title',
-	                begin: /^[a-z][a-z0-9_]+/,
+	                begin: /^[a-z0-9_]+/,
 	              },
 	              PARAMS,
 	              SYMBOLS,
@@ -26514,9 +27415,9 @@
 	  };
 	};
 
-/***/ },
-/* 233 */
-/***/ function(module, exports) {
+/***/ }),
+/* 237 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var KEYWORDS = {
@@ -26570,7 +27471,7 @@
 	              'getpath getPreviousTradingDay getPreviousWeekDay getRow getscalar3D getscalar4D getTrRow getwind glm gradcplx gradMT ' +
 	              'gradMTm gradMTT gradMTTm gradp graphprt graphset hasimag header headermt hess hessMT hessMTg hessMTgw hessMTm ' +
 	              'hessMTmw hessMTT hessMTTg hessMTTgw hessMTTm hessMTw hessp hist histf histp hsec imag indcv indexcat indices indices2 ' +
-	              'indicesf indicesfn indnv indsav indx integrate1d integrateControlCreate intgrat2 intgrat3 inthp1 inthp2 inthp3 inthp4 ' +
+	              'indicesf indicesfn indnv indsav integrate1d integrateControlCreate intgrat2 intgrat3 inthp1 inthp2 inthp3 inthp4 ' +
 	              'inthpControlCreate intquad1 intquad2 intquad3 intrleav intrleavsa intrsect intsimp inv invpd invswp iscplx iscplxf ' +
 	              'isden isinfnanmiss ismiss key keyav keyw lag lag1 lagn lapEighb lapEighi lapEighvb lapEighvi lapgEig lapgEigh lapgEighv ' +
 	              'lapgEigv lapgSchur lapgSvdcst lapgSvds lapgSvdst lapSvdcusv lapSvds lapSvdusv ldlp ldlsol linSolve listwise ln lncdfbvn ' +
@@ -26610,7 +27511,9 @@
 	              'utctodtv utrisol vals varCovMS varCovXS varget vargetl varmall varmares varput varputl vartypef vcm vcms vcx vcxs ' +
 	              'vec vech vecr vector vget view viewxyz vlist vnamecv volume vput vread vtypecv wait waitc walkindex where window ' +
 	              'writer xlabel xlsGetSheetCount xlsGetSheetSize xlsGetSheetTypes xlsMakeRange xlsReadM xlsReadSA xlsWrite xlsWriteM ' +
-	              'xlsWriteSA xpnd xtics xy xyz ylabel ytics zeros zeta zlabel ztics',
+	              'xlsWriteSA xpnd xtics xy xyz ylabel ytics zeros zeta zlabel ztics cdfEmpirical dot h5create h5open h5read h5readAttribute ' +
+	              'h5write h5writeAttribute ldl plotAddErrorBar plotAddSurface plotCDFEmpirical plotSetColormap plotSetContourLabels ' +
+	              'plotSetLegendFont plotSetTextInterpreter plotSetXTicCount plotSetYTicCount plotSetZLevels powerm strjoin strtrim sylvester',
 	    literal: 'DB_AFTER_LAST_ROW DB_ALL_TABLES DB_BATCH_OPERATIONS DB_BEFORE_FIRST_ROW DB_BLOB DB_EVENT_NOTIFICATIONS ' +
 	             'DB_FINISH_QUERY DB_HIGH_PRECISION DB_LAST_INSERT_ID DB_LOW_PRECISION_DOUBLE DB_LOW_PRECISION_INT32 ' +
 	             'DB_LOW_PRECISION_INT64 DB_LOW_PRECISION_NUMBERS DB_MULTIPLE_RESULT_SETS DB_NAMED_PLACEHOLDERS ' +
@@ -26740,9 +27643,9 @@
 	  };
 	};
 
-/***/ },
-/* 234 */
-/***/ function(module, exports) {
+/***/ }),
+/* 238 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	    var GCODE_IDENT_RE = '[A-Z_][A-Z0-9_.]*';
@@ -26811,9 +27714,9 @@
 	    };
 	};
 
-/***/ },
-/* 235 */
-/***/ function(module, exports) {
+/***/ }),
+/* 239 */
+/***/ (function(module, exports) {
 
 	module.exports = function (hljs) {
 	  return {
@@ -26852,9 +27755,9 @@
 	  };
 	};
 
-/***/ },
-/* 236 */
-/***/ function(module, exports) {
+/***/ }),
+/* 240 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  return {
@@ -26973,9 +27876,9 @@
 	  };
 	};
 
-/***/ },
-/* 237 */
-/***/ function(module, exports) {
+/***/ }),
+/* 241 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var GO_KEYWORDS = {
@@ -27031,9 +27934,9 @@
 	  };
 	};
 
-/***/ },
-/* 238 */
-/***/ function(module, exports) {
+/***/ }),
+/* 242 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	    return {
@@ -27058,9 +27961,9 @@
 	    }
 	};
 
-/***/ },
-/* 239 */
-/***/ function(module, exports) {
+/***/ }),
+/* 243 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  return {
@@ -27097,9 +28000,9 @@
 	  }
 	};
 
-/***/ },
-/* 240 */
-/***/ function(module, exports) {
+/***/ }),
+/* 244 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	    return {
@@ -27195,9 +28098,9 @@
 	    }
 	};
 
-/***/ },
-/* 241 */
-/***/ function(module, exports) {
+/***/ }),
+/* 245 */
+/***/ (function(module, exports) {
 
 	module.exports = // TODO support filter tags like :javascript, support inline HTML
 	function(hljs) {
@@ -27306,9 +28209,9 @@
 	  };
 	};
 
-/***/ },
-/* 242 */
-/***/ function(module, exports) {
+/***/ }),
+/* 246 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var BUILT_INS = {'builtin-name': 'each in with if else unless bindattr action collection debugger log outlet template unbound view yield'};
@@ -27344,9 +28247,9 @@
 	  };
 	};
 
-/***/ },
-/* 243 */
-/***/ function(module, exports) {
+/***/ }),
+/* 247 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var COMMENT = {
@@ -27470,9 +28373,9 @@
 	  };
 	};
 
-/***/ },
-/* 244 */
-/***/ function(module, exports) {
+/***/ }),
+/* 248 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var IDENT_RE = '[a-zA-Z_$][a-zA-Z0-9_$]*';
@@ -27483,7 +28386,7 @@
 	  return {
 	    aliases: ['hx'],
 	    keywords: {
-	      keyword: 'break callback case cast catch continue default do dynamic else enum extern ' +
+	      keyword: 'break case cast catch continue default do dynamic else enum extern ' +
 	               'for function here if import in inline never new override package private get set ' +
 	               'public return static super switch this throw trace try typedef untyped using var while ' +
 	               HAXE_BASIC_TYPES,
@@ -27586,9 +28489,9 @@
 	  };
 	};
 
-/***/ },
-/* 245 */
-/***/ function(module, exports) {
+/***/ }),
+/* 249 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  return {
@@ -27636,9 +28539,9 @@
 	  };
 	};
 
-/***/ },
-/* 246 */
-/***/ function(module, exports) {
+/***/ }),
+/* 250 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var BUILT_INS = 'action collection component concat debugger each each-in else get hash if input link-to loc log mut outlet partial query-params render textarea unbound unless with yield view';
@@ -27711,9 +28614,9 @@
 	  };
 	};
 
-/***/ },
-/* 247 */
-/***/ function(module, exports) {
+/***/ }),
+/* 251 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var VERSION = 'HTTP/[0-9\\.]+';
@@ -27756,9 +28659,115 @@
 	  };
 	};
 
-/***/ },
-/* 248 */
-/***/ function(module, exports) {
+/***/ }),
+/* 252 */
+/***/ (function(module, exports) {
+
+	module.exports = function(hljs) {
+	  var keywords = {
+	    'builtin-name':
+	      // keywords
+	      '!= % %= & &= * ** **= *= *map ' +
+	      '+ += , --build-class-- --import-- -= . / // //= ' +
+	      '/= < << <<= <= = > >= >> >>= ' +
+	      '@ @= ^ ^= abs accumulate all and any ap-compose ' +
+	      'ap-dotimes ap-each ap-each-while ap-filter ap-first ap-if ap-last ap-map ap-map-when ap-pipe ' +
+	      'ap-reduce ap-reject apply as-> ascii assert assoc bin break butlast ' +
+	      'callable calling-module-name car case cdr chain chr coll? combinations compile ' +
+	      'compress cond cons cons? continue count curry cut cycle dec ' +
+	      'def default-method defclass defmacro defmacro-alias defmacro/g! defmain defmethod defmulti defn ' +
+	      'defn-alias defnc defnr defreader defseq del delattr delete-route dict-comp dir ' +
+	      'disassemble dispatch-reader-macro distinct divmod do doto drop drop-last drop-while empty? ' +
+	      'end-sequence eval eval-and-compile eval-when-compile even? every? except exec filter first ' +
+	      'flatten float? fn fnc fnr for for* format fraction genexpr ' +
+	      'gensym get getattr global globals group-by hasattr hash hex id ' +
+	      'identity if if* if-not if-python2 import in inc input instance? ' +
+	      'integer integer-char? integer? interleave interpose is is-coll is-cons is-empty is-even ' +
+	      'is-every is-float is-instance is-integer is-integer-char is-iterable is-iterator is-keyword is-neg is-none ' +
+	      'is-not is-numeric is-odd is-pos is-string is-symbol is-zero isinstance islice issubclass ' +
+	      'iter iterable? iterate iterator? keyword keyword? lambda last len let ' +
+	      'lif lif-not list* list-comp locals loop macro-error macroexpand macroexpand-1 macroexpand-all ' +
+	      'map max merge-with method-decorator min multi-decorator multicombinations name neg? next ' +
+	      'none? nonlocal not not-in not? nth numeric? oct odd? open ' +
+	      'or ord partition permutations pos? post-route postwalk pow prewalk print ' +
+	      'product profile/calls profile/cpu put-route quasiquote quote raise range read read-str ' +
+	      'recursive-replace reduce remove repeat repeatedly repr require rest round route ' +
+	      'route-with-methods rwm second seq set-comp setattr setv some sorted string ' +
+	      'string? sum switch symbol? take take-nth take-while tee try unless ' +
+	      'unquote unquote-splicing vars walk when while with with* with-decorator with-gensyms ' +
+	      'xi xor yield yield-from zero? zip zip-longest | |= ~'
+	   };
+
+	  var SYMBOLSTART = 'a-zA-Z_\\-!.?+*=<>&#\'';
+	  var SYMBOL_RE = '[' + SYMBOLSTART + '][' + SYMBOLSTART + '0-9/;:]*';
+	  var SIMPLE_NUMBER_RE = '[-+]?\\d+(\\.\\d+)?';
+
+	  var SHEBANG = {
+	    className: 'meta',
+	    begin: '^#!', end: '$'
+	  };
+
+	  var SYMBOL = {
+	    begin: SYMBOL_RE,
+	    relevance: 0
+	  };
+	  var NUMBER = {
+	    className: 'number', begin: SIMPLE_NUMBER_RE,
+	    relevance: 0
+	  };
+	  var STRING = hljs.inherit(hljs.QUOTE_STRING_MODE, {illegal: null});
+	  var COMMENT = hljs.COMMENT(
+	    ';',
+	    '$',
+	    {
+	      relevance: 0
+	    }
+	  );
+	  var LITERAL = {
+	    className: 'literal',
+	    begin: /\b([Tt]rue|[Ff]alse|nil|None)\b/
+	  };
+	  var COLLECTION = {
+	    begin: '[\\[\\{]', end: '[\\]\\}]'
+	  };
+	  var HINT = {
+	    className: 'comment',
+	    begin: '\\^' + SYMBOL_RE
+	  };
+	  var HINT_COL = hljs.COMMENT('\\^\\{', '\\}');
+	  var KEY = {
+	    className: 'symbol',
+	    begin: '[:]{1,2}' + SYMBOL_RE
+	  };
+	  var LIST = {
+	    begin: '\\(', end: '\\)'
+	  };
+	  var BODY = {
+	    endsWithParent: true,
+	    relevance: 0
+	  };
+	  var NAME = {
+	    keywords: keywords,
+	    lexemes: SYMBOL_RE,
+	    className: 'name', begin: SYMBOL_RE,
+	    starts: BODY
+	  };
+	  var DEFAULT_CONTAINS = [LIST, STRING, HINT, HINT_COL, COMMENT, KEY, COLLECTION, NUMBER, LITERAL, SYMBOL];
+
+	  LIST.contains = [hljs.COMMENT('comment', ''), NAME, BODY];
+	  BODY.contains = DEFAULT_CONTAINS;
+	  COLLECTION.contains = DEFAULT_CONTAINS;
+
+	  return {
+	    aliases: ['hylang'],
+	    illegal: /\S/,
+	    contains: [SHEBANG, LIST, STRING, HINT, HINT_COL, COMMENT, KEY, COLLECTION, NUMBER, LITERAL]
+	  }
+	};
+
+/***/ }),
+/* 253 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var START_BRACKET = '\\[';
@@ -27817,9 +28826,9 @@
 	  };
 	};
 
-/***/ },
-/* 249 */
-/***/ function(module, exports) {
+/***/ }),
+/* 254 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var STRING = {
@@ -27887,9 +28896,9 @@
 	  };
 	};
 
-/***/ },
-/* 250 */
-/***/ function(module, exports) {
+/***/ }),
+/* 255 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var PARAMS = {
@@ -27967,9 +28976,9 @@
 	  };
 	};
 
-/***/ },
-/* 251 */
-/***/ function(module, exports) {
+/***/ }),
+/* 256 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var JAVA_IDENT_RE = '[\u00C0-\u02B8a-zA-Z_$][\u00C0-\u02B8a-zA-Z_$0-9]*';
@@ -28079,9 +29088,9 @@
 	  };
 	};
 
-/***/ },
-/* 252 */
-/***/ function(module, exports) {
+/***/ }),
+/* 257 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var IDENT_RE = '[A-Za-z$_][0-9A-Za-z$_]*';
@@ -28254,9 +29263,60 @@
 	  };
 	};
 
-/***/ },
-/* 253 */
-/***/ function(module, exports) {
+/***/ }),
+/* 258 */
+/***/ (function(module, exports) {
+
+	module.exports = function (hljs) {
+	  var PARAM = {
+	    begin: /[\w-]+ *=/, returnBegin: true,
+	    relevance: 0,
+	    contains: [{className: 'attr', begin: /[\w-]+/}]
+	  };
+	  var PARAMSBLOCK = {
+	    className: 'params',
+	    begin: /\(/,
+	    end: /\)/,
+	    contains: [PARAM],
+	    relevance : 0
+	  };
+	  var OPERATION = {
+	    className: 'function',
+	    begin: /:[\w\-.]+/,
+	    relevance: 0
+	  };
+	  var PATH = {
+	    className: 'string',
+	    begin: /\B(([\/.])[\w\-.\/=]+)+/,
+	  };
+	  var COMMAND_PARAMS = {
+	    className: 'params',
+	    begin: /--[\w\-=\/]+/,
+	  };
+	  return {
+	    aliases: ['wildfly-cli'],
+	    lexemes: '[a-z\-]+',
+	    keywords: {
+	      keyword: 'alias batch cd clear command connect connection-factory connection-info data-source deploy ' +
+	      'deployment-info deployment-overlay echo echo-dmr help history if jdbc-driver-info jms-queue|20 jms-topic|20 ls ' +
+	      'patch pwd quit read-attribute read-operation reload rollout-plan run-batch set shutdown try unalias ' +
+	      'undeploy unset version xa-data-source', // module
+	      literal: 'true false'
+	    },
+	    contains: [
+	      hljs.HASH_COMMENT_MODE,
+	      hljs.QUOTE_STRING_MODE,
+	      COMMAND_PARAMS,
+	      OPERATION,
+	      PATH,
+	      PARAMSBLOCK
+	    ]
+	  }
+	};
+
+/***/ }),
+/* 259 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var LITERALS = {literal: 'true false null'};
@@ -28295,111 +29355,91 @@
 	  };
 	};
 
-/***/ },
-/* 254 */
-/***/ function(module, exports) {
+/***/ }),
+/* 260 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  // Since there are numerous special names in Julia, it is too much trouble
 	  // to maintain them by hand. Hence these names (i.e. keywords, literals and
-	  // built-ins) are automatically generated from Julia (v0.3.0 and v0.4.1)
-	  // itself through following scripts for each.
+	  // built-ins) are automatically generated from Julia v0.6 itself through
+	  // the following scripts for each.
 
 	  var KEYWORDS = {
-	    // # keyword generator
-	    // println("in")
+	    // # keyword generator, multi-word keywords handled manually below
+	    // foreach(println, ["in", "isa", "where"])
 	    // for kw in Base.REPLCompletions.complete_keyword("")
-	    //     println(kw)
+	    //     if !(contains(kw, " ") || kw == "struct")
+	    //         println(kw)
+	    //     end
 	    // end
 	    keyword:
-	      'in abstract baremodule begin bitstype break catch ccall const continue do else elseif end export ' +
-	      'finally for function global if immutable import importall let local macro module quote return try type ' +
-	      'typealias using while',
+	      'in isa where ' +
+	      'baremodule begin break catch ccall const continue do else elseif end export false finally for function ' +
+	      'global if import importall let local macro module quote return true try using while ' +
+	      // legacy, to be deprecated in the next release
+	      'type immutable abstract bitstype typealias ',
 
 	    // # literal generator
 	    // println("true")
 	    // println("false")
 	    // for name in Base.REPLCompletions.completions("", 0)[1]
 	    //     try
-	    //         s = symbol(name)
-	    //         v = eval(s)
-	    //         if !isa(v, Function) &&
-	    //            !isa(v, DataType) &&
-	    //            !isa(v, IntrinsicFunction) &&
-	    //            !issubtype(typeof(v), Tuple) &&
-	    //            !isa(v, Union) &&
-	    //            !isa(v, Module) &&
-	    //            !isa(v, TypeConstructor) &&
-	    //            !isa(v, TypeVar) &&
-	    //            !isa(v, Colon)
+	    //         v = eval(Symbol(name))
+	    //         if !(v isa Function || v isa Type || v isa TypeVar || v isa Module || v isa Colon)
 	    //             println(name)
 	    //         end
 	    //     end
 	    // end
 	    literal:
-	      // v0.3
-	      'true false ARGS CPU_CORES C_NULL DL_LOAD_PATH DevNull ENDIAN_BOM ENV I|0 Inf Inf16 Inf32 ' +
-	      'InsertionSort JULIA_HOME LOAD_PATH MS_ASYNC MS_INVALIDATE MS_SYNC MergeSort NaN NaN16 NaN32 OS_NAME QuickSort ' +
-	      'RTLD_DEEPBIND RTLD_FIRST RTLD_GLOBAL RTLD_LAZY RTLD_LOCAL RTLD_NODELETE RTLD_NOLOAD RTLD_NOW RoundDown ' +
-	      'RoundFromZero RoundNearest RoundToZero RoundUp STDERR STDIN STDOUT VERSION WORD_SIZE catalan cglobal e|0 eu|0 ' +
-	      'eulergamma golden im nothing pi γ π φ ' +
-	      // v0.4 (diff)
-	      'Inf64 NaN64 RoundNearestTiesAway RoundNearestTiesUp ',
+	      'true false ' +
+	      'ARGS C_NULL DevNull ENDIAN_BOM ENV I Inf Inf16 Inf32 Inf64 InsertionSort JULIA_HOME LOAD_PATH MergeSort ' +
+	      'NaN NaN16 NaN32 NaN64 PROGRAM_FILE QuickSort RoundDown RoundFromZero RoundNearest RoundNearestTiesAway ' +
+	      'RoundNearestTiesUp RoundToZero RoundUp STDERR STDIN STDOUT VERSION catalan e|0 eu|0 eulergamma golden im ' +
+	      'nothing pi γ π φ ',
 
 	    // # built_in generator:
 	    // for name in Base.REPLCompletions.completions("", 0)[1]
 	    //     try
-	    //         v = eval(symbol(name))
-	    //         if isa(v, DataType) || isa(v, TypeConstructor) || isa(v, TypeVar)
+	    //         v = eval(Symbol(name))
+	    //         if v isa Type || v isa TypeVar
 	    //             println(name)
 	    //         end
 	    //     end
 	    // end
 	    built_in:
-	      // v0.3
-	      'ANY ASCIIString AbstractArray AbstractRNG AbstractSparseArray Any ArgumentError Array Associative Base64Pipe ' +
-	      'Bidiagonal BigFloat BigInt BitArray BitMatrix BitVector Bool BoundsError Box CFILE Cchar Cdouble Cfloat Char ' +
-	      'CharString Cint Clong Clonglong ClusterManager Cmd Coff_t Colon Complex Complex128 Complex32 Complex64 ' +
-	      'Condition Cptrdiff_t Cshort Csize_t Cssize_t Cuchar Cuint Culong Culonglong Cushort Cwchar_t DArray DataType ' +
-	      'DenseArray Diagonal Dict DimensionMismatch DirectIndexString Display DivideError DomainError EOFError ' +
-	      'EachLine Enumerate ErrorException Exception Expr Factorization FileMonitor FileOffset Filter Float16 Float32 ' +
-	      'Float64 FloatRange FloatingPoint Function GetfieldNode GotoNode Hermitian IO IOBuffer IOStream IPv4 IPv6 ' +
-	      'InexactError Int Int128 Int16 Int32 Int64 Int8 IntSet Integer InterruptException IntrinsicFunction KeyError ' +
-	      'LabelNode LambdaStaticData LineNumberNode LoadError LocalProcess MIME MathConst MemoryError MersenneTwister ' +
-	      'Method MethodError MethodTable Module NTuple NewvarNode Nothing Number ObjectIdDict OrdinalRange ' +
-	      'OverflowError ParseError PollingFileWatcher ProcessExitedException ProcessGroup Ptr QuoteNode Range Range1 ' +
-	      'Ranges Rational RawFD Real Regex RegexMatch RemoteRef RepString RevString RopeString RoundingMode Set ' +
-	      'SharedArray Signed SparseMatrixCSC StackOverflowError Stat StatStruct StepRange String SubArray SubString ' +
-	      'SymTridiagonal Symbol SymbolNode Symmetric SystemError Task TextDisplay Timer TmStruct TopNode Triangular ' +
-	      'Tridiagonal Type TypeConstructor TypeError TypeName TypeVar UTF16String UTF32String UTF8String UdpSocket ' +
-	      'Uint Uint128 Uint16 Uint32 Uint64 Uint8 UndefRefError UndefVarError UniformScaling UnionType UnitRange ' +
-	      'Unsigned Vararg VersionNumber WString WeakKeyDict WeakRef Woodbury Zip ' +
-	      // v0.4 (diff)
-	      'AbstractChannel AbstractFloat AbstractString AssertionError Base64DecodePipe Base64EncodePipe BufferStream ' +
-	      'CapturedException CartesianIndex CartesianRange Channel Cintmax_t CompositeException Cstring Cuintmax_t ' +
-	      'Cwstring Date DateTime Dims Enum GenSym GlobalRef HTML InitError InvalidStateException Irrational LinSpace ' +
-	      'LowerTriangular NullException Nullable OutOfMemoryError Pair PartialQuickSort Pipe RandomDevice ' +
-	      'ReadOnlyMemoryError ReentrantLock Ref RemoteException SegmentationFault SerializationState SimpleVector ' +
-	      'TCPSocket Text Tuple UDPSocket UInt UInt128 UInt16 UInt32 UInt64 UInt8 UnicodeError Union UpperTriangular ' +
-	      'Val Void WorkerConfig AbstractMatrix AbstractSparseMatrix AbstractSparseVector AbstractVecOrMat AbstractVector ' +
-	      'DenseMatrix DenseVecOrMat DenseVector Matrix SharedMatrix SharedVector StridedArray StridedMatrix ' +
-	      'StridedVecOrMat StridedVector VecOrMat Vector '
+	      'ANY AbstractArray AbstractChannel AbstractFloat AbstractMatrix AbstractRNG AbstractSerializer AbstractSet ' +
+	      'AbstractSparseArray AbstractSparseMatrix AbstractSparseVector AbstractString AbstractUnitRange AbstractVecOrMat ' +
+	      'AbstractVector Any ArgumentError Array AssertionError Associative Base64DecodePipe Base64EncodePipe Bidiagonal '+
+	      'BigFloat BigInt BitArray BitMatrix BitVector Bool BoundsError BufferStream CachingPool CapturedException ' +
+	      'CartesianIndex CartesianRange Cchar Cdouble Cfloat Channel Char Cint Cintmax_t Clong Clonglong ClusterManager ' +
+	      'Cmd CodeInfo Colon Complex Complex128 Complex32 Complex64 CompositeException Condition ConjArray ConjMatrix ' +
+	      'ConjVector Cptrdiff_t Cshort Csize_t Cssize_t Cstring Cuchar Cuint Cuintmax_t Culong Culonglong Cushort Cwchar_t ' +
+	      'Cwstring DataType Date DateFormat DateTime DenseArray DenseMatrix DenseVecOrMat DenseVector Diagonal Dict ' +
+	      'DimensionMismatch Dims DirectIndexString Display DivideError DomainError EOFError EachLine Enum Enumerate ' +
+	      'ErrorException Exception ExponentialBackOff Expr Factorization FileMonitor Float16 Float32 Float64 Function ' +
+	      'Future GlobalRef GotoNode HTML Hermitian IO IOBuffer IOContext IOStream IPAddr IPv4 IPv6 IndexCartesian IndexLinear ' +
+	      'IndexStyle InexactError InitError Int Int128 Int16 Int32 Int64 Int8 IntSet Integer InterruptException ' +
+	      'InvalidStateException Irrational KeyError LabelNode LinSpace LineNumberNode LoadError LowerTriangular MIME Matrix ' +
+	      'MersenneTwister Method MethodError MethodTable Module NTuple NewvarNode NullException Nullable Number ObjectIdDict ' +
+	      'OrdinalRange OutOfMemoryError OverflowError Pair ParseError PartialQuickSort PermutedDimsArray Pipe ' +
+	      'PollingFileWatcher ProcessExitedException Ptr QuoteNode RandomDevice Range RangeIndex Rational RawFD ' +
+	      'ReadOnlyMemoryError Real ReentrantLock Ref Regex RegexMatch RemoteChannel RemoteException RevString RoundingMode ' +
+	      'RowVector SSAValue SegmentationFault SerializationState Set SharedArray SharedMatrix SharedVector Signed ' +
+	      'SimpleVector Slot SlotNumber SparseMatrixCSC SparseVector StackFrame StackOverflowError StackTrace StepRange ' +
+	      'StepRangeLen StridedArray StridedMatrix StridedVecOrMat StridedVector String SubArray SubString SymTridiagonal ' +
+	      'Symbol Symmetric SystemError TCPSocket Task Text TextDisplay Timer Tridiagonal Tuple Type TypeError TypeMapEntry ' +
+	      'TypeMapLevel TypeName TypeVar TypedSlot UDPSocket UInt UInt128 UInt16 UInt32 UInt64 UInt8 UndefRefError UndefVarError ' +
+	      'UnicodeError UniformScaling Union UnionAll UnitRange Unsigned UpperTriangular Val Vararg VecElement VecOrMat Vector ' +
+	      'VersionNumber Void WeakKeyDict WeakRef WorkerConfig WorkerPool '
 	  };
 
 	  // ref: http://julia.readthedocs.org/en/latest/manual/variables/#allowed-variable-names
 	  var VARIABLE_NAME_RE = '[A-Za-z_\\u00A1-\\uFFFF][A-Za-z_0-9\\u00A1-\\uFFFF]*';
 
 	  // placeholder for recursive self-reference
-	  var DEFAULT = { lexemes: VARIABLE_NAME_RE, keywords: KEYWORDS, illegal: /<\// };
-
-	  var TYPE_ANNOTATION = {
-	    className: 'type',
-	    begin: /::/
-	  };
-
-	  var SUBTYPE = {
-	    className: 'type',
-	    begin: /<:/
+	  var DEFAULT = {
+	    lexemes: VARIABLE_NAME_RE, keywords: KEYWORDS, illegal: /<\//
 	  };
 
 	  // ref: http://julia.readthedocs.org/en/latest/manual/integers-and-floating-point-numbers/
@@ -28464,29 +29504,61 @@
 	  DEFAULT.contains = [
 	    NUMBER,
 	    CHAR,
-	    TYPE_ANNOTATION,
-	    SUBTYPE,
 	    STRING,
 	    COMMAND,
 	    MACROCALL,
 	    COMMENT,
-	    hljs.HASH_COMMENT_MODE
+	    hljs.HASH_COMMENT_MODE,
+	    {
+	      className: 'keyword',
+	      begin:
+	        '\\b(((abstract|primitive)\\s+)type|(mutable\\s+)?struct)\\b'
+	    },
+	    {begin: /<:/}  // relevance booster
 	  ];
 	  INTERPOLATION.contains = DEFAULT.contains;
 
 	  return DEFAULT;
 	};
 
-/***/ },
-/* 255 */
-/***/ function(module, exports) {
+/***/ }),
+/* 261 */
+/***/ (function(module, exports) {
 
-	module.exports = function (hljs) {
+	module.exports = function(hljs) {
+	  return {
+	    contains: [
+	      {
+	        className: 'meta',
+	        begin: /^julia>/,
+	        relevance: 10,
+	        starts: {
+	          // end the highlighting if we are on a new line and the line does not have at
+	          // least six spaces in the beginning
+	          end: /^(?![ ]{6})/,
+	          subLanguage: 'julia'
+	      },
+	      // jldoctest Markdown blocks are used in the Julia manual and package docs indicate
+	      // code snippets that should be verified when the documentation is built. They can be
+	      // either REPL-like or script-like, but are usually REPL-like and therefore we apply
+	      // julia-repl highlighting to them. More information can be found in Documenter's
+	      // manual: https://juliadocs.github.io/Documenter.jl/latest/man/doctests.html
+	      aliases: ['jldoctest']
+	      }
+	    ]
+	  }
+	};
+
+/***/ }),
+/* 262 */
+/***/ (function(module, exports) {
+
+	module.exports = function(hljs) {
 	  var KEYWORDS = {
 	    keyword:
 	      'abstract as val var vararg get set class object open private protected public noinline ' +
 	      'crossinline dynamic final enum if else do while for when throw try catch finally ' +
-	      'import package is in fun override companion reified inline ' +
+	      'import package is in fun override companion reified inline lateinit init' +
 	      'interface annotation data sealed internal infix operator out by constructor super ' +
 	      // to be deleted soon
 	      'trait volatile transient native default',
@@ -28514,17 +29586,17 @@
 	  // for string templates
 	  var SUBST = {
 	    className: 'subst',
-	    variants: [
-	      {begin: '\\$' + hljs.UNDERSCORE_IDENT_RE},
-	      {begin: '\\${', end: '}', contains: [hljs.APOS_STRING_MODE, hljs.C_NUMBER_MODE]}
-	    ]
+	    begin: '\\${', end: '}', contains: [hljs.APOS_STRING_MODE, hljs.C_NUMBER_MODE]
+	  };
+	  var VARIABLE = {
+	    className: 'variable', begin: '\\$' + hljs.UNDERSCORE_IDENT_RE
 	  };
 	  var STRING = {
 	    className: 'string',
 	    variants: [
 	      {
 	        begin: '"""', end: '"""',
-	        contains: [SUBST]
+	        contains: [VARIABLE, SUBST]
 	      },
 	      // Can't use built-in modes easily, as we want to use STRING in the meta
 	      // context as 'meta-string' and there's no syntax to remove explicitly set
@@ -28537,7 +29609,7 @@
 	      {
 	        begin: '"', end: '"',
 	        illegal: /\n/,
-	        contains: [hljs.BACKSLASH_ESCAPE, SUBST]
+	        contains: [hljs.BACKSLASH_ESCAPE, VARIABLE, SUBST]
 	      }
 	    ]
 	  };
@@ -28655,9 +29727,9 @@
 	  };
 	};
 
-/***/ },
-/* 256 */
-/***/ function(module, exports) {
+/***/ }),
+/* 263 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var LASSO_IDENT_RE = '[a-zA-Z_][\\w.]*';
@@ -28822,9 +29894,9 @@
 	  };
 	};
 
-/***/ },
-/* 257 */
-/***/ function(module, exports) {
+/***/ }),
+/* 264 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  return {
@@ -28849,9 +29921,53 @@
 	  };
 	};
 
-/***/ },
-/* 258 */
-/***/ function(module, exports) {
+/***/ }),
+/* 265 */
+/***/ (function(module, exports) {
+
+	module.exports = function (hljs) {
+	  return {
+	    contains: [
+	      {
+	        className: 'function',
+	        begin: '#+' + '[A-Za-z_0-9]*' + '\\(',
+	        end:' {',
+	        returnBegin: true,
+	        excludeEnd: true,
+	        contains : [
+	          {
+	            className: 'keyword',
+	            begin: '#+'
+	          },
+	          {
+	            className: 'title',
+	            begin: '[A-Za-z_][A-Za-z_0-9]*'
+	          },
+	          {
+	            className: 'params',
+	            begin: '\\(', end: '\\)',
+	            endsParent: true,
+	            contains: [
+	              {
+	                className: 'string',
+	                begin: '"',
+	                end: '"'
+	              },
+	              {
+	                className: 'variable',
+	                begin: '[A-Za-z_][A-Za-z_0-9]*'
+	              }
+	            ]
+	          }
+	        ]
+	      }
+	    ]
+	  };
+	};
+
+/***/ }),
+/* 266 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var IDENT_RE        = '[\\w-]+'; // yes, Less identifiers may begin with a digit
@@ -28993,9 +30109,9 @@
 	  };
 	};
 
-/***/ },
-/* 259 */
-/***/ function(module, exports) {
+/***/ }),
+/* 267 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var LISP_IDENT_RE = '[a-zA-Z_\\-\\+\\*\\/\\<\\=\\>\\&\\#][a-zA-Z0-9_\\-\\+\\*\\/\\<\\=\\>\\&\\#!]*';
@@ -29100,9 +30216,9 @@
 	  };
 	};
 
-/***/ },
-/* 260 */
-/***/ function(module, exports) {
+/***/ }),
+/* 268 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var VARIABLE = {
@@ -29261,9 +30377,9 @@
 	  };
 	};
 
-/***/ },
-/* 261 */
-/***/ function(module, exports) {
+/***/ }),
+/* 269 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var KEYWORDS = {
@@ -29414,9 +30530,102 @@
 	  };
 	};
 
-/***/ },
-/* 262 */
-/***/ function(module, exports) {
+/***/ }),
+/* 270 */
+/***/ (function(module, exports) {
+
+	module.exports = function(hljs) {
+	  var identifier = '([-a-zA-Z$._][\\w\\-$.]*)';
+	  return {
+	    //lexemes: '[.%]?' + hljs.IDENT_RE,
+	    keywords:
+	      'begin end true false declare define global ' +
+	      'constant private linker_private internal ' +
+	      'available_externally linkonce linkonce_odr weak ' +
+	      'weak_odr appending dllimport dllexport common ' +
+	      'default hidden protected extern_weak external ' +
+	      'thread_local zeroinitializer undef null to tail ' +
+	      'target triple datalayout volatile nuw nsw nnan ' +
+	      'ninf nsz arcp fast exact inbounds align ' +
+	      'addrspace section alias module asm sideeffect ' +
+	      'gc dbg linker_private_weak attributes blockaddress ' +
+	      'initialexec localdynamic localexec prefix unnamed_addr ' +
+	      'ccc fastcc coldcc x86_stdcallcc x86_fastcallcc ' +
+	      'arm_apcscc arm_aapcscc arm_aapcs_vfpcc ptx_device ' +
+	      'ptx_kernel intel_ocl_bicc msp430_intrcc spir_func ' +
+	      'spir_kernel x86_64_sysvcc x86_64_win64cc x86_thiscallcc ' +
+	      'cc c signext zeroext inreg sret nounwind ' +
+	      'noreturn noalias nocapture byval nest readnone ' +
+	      'readonly inlinehint noinline alwaysinline optsize ssp ' +
+	      'sspreq noredzone noimplicitfloat naked builtin cold ' +
+	      'nobuiltin noduplicate nonlazybind optnone returns_twice ' +
+	      'sanitize_address sanitize_memory sanitize_thread sspstrong ' +
+	      'uwtable returned type opaque eq ne slt sgt ' +
+	      'sle sge ult ugt ule uge oeq one olt ogt ' +
+	      'ole oge ord uno ueq une x acq_rel acquire ' +
+	      'alignstack atomic catch cleanup filter inteldialect ' +
+	      'max min monotonic nand personality release seq_cst ' +
+	      'singlethread umax umin unordered xchg add fadd ' +
+	      'sub fsub mul fmul udiv sdiv fdiv urem srem ' +
+	      'frem shl lshr ashr and or xor icmp fcmp ' +
+	      'phi call trunc zext sext fptrunc fpext uitofp ' +
+	      'sitofp fptoui fptosi inttoptr ptrtoint bitcast ' +
+	      'addrspacecast select va_arg ret br switch invoke ' +
+	      'unwind unreachable indirectbr landingpad resume ' +
+	      'malloc alloca free load store getelementptr ' +
+	      'extractelement insertelement shufflevector getresult ' +
+	      'extractvalue insertvalue atomicrmw cmpxchg fence ' +
+	      'argmemonly double',
+	    contains: [
+	      {
+	        className: 'keyword',
+	        begin: 'i\\d+'
+	      },
+	      hljs.COMMENT(
+	        ';', '\\n', {relevance: 0}
+	      ),
+	      // Double quote string
+	      hljs.QUOTE_STRING_MODE,
+	      {
+	        className: 'string',
+	        variants: [
+	          // Double-quoted string
+	          { begin: '"', end: '[^\\\\]"' },
+	        ],
+	        relevance: 0
+	      },
+	      {
+	        className: 'title',
+	        variants: [
+	          { begin: '@' + identifier },
+	          { begin: '@\\d+' },
+	          { begin: '!' + identifier },
+	          { begin: '!\\d+' + identifier }
+	        ]
+	      },
+	      {
+	        className: 'symbol',
+	        variants: [
+	          { begin: '%' + identifier },
+	          { begin: '%\\d+' },
+	          { begin: '#\\d+' },
+	        ]
+	      },
+	      {
+	        className: 'number',
+	        variants: [
+	            { begin: '0[xX][a-fA-F0-9]+' },
+	            { begin: '-?\\d+(?:[.]\\d+)?(?:[eE][-+]?\\d+(?:[.]\\d+)?)?' }
+	        ],
+	        relevance: 0
+	      },
+	    ]
+	  };
+	};
+
+/***/ }),
+/* 271 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 
@@ -29501,9 +30710,9 @@
 	    };
 	};
 
-/***/ },
-/* 263 */
-/***/ function(module, exports) {
+/***/ }),
+/* 272 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var OPENING_LONG_BRACKET = '\\[=*\\[';
@@ -29526,14 +30735,24 @@
 	  return {
 	    lexemes: hljs.UNDERSCORE_IDENT_RE,
 	    keywords: {
-	      keyword:
-	        'and break do else elseif end false for if in local nil not or repeat return then ' +
-	        'true until while',
+	      literal: "true false nil",
+	      keyword: "and break do else elseif end for goto if in local not or repeat return then until while",
 	      built_in:
-	        '_G _VERSION assert collectgarbage dofile error getfenv getmetatable ipairs load ' +
-	        'loadfile loadstring module next pairs pcall print rawequal rawget rawset require ' +
-	        'select setfenv setmetatable tonumber tostring type unpack xpcall coroutine debug ' +
-	        'io math os package string table'
+	        //Metatags and globals:
+	        '_G _ENV _VERSION __index __newindex __mode __call __metatable __tostring __len ' +
+	        '__gc __add __sub __mul __div __mod __pow __concat __unm __eq __lt __le assert ' +
+	        //Standard methods and properties:
+	        'collectgarbage dofile error getfenv getmetatable ipairs load loadfile loadstring' +
+	        'module next pairs pcall print rawequal rawget rawset require select setfenv' +
+	        'setmetatable tonumber tostring type unpack xpcall arg self' +
+	        //Library methods and properties (one line per library):
+	        'coroutine resume yield status wrap create running debug getupvalue ' +
+	        'debug sethook getmetatable gethook setmetatable setlocal traceback setfenv getinfo setupvalue getlocal getregistry getfenv ' +
+	        'io lines write close flush open output type read stderr stdin input stdout popen tmpfile ' +
+	        'math log max acos huge ldexp pi cos tanh pow deg tan cosh sinh random randomseed frexp ceil floor rad abs sqrt modf asin min mod fmod log10 atan2 exp sin atan ' +
+	        'os exit setlocale date getenv difftime remove time clock tmpname rename execute package preload loadlib loaded loaders cpath config path seeall ' +
+	        'string sub upper len gfind rep find match char dump gmatch reverse byte format gsub lower ' +
+	        'table setn insert getn foreachi maxn foreach concat sort remove'
 	    },
 	    contains: COMMENTS.concat([
 	      {
@@ -29561,58 +30780,94 @@
 	  };
 	};
 
-/***/ },
-/* 264 */
-/***/ function(module, exports) {
+/***/ }),
+/* 273 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
+	  /* Variables: simple (eg $(var)) and special (eg $@) */
 	  var VARIABLE = {
 	    className: 'variable',
-	    begin: /\$\(/, end: /\)/,
-	    contains: [hljs.BACKSLASH_ESCAPE]
+	    variants: [
+	      {
+	        begin: '\\$\\(' + hljs.UNDERSCORE_IDENT_RE + '\\)',
+	        contains: [hljs.BACKSLASH_ESCAPE],
+	      },
+	      {
+	        begin: /\$[@%<?\^\+\*]/
+	      },
+	    ]
+	  };
+	  /* Quoted string with variables inside */
+	  var QUOTE_STRING = {
+	    className: 'string',
+	    begin: /"/, end: /"/,
+	    contains: [
+	      hljs.BACKSLASH_ESCAPE,
+	      VARIABLE,
+	    ]
+	  };
+	  /* Function: $(func arg,...) */
+	  var FUNC = {
+	    className: 'variable',
+	    begin: /\$\([\w-]+\s/, end: /\)/,
+	    keywords: {
+	      built_in:
+	        'subst patsubst strip findstring filter filter-out sort ' +
+	        'word wordlist firstword lastword dir notdir suffix basename ' +
+	        'addsuffix addprefix join wildcard realpath abspath error warning ' +
+	        'shell origin flavor foreach if or and call eval file value',
+	    },
+	    contains: [
+	      VARIABLE,
+	    ]
+	  };
+	  /* Variable assignment */
+	  var VAR_ASSIG = {
+	    begin: '^' + hljs.UNDERSCORE_IDENT_RE + '\\s*[:+?]?=',
+	    illegal: '\\n',
+	    returnBegin: true,
+	    contains: [
+	      {
+	        begin: '^' + hljs.UNDERSCORE_IDENT_RE, end: '[:+?]?=',
+	        excludeEnd: true,
+	      }
+	    ]
+	  };
+	  /* Meta targets (.PHONY) */
+	  var META = {
+	    className: 'meta',
+	    begin: /^\.PHONY:/, end: /$/,
+	    keywords: {'meta-keyword': '.PHONY'},
+	    lexemes: /[\.\w]+/
+	  };
+	  /* Targets */
+	  var TARGET = {
+	    className: 'section',
+	    begin: /^[^\s]+:/, end: /$/,
+	    contains: [VARIABLE,]
 	  };
 	  return {
 	    aliases: ['mk', 'mak'],
+	    keywords:
+	      'define endef undefine ifdef ifndef ifeq ifneq else endif ' +
+	      'include -include sinclude override export unexport private vpath',
+	    lexemes: /[\w-]+/,
 	    contains: [
 	      hljs.HASH_COMMENT_MODE,
-	      {
-	        begin: /^\w+\s*\W*=/, returnBegin: true,
-	        relevance: 0,
-	        starts: {
-	          end: /\s*\W*=/, excludeEnd: true,
-	          starts: {
-	            end: /$/,
-	            relevance: 0,
-	            contains: [
-	              VARIABLE
-	            ]
-	          }
-	        }
-	      },
-	      {
-	        className: 'section',
-	        begin: /^[\w]+:\s*$/
-	      },
-	      {
-	        className: 'meta',
-	        begin: /^\.PHONY:/, end: /$/,
-	        keywords: {'meta-keyword': '.PHONY'}, lexemes: /[\.\w]+/
-	      },
-	      {
-	        begin: /^\t+/, end: /$/,
-	        relevance: 0,
-	        contains: [
-	          hljs.QUOTE_STRING_MODE,
-	          VARIABLE
-	        ]
-	      }
+	      VARIABLE,
+	      QUOTE_STRING,
+	      FUNC,
+	      VAR_ASSIG,
+	      META,
+	      TARGET,
 	    ]
 	  };
 	};
 
-/***/ },
-/* 265 */
-/***/ function(module, exports) {
+/***/ }),
+/* 274 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  return {
@@ -29672,9 +30927,9 @@
 	  };
 	};
 
-/***/ },
-/* 266 */
-/***/ function(module, exports) {
+/***/ }),
+/* 275 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var COMMON_CONTAINS = [
@@ -29764,9 +31019,9 @@
 	  };
 	};
 
-/***/ },
-/* 267 */
-/***/ function(module, exports) {
+/***/ }),
+/* 276 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var KEYWORDS = 'if then else elseif for thru do while unless step in and or not';
@@ -30174,9 +31429,9 @@
 	  }
 	};
 
-/***/ },
-/* 268 */
-/***/ function(module, exports) {
+/***/ }),
+/* 277 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  return {
@@ -30403,9 +31658,9 @@
 	  };
 	};
 
-/***/ },
-/* 269 */
-/***/ function(module, exports) {
+/***/ }),
+/* 278 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var KEYWORDS = {
@@ -30489,9 +31744,9 @@
 	  };
 	};
 
-/***/ },
-/* 270 */
-/***/ function(module, exports) {
+/***/ }),
+/* 279 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	    //local labels: %?[FB]?[AT]?\d{1,2}\w+
@@ -30579,9 +31834,9 @@
 	  };
 	};
 
-/***/ },
-/* 271 */
-/***/ function(module, exports) {
+/***/ }),
+/* 280 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  return {
@@ -30602,9 +31857,9 @@
 	  };
 	};
 
-/***/ },
-/* 272 */
-/***/ function(module, exports) {
+/***/ }),
+/* 281 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var PERL_KEYWORDS = 'getpwent getservent quotemeta msgrcv scalar kill dbmclose undef lc ' +
@@ -30763,9 +32018,9 @@
 	  };
 	};
 
-/***/ },
-/* 273 */
-/***/ function(module, exports) {
+/***/ }),
+/* 282 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  return {
@@ -30792,9 +32047,9 @@
 	  };
 	};
 
-/***/ },
-/* 274 */
-/***/ function(module, exports) {
+/***/ }),
+/* 283 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var NUMBER = {
@@ -30871,9 +32126,9 @@
 	  }
 	};
 
-/***/ },
-/* 275 */
-/***/ function(module, exports) {
+/***/ }),
+/* 284 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var KEYWORDS = {
@@ -30987,9 +32242,82 @@
 	  };
 	};
 
-/***/ },
-/* 276 */
-/***/ function(module, exports) {
+/***/ }),
+/* 285 */
+/***/ (function(module, exports) {
+
+	module.exports = function(hljs) {
+	  return {
+	    case_insensitive: true,
+	    contains: [
+	      {
+	        beginKeywords:
+	          'build create index delete drop explain infer|10 insert merge prepare select update upsert|10',
+	        end: /;/, endsWithParent: true,
+	        keywords: {
+	          // Taken from http://developer.couchbase.com/documentation/server/current/n1ql/n1ql-language-reference/reservedwords.html
+	          keyword:
+	            'all alter analyze and any array as asc begin between binary boolean break bucket build by call ' +
+	            'case cast cluster collate collection commit connect continue correlate cover create database ' +
+	            'dataset datastore declare decrement delete derived desc describe distinct do drop each element ' +
+	            'else end every except exclude execute exists explain fetch first flatten for force from ' +
+	            'function grant group gsi having if ignore ilike in include increment index infer inline inner ' +
+	            'insert intersect into is join key keys keyspace known last left let letting like limit lsm map ' +
+	            'mapping matched materialized merge minus namespace nest not number object offset on ' +
+	            'option or order outer over parse partition password path pool prepare primary private privilege ' +
+	            'procedure public raw realm reduce rename return returning revoke right role rollback satisfies ' +
+	            'schema select self semi set show some start statistics string system then to transaction trigger ' +
+	            'truncate under union unique unknown unnest unset update upsert use user using validate value ' +
+	            'valued values via view when where while with within work xor',
+	          // Taken from http://developer.couchbase.com/documentation/server/4.5/n1ql/n1ql-language-reference/literals.html
+	          literal:
+	            'true false null missing|5',
+	          // Taken from http://developer.couchbase.com/documentation/server/4.5/n1ql/n1ql-language-reference/functions.html
+	          built_in:
+	            'array_agg array_append array_concat array_contains array_count array_distinct array_ifnull array_length ' +
+	            'array_max array_min array_position array_prepend array_put array_range array_remove array_repeat array_replace ' +
+	            'array_reverse array_sort array_sum avg count max min sum greatest least ifmissing ifmissingornull ifnull ' +
+	            'missingif nullif ifinf ifnan ifnanorinf naninf neginfif posinfif clock_millis clock_str date_add_millis ' +
+	            'date_add_str date_diff_millis date_diff_str date_part_millis date_part_str date_trunc_millis date_trunc_str ' +
+	            'duration_to_str millis str_to_millis millis_to_str millis_to_utc millis_to_zone_name now_millis now_str ' +
+	            'str_to_duration str_to_utc str_to_zone_name decode_json encode_json encoded_size poly_length base64 base64_encode ' +
+	            'base64_decode meta uuid abs acos asin atan atan2 ceil cos degrees e exp ln log floor pi power radians random ' +
+	            'round sign sin sqrt tan trunc object_length object_names object_pairs object_inner_pairs object_values ' +
+	            'object_inner_values object_add object_put object_remove object_unwrap regexp_contains regexp_like regexp_position ' +
+	            'regexp_replace contains initcap length lower ltrim position repeat replace rtrim split substr title trim upper ' +
+	            'isarray isatom isboolean isnumber isobject isstring type toarray toatom toboolean tonumber toobject tostring'
+	        },
+	        contains: [
+	          {
+	            className: 'string',
+	            begin: '\'', end: '\'',
+	            contains: [hljs.BACKSLASH_ESCAPE],
+	            relevance: 0
+	          },
+	          {
+	            className: 'string',
+	            begin: '"', end: '"',
+	            contains: [hljs.BACKSLASH_ESCAPE],
+	            relevance: 0
+	          },
+	          {
+	            className: 'symbol',
+	            begin: '`', end: '`',
+	            contains: [hljs.BACKSLASH_ESCAPE],
+	            relevance: 2
+	          },
+	          hljs.C_NUMBER_MODE,
+	          hljs.C_BLOCK_COMMENT_MODE
+	        ]
+	      },
+	      hljs.C_BLOCK_COMMENT_MODE
+	    ]
+	  };
+	};
+
+/***/ }),
+/* 286 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var VAR = {
@@ -31084,9 +32412,9 @@
 	  };
 	};
 
-/***/ },
-/* 277 */
-/***/ function(module, exports) {
+/***/ }),
+/* 287 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  return {
@@ -31143,9 +32471,9 @@
 	  }
 	};
 
-/***/ },
-/* 278 */
-/***/ function(module, exports) {
+/***/ }),
+/* 288 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var NIX_KEYWORDS = {
@@ -31196,9 +32524,9 @@
 	  };
 	};
 
-/***/ },
-/* 279 */
-/***/ function(module, exports) {
+/***/ }),
+/* 289 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var CONSTANTS = {
@@ -31306,9 +32634,9 @@
 	  };
 	};
 
-/***/ },
-/* 280 */
-/***/ function(module, exports) {
+/***/ }),
+/* 290 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var API_CLASS = {
@@ -31401,9 +32729,9 @@
 	  };
 	};
 
-/***/ },
-/* 281 */
-/***/ function(module, exports) {
+/***/ }),
+/* 291 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  /* missing support for heredoc-like string (OCaml 4.0.2+) */
@@ -31476,9 +32804,9 @@
 	  }
 	};
 
-/***/ },
-/* 282 */
-/***/ function(module, exports) {
+/***/ }),
+/* 292 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 		var SPECIAL_VARS = {
@@ -31537,9 +32865,9 @@
 		}
 	};
 
-/***/ },
-/* 283 */
-/***/ function(module, exports) {
+/***/ }),
+/* 293 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var OXYGENE_KEYWORDS = 'abstract add and array as asc aspect assembly async begin break block by case class concat const copy constructor continue '+
@@ -31611,9 +32939,9 @@
 	  };
 	};
 
-/***/ },
-/* 284 */
-/***/ function(module, exports) {
+/***/ }),
+/* 294 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var CURLY_SUBCOMMENT = hljs.COMMENT(
@@ -31663,9 +32991,9 @@
 	  };
 	};
 
-/***/ },
-/* 285 */
-/***/ function(module, exports) {
+/***/ }),
+/* 295 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var MACRO = {
@@ -31719,9 +33047,9 @@
 	  };
 	};
 
-/***/ },
-/* 286 */
-/***/ function(module, exports) {
+/***/ }),
+/* 296 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var VARIABLE = {
@@ -31850,9 +33178,9 @@
 	  };
 	};
 
-/***/ },
-/* 287 */
-/***/ function(module, exports) {
+/***/ }),
+/* 297 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var KEYWORDS = {
@@ -31945,9 +33273,9 @@
 	  };
 	};
 
-/***/ },
-/* 288 */
-/***/ function(module, exports) {
+/***/ }),
+/* 298 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var BACKTICK_ESCAPE = {
@@ -32030,9 +33358,9 @@
 	  };
 	};
 
-/***/ },
-/* 289 */
-/***/ function(module, exports) {
+/***/ }),
+/* 299 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  return {
@@ -32082,9 +33410,9 @@
 	  };
 	};
 
-/***/ },
-/* 290 */
-/***/ function(module, exports) {
+/***/ }),
+/* 300 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  return {
@@ -32116,9 +33444,9 @@
 	  };
 	};
 
-/***/ },
-/* 291 */
-/***/ function(module, exports) {
+/***/ }),
+/* 301 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 
@@ -32208,9 +33536,9 @@
 	  };
 	};
 
-/***/ },
-/* 292 */
-/***/ function(module, exports) {
+/***/ }),
+/* 302 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  return {
@@ -32248,9 +33576,9 @@
 	  };
 	};
 
-/***/ },
-/* 293 */
-/***/ function(module, exports) {
+/***/ }),
+/* 303 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 
@@ -32367,9 +33695,9 @@
 	  }
 	};
 
-/***/ },
-/* 294 */
-/***/ function(module, exports) {
+/***/ }),
+/* 304 */
+/***/ (function(module, exports) {
 
 	module.exports = // Base deafult colors in PB IDE: background: #FFFFDF; foreground: #000000;
 
@@ -32429,13 +33757,27 @@
 	  };
 	};
 
-/***/ },
-/* 295 */
-/***/ function(module, exports) {
+/***/ }),
+/* 305 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
+	  var KEYWORDS = {
+	    keyword:
+	      'and elif is global as in if from raise for except finally print import pass return ' +
+	      'exec else break not with class assert yield try while continue del or def lambda ' +
+	      'async await nonlocal|10 None True False',
+	    built_in:
+	      'Ellipsis NotImplemented'
+	  };
 	  var PROMPT = {
 	    className: 'meta',  begin: /^(>>>|\.\.\.) /
+	  };
+	  var SUBST = {
+	    className: 'subst',
+	    begin: /\{/, end: /\}/,
+	    keywords: KEYWORDS,
+	    illegal: /#/
 	  };
 	  var STRING = {
 	    className: 'string',
@@ -32452,6 +33794,14 @@
 	        relevance: 10
 	      },
 	      {
+	        begin: /(fr|rf|f)'''/, end: /'''/,
+	        contains: [PROMPT, SUBST]
+	      },
+	      {
+	        begin: /(fr|rf|f)"""/, end: /"""/,
+	        contains: [PROMPT, SUBST]
+	      },
+	      {
 	        begin: /(u|r|ur)'/, end: /'/,
 	        relevance: 10
 	      },
@@ -32464,6 +33814,14 @@
 	      },
 	      {
 	        begin: /(b|br)"/, end: /"/
+	      },
+	      {
+	        begin: /(fr|rf|f)'/, end: /'/,
+	        contains: [SUBST]
+	      },
+	      {
+	        begin: /(fr|rf|f)"/, end: /"/,
+	        contains: [SUBST]
 	      },
 	      hljs.APOS_STRING_MODE,
 	      hljs.QUOTE_STRING_MODE
@@ -32482,16 +33840,10 @@
 	    begin: /\(/, end: /\)/,
 	    contains: ['self', PROMPT, NUMBER, STRING]
 	  };
+	  SUBST.contains = [STRING, NUMBER, PROMPT];
 	  return {
 	    aliases: ['py', 'gyp'],
-	    keywords: {
-	      keyword:
-	        'and elif is global as in if from raise for except finally print import pass return ' +
-	        'exec else break not with class assert yield try while continue del or def lambda ' +
-	        'async await nonlocal|10 None True False',
-	      built_in:
-	        'Ellipsis NotImplemented'
-	    },
+	    keywords: KEYWORDS,
 	    illegal: /(<\/|->|\?)|=>/,
 	    contains: [
 	      PROMPT,
@@ -32525,9 +33877,9 @@
 	  };
 	};
 
-/***/ },
-/* 296 */
-/***/ function(module, exports) {
+/***/ }),
+/* 306 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var Q_KEYWORDS = {
@@ -32552,9 +33904,9 @@
 	  };
 	};
 
-/***/ },
-/* 297 */
-/***/ function(module, exports) {
+/***/ }),
+/* 307 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var KEYWORDS = {
@@ -32574,7 +33926,7 @@
 	        'module console window document Symbol Set Map WeakSet WeakMap Proxy Reflect ' +
 	        'Behavior bool color coordinate date double enumeration font geocircle georectangle ' +
 	        'geoshape int list matrix4x4 parent point quaternion real rect ' +
-	        'size string url var variant vector2d vector3d vector4d' +
+	        'size string url variant vector2d vector3d vector4d' +
 	        'Promise'
 	    };
 
@@ -32725,9 +34077,9 @@
 	  };
 	};
 
-/***/ },
-/* 298 */
-/***/ function(module, exports) {
+/***/ }),
+/* 308 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var IDENT_RE = '([a-zA-Z]|\\.[a-zA-Z.])[a-zA-Z0-9._]*';
@@ -32799,9 +34151,9 @@
 	  };
 	};
 
-/***/ },
-/* 299 */
-/***/ function(module, exports) {
+/***/ }),
+/* 309 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  return {
@@ -32830,9 +34182,9 @@
 	  };
 	};
 
-/***/ },
-/* 300 */
-/***/ function(module, exports) {
+/***/ }),
+/* 310 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var IDENTIFIER = '[a-zA-Z-_][^\\n{]+\\{';
@@ -32901,9 +34253,172 @@
 	  };
 	};
 
-/***/ },
-/* 301 */
-/***/ function(module, exports) {
+/***/ }),
+/* 311 */
+/***/ (function(module, exports) {
+
+	module.exports = // Colors from RouterOS terminal:
+	//   green        - #0E9A00
+	//   teal         - #0C9A9A
+	//   purple       - #99069A
+	//   light-brown  - #9A9900
+
+	function(hljs) {
+
+	  var STATEMENTS = 'foreach do while for if from to step else on-error and or not in';
+
+	  // Global commands: Every global command should start with ":" token, otherwise it will be treated as variable.
+	  var GLOBAL_COMMANDS = 'global local beep delay put len typeof pick log time set find environment terminal error execute parse resolve toarray tobool toid toip toip6 tonum tostr totime';
+
+	  // Common commands: Following commands available from most sub-menus:
+	  var COMMON_COMMANDS = 'add remove enable disable set get print export edit find run debug error info warning';
+
+	  var LITERALS = 'true false yes no nothing nil null';
+
+	  var OBJECTS = 'traffic-flow traffic-generator firewall scheduler aaa accounting address-list address align area bandwidth-server bfd bgp bridge client clock community config connection console customer default dhcp-client dhcp-server discovery dns e-mail ethernet filter firewall firmware gps graphing group hardware health hotspot identity igmp-proxy incoming instance interface ip ipsec ipv6 irq l2tp-server lcd ldp logging mac-server mac-winbox mangle manual mirror mme mpls nat nd neighbor network note ntp ospf ospf-v3 ovpn-server page peer pim ping policy pool port ppp pppoe-client pptp-server prefix profile proposal proxy queue radius resource rip ripng route routing screen script security-profiles server service service-port settings shares smb sms sniffer snmp snooper socks sstp-server system tool tracking type upgrade upnp user-manager users user vlan secret vrrp watchdog web-access wireless pptp pppoe lan wan layer7-protocol lease simple raw';
+
+	  // print parameters
+	  // Several parameters are available for print command:
+	  // ToDo: var PARAMETERS_PRINT = 'append as-value brief detail count-only file follow follow-only from interval terse value-list without-paging where info';
+	  // ToDo: var OPERATORS = '&& and ! not || or in ~ ^ & << >> + - * /';
+	  // ToDo: var TYPES = 'num number bool boolean str string ip ip6-prefix id time array';
+	  // ToDo: The following tokens serve as delimiters in the grammar: ()  []  {}  :   ;   $   / 
+
+	  var VAR_PREFIX = 'global local set for foreach';
+
+	  var VAR = {
+	    className: 'variable',
+	    variants: [
+	      {begin: /\$[\w\d#@][\w\d_]*/},
+	      {begin: /\$\{(.*?)}/}
+	    ]
+	  };
+	  
+	  var QUOTE_STRING = {
+	    className: 'string',
+	    begin: /"/, end: /"/,
+	    contains: [
+	      hljs.BACKSLASH_ESCAPE,
+	      VAR,
+	      {
+	        className: 'variable',
+	        begin: /\$\(/, end: /\)/,
+	        contains: [hljs.BACKSLASH_ESCAPE]
+	      }
+	    ]
+	  };
+	  
+	  var APOS_STRING = {
+	    className: 'string',
+	    begin: /'/, end: /'/
+	  };
+	  
+	  var IPADDR = '((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\b';
+	  var IPADDR_wBITMASK =  IPADDR+'/(3[0-2]|[1-2][0-9]|\\d)';
+	  //////////////////////////////////////////////////////////////////////
+	  return {
+	    aliases: ['routeros', 'mikrotik'],
+	    case_insensitive: true,
+	    lexemes: /:?[\w-]+/,
+	    keywords: {
+	      literal: LITERALS,
+	      keyword: STATEMENTS + ' :' + STATEMENTS.split(' ').join(' :') + ' :' + GLOBAL_COMMANDS.split(' ').join(' :'),
+	    },
+	    contains: [
+	      { // недопустимые конструкции
+	        variants: [
+	          { begin: /^@/, end: /$/, },               // dns
+	          { begin: /\/\*/, end: /\*\//, },          // -- comment
+	          { begin: /%%/, end: /$/, },               // -- comment
+	          { begin: /^'/, end: /$/, },               // Monkey one line comment
+	          { begin: /^\s*\/[\w-]+=/, end: /$/, },    // jboss-cli
+	          { begin: /\/\//, end: /$/, },             // Stan comment
+	          { begin: /^\[\</, end: /\>\]$/, },        // F# class declaration?
+	          { begin: /<\//, end: />/, },              // HTML tags
+	          { begin: /^facet /, end: /\}/, },         // roboconf - лютый костыль )))
+	          { begin: '^1\\.\\.(\\d+)$', end: /$/, },  // tap  
+	        ],
+	        illegal: /./,
+	      },
+	      hljs.COMMENT('^#', '$'),
+	      QUOTE_STRING,
+	      APOS_STRING,
+	      VAR,
+	      { // attribute=value
+	        begin: /[\w-]+\=([^\s\{\}\[\]\(\)]+)/, 
+	        relevance: 0,
+	        returnBegin: true,
+	        contains: [
+	          {
+	            className: 'attribute',
+	            begin: /[^=]+/
+	          },
+	          {
+	            begin: /=/, 
+	            endsWithParent:  true,
+	            relevance: 0,
+	            contains: [
+	              QUOTE_STRING,
+	              APOS_STRING,
+	              VAR,
+	              {
+	                className: 'literal',
+	                begin: '\\b(' + LITERALS.split(' ').join('|') + ')\\b',
+	              },
+	              /*{
+	                // IPv4 addresses and subnets
+	                className: 'number',
+	                variants: [
+	                  {begin: IPADDR_wBITMASK+'(,'+IPADDR_wBITMASK+')*'}, //192.168.0.0/24,1.2.3.0/24
+	                  {begin: IPADDR+'-'+IPADDR},       // 192.168.0.1-192.168.0.3
+	                  {begin: IPADDR+'(,'+IPADDR+')*'}, // 192.168.0.1,192.168.0.34,192.168.24.1,192.168.0.1
+	                ]
+	              }, // */
+	              /*{
+	                // MAC addresses and DHCP Client IDs
+	                className: 'number',
+	                begin: /\b(1:)?([0-9A-Fa-f]{1,2}[:-]){5}([0-9A-Fa-f]){1,2}\b/,
+	              }, //*/
+	              {
+	                // Не форматировать не классифицированные значения. Необходимо для исключения подсветки значений как built_in.
+	                // className: 'number',  
+	                begin: /("[^"]*"|[^\s\{\}\[\]]+)/,
+	              }, //*/
+	            ]
+	          } //*/
+	        ]
+	      },//*/
+	      {
+	        // HEX values
+	        className: 'number',
+	        begin: /\*[0-9a-fA-F]+/,
+	      }, //*/
+
+	      { 
+	        begin: '\\b(' + COMMON_COMMANDS.split(' ').join('|') + ')([\\s\[\(]|\])',
+	        returnBegin: true,
+	        contains: [
+	          {
+	            className: 'builtin-name', //'function',
+	            begin: /\w+/,
+	          },
+	        ],  
+	      },
+	      
+	      { 
+	        className: 'built_in',
+	        variants: [
+	          {begin: '(\\.\\./|/|\\s)((' + OBJECTS.split(' ').join('|') + ');?\\s)+',relevance: 10,},
+	          {begin: /\.\./,},
+	        ],
+	      },//*/
+	    ]
+	  };
+	};
+
+/***/ }),
+/* 312 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  return {
@@ -32941,9 +34456,9 @@
 	  };
 	};
 
-/***/ },
-/* 302 */
-/***/ function(module, exports) {
+/***/ }),
+/* 313 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  return {
@@ -33006,33 +34521,37 @@
 	  };
 	};
 
-/***/ },
-/* 303 */
-/***/ function(module, exports) {
+/***/ }),
+/* 314 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
-	  var NUM_SUFFIX = '([uif](8|16|32|64|size))\?';
+	  var NUM_SUFFIX = '([ui](8|16|32|64|128|size)|f(32|64))\?';
 	  var KEYWORDS =
 	    'alignof as be box break const continue crate do else enum extern ' +
 	    'false fn for if impl in let loop match mod mut offsetof once priv ' +
 	    'proc pub pure ref return self Self sizeof static struct super trait true ' +
-	    'type typeof unsafe unsized use virtual while where yield move default ' +
-	    'int i8 i16 i32 i64 isize ' +
-	    'uint u8 u32 u64 usize ' +
-	    'float f32 f64 ' +
-	    'str char bool'
+	    'type typeof unsafe unsized use virtual while where yield move default';
 	  var BUILTINS =
-	    // prelude
-	    'Copy Send Sized Sync Drop Fn FnMut FnOnce drop Box ToOwned Clone ' +
+	    // functions
+	    'drop ' +
+	    // types
+	    'i8 i16 i32 i64 i128 isize ' +
+	    'u8 u16 u32 u64 u128 usize ' +
+	    'f32 f64 ' +
+	    'str char bool ' +
+	    'Box Option Result String Vec ' +
+	    // traits
+	    'Copy Send Sized Sync Drop Fn FnMut FnOnce ToOwned Clone Debug ' +
 	    'PartialEq PartialOrd Eq Ord AsRef AsMut Into From Default Iterator ' +
-	    'Extend IntoIterator DoubleEndedIterator ExactSizeIterator Option ' +
-	    'Result SliceConcatExt String ToString Vec ' +
+	    'Extend IntoIterator DoubleEndedIterator ExactSizeIterator ' +
+	    'SliceConcatExt ToString ' +
 	    // macros
 	    'assert! assert_eq! bitflags! bytes! cfg! col! concat! concat_idents! ' +
 	    'debug_assert! debug_assert_eq! env! panic! file! format! format_args! ' +
 	    'include_bin! include_str! line! local_data_key! module_path! ' +
 	    'option_env! print! println! select! stringify! try! unimplemented! ' +
-	    'unreachable! vec! write! writeln! macro_rules!';
+	    'unreachable! vec! write! writeln! macro_rules! assert_ne! debug_assert_ne!';
 	  return {
 	    aliases: ['rs'],
 	    keywords: {
@@ -33052,7 +34571,7 @@
 	      {
 	        className: 'string',
 	        variants: [
-	           { begin: /r(#*)".*?"\1(?!#)/ },
+	           { begin: /r(#*)"(.|\n)*?"\1(?!#)/ },
 	           { begin: /b?'\\?(x\w{2}|u\w{4}|U\w{8}|.)'/ }
 	        ]
 	      },
@@ -33097,7 +34616,7 @@
 	      },
 	      {
 	        className: 'class',
-	        beginKeywords: 'trait enum struct', end: '{',
+	        beginKeywords: 'trait enum struct union', end: '{',
 	        contains: [
 	          hljs.inherit(hljs.UNDERSCORE_TITLE_MODE, {endsParent: true})
 	        ],
@@ -33114,9 +34633,9 @@
 	  };
 	};
 
-/***/ },
-/* 304 */
-/***/ function(module, exports) {
+/***/ }),
+/* 315 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 
@@ -33233,9 +34752,9 @@
 	  };
 	};
 
-/***/ },
-/* 305 */
-/***/ function(module, exports) {
+/***/ }),
+/* 316 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var SCHEME_IDENT_RE = '[^\\(\\)\\[\\]\\{\\}",\'`;#|\\\\\\s]+';
@@ -33335,7 +34854,10 @@
 	  };
 
 	  var QUOTED_LIST = {
-	    begin: /'/,
+	    variants: [
+	      { begin: /'/ },
+	      { begin: '`' }
+	    ],
 	    contains: [
 	      {
 	        begin: '\\(', end: '\\)',
@@ -33378,9 +34900,9 @@
 	  };
 	};
 
-/***/ },
-/* 306 */
-/***/ function(module, exports) {
+/***/ }),
+/* 317 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 
@@ -33436,9 +34958,9 @@
 	  };
 	};
 
-/***/ },
-/* 307 */
-/***/ function(module, exports) {
+/***/ }),
+/* 318 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var IDENT_RE = '[a-zA-Z-][a-zA-Z0-9_-]*';
@@ -33538,9 +35060,28 @@
 	  };
 	};
 
-/***/ },
-/* 308 */
-/***/ function(module, exports) {
+/***/ }),
+/* 319 */
+/***/ (function(module, exports) {
+
+	module.exports = function(hljs) {
+	  return {
+	    aliases: ['console'],
+	    contains: [
+	      {
+	        className: 'meta',
+	        begin: '^\\s{0,3}[\\w\\d\\[\\]()@-]*[>%$#]',
+	        starts: {
+	          end: '$', subLanguage: 'bash'
+	        }
+	      },
+	    ]
+	  }
+	};
+
+/***/ }),
+/* 320 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var smali_instr_low_prio = ['add', 'and', 'cmp', 'cmpg', 'cmpl', 'const', 'div', 'double', 'float', 'goto', 'if', 'int', 'long', 'move', 'mul', 'neg', 'new', 'nop', 'not', 'or', 'rem', 'return', 'shl', 'shr', 'sput', 'sub', 'throw', 'ushr', 'xor'];
@@ -33598,9 +35139,9 @@
 	  };
 	};
 
-/***/ },
-/* 309 */
-/***/ function(module, exports) {
+/***/ }),
+/* 321 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var VAR_IDENT_RE = '[a-z][a-zA-Z0-9_]*';
@@ -33652,9 +35193,9 @@
 	  };
 	};
 
-/***/ },
-/* 310 */
-/***/ function(module, exports) {
+/***/ }),
+/* 322 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  return {
@@ -33722,12 +35263,25 @@
 	  };
 	};
 
-/***/ },
-/* 311 */
-/***/ function(module, exports) {
+/***/ }),
+/* 323 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var CPP = hljs.getLanguage('cpp').exports;
+
+	  // In SQF, a variable start with _
+	  var VARIABLE = {
+	    className: 'variable',
+	    begin: /\b_+[a-zA-Z_]\w*/
+	  };
+
+	  // In SQF, a function should fit myTag_fnc_myFunction pattern
+	  // https://community.bistudio.com/wiki/Functions_Library_(Arma_3)#Adding_a_Function
+	  var FUNCTION = {
+	    className: 'title',
+	    begin: /[a-zA-Z][a-zA-Z0-9]+_fnc_\w*/
+	  };
 
 	  // In SQF strings, quotes matching the start are escaped by adding a consecutive.
 	  // Example of single escaped quotes: " "" " and  ' '' '.
@@ -33753,426 +35307,321 @@
 	    keywords: {
 	      keyword:
 	        'case catch default do else exit exitWith for forEach from if ' +
-	        'switch then throw to try while with',
+	        'switch then throw to try waitUntil while with',
 	      built_in:
-	        'or plus abs accTime acos action actionKeys actionKeysImages ' +
-	        'actionKeysNames actionKeysNamesArray actionName activateAddons ' +
-	        'activatedAddons activateKey addAction addBackpack addBackpackCargo ' +
-	        'addBackpackCargoGlobal addBackpackGlobal addCamShake ' +
-	        'addCuratorAddons addCuratorCameraArea addCuratorEditableObjects ' +
-	        'addCuratorEditingArea addCuratorPoints addEditorObject ' +
-	        'addEventHandler addGoggles addGroupIcon addHandgunItem addHeadgear ' +
-	        'addItem addItemCargo addItemCargoGlobal addItemPool ' +
-	        'addItemToBackpack addItemToUniform addItemToVest addLiveStats ' +
-	        'addMagazine addMagazine array addMagazineAmmoCargo ' +
-	        'addMagazineCargo addMagazineCargoGlobal addMagazineGlobal ' +
-	        'addMagazinePool addMagazines addMagazineTurret addMenu addMenuItem ' +
-	        'addMissionEventHandler addMPEventHandler addMusicEventHandler ' +
-	        'addPrimaryWeaponItem addPublicVariableEventHandler addRating ' +
-	        'addResources addScore addScoreSide addSecondaryWeaponItem ' +
-	        'addSwitchableUnit addTeamMember addToRemainsCollector addUniform ' +
-	        'addVehicle addVest addWaypoint addWeapon addWeaponCargo ' +
-	        'addWeaponCargoGlobal addWeaponGlobal addWeaponPool addWeaponTurret ' +
-	        'agent agents AGLToASL aimedAtTarget aimPos airDensityRTD ' +
-	        'airportSide AISFinishHeal alive allControls allCurators allDead ' +
-	        'allDeadMen allDisplays allGroups allMapMarkers allMines ' +
-	        'allMissionObjects allow3DMode allowCrewInImmobile ' +
-	        'allowCuratorLogicIgnoreAreas allowDamage allowDammage ' +
-	        'allowFileOperations allowFleeing allowGetIn allPlayers allSites ' +
-	        'allTurrets allUnits allUnitsUAV allVariables ammo and animate ' +
-	        'animateDoor animationPhase animationState append armoryPoints ' +
-	        'arrayIntersect asin ASLToAGL ASLToATL assert assignAsCargo ' +
-	        'assignAsCargoIndex assignAsCommander assignAsDriver assignAsGunner ' +
-	        'assignAsTurret assignCurator assignedCargo assignedCommander ' +
-	        'assignedDriver assignedGunner assignedItems assignedTarget ' +
-	        'assignedTeam assignedVehicle assignedVehicleRole assignItem ' +
-	        'assignTeam assignToAirport atan atan2 atg ATLToASL attachedObject ' +
-	        'attachedObjects attachedTo attachObject attachTo attackEnabled ' +
-	        'backpack backpackCargo backpackContainer backpackItems ' +
-	        'backpackMagazines backpackSpaceFor behaviour benchmark binocular ' +
-	        'blufor boundingBox boundingBoxReal boundingCenter breakOut breakTo ' +
-	        'briefingName buildingExit buildingPos buttonAction buttonSetAction ' +
-	        'cadetMode call callExtension camCommand camCommit ' +
-	        'camCommitPrepared camCommitted camConstuctionSetParams camCreate ' +
-	        'camDestroy cameraEffect cameraEffectEnableHUD cameraInterest ' +
-	        'cameraOn cameraView campaignConfigFile camPreload camPreloaded ' +
-	        'camPrepareBank camPrepareDir camPrepareDive camPrepareFocus ' +
-	        'camPrepareFov camPrepareFovRange camPreparePos camPrepareRelPos ' +
-	        'camPrepareTarget camSetBank camSetDir camSetDive camSetFocus ' +
-	        'camSetFov camSetFovRange camSetPos camSetRelPos camSetTarget ' +
-	        'camTarget camUseNVG canAdd canAddItemToBackpack ' +
-	        'canAddItemToUniform canAddItemToVest cancelSimpleTaskDestination ' +
-	        'canFire canMove canSlingLoad canStand canUnloadInCombat captive ' +
-	        'captiveNum cbChecked cbSetChecked ceil cheatsEnabled ' +
-	        'checkAIFeature civilian className clearAllItemsFromBackpack ' +
-	        'clearBackpackCargo clearBackpackCargoGlobal clearGroupIcons ' +
-	        'clearItemCargo clearItemCargoGlobal clearItemPool ' +
-	        'clearMagazineCargo clearMagazineCargoGlobal clearMagazinePool ' +
-	        'clearOverlay clearRadio clearWeaponCargo clearWeaponCargoGlobal ' +
-	        'clearWeaponPool closeDialog closeDisplay closeOverlay ' +
-	        'collapseObjectTree combatMode commandArtilleryFire commandChat ' +
-	        'commander commandFire commandFollow commandFSM commandGetOut ' +
-	        'commandingMenu commandMove commandRadio commandStop commandTarget ' +
-	        'commandWatch comment commitOverlay compile compileFinal ' +
-	        'completedFSM composeText configClasses configFile configHierarchy ' +
-	        'configName configProperties configSourceMod configSourceModList ' +
-	        'connectTerminalToUAV controlNull controlsGroupCtrl ' +
-	        'copyFromClipboard copyToClipboard copyWaypoints cos count ' +
-	        'countEnemy countFriendly countSide countType countUnknown ' +
-	        'createAgent createCenter createDialog createDiaryLink ' +
-	        'createDiaryRecord createDiarySubject createDisplay ' +
-	        'createGearDialog createGroup createGuardedPoint createLocation ' +
-	        'createMarker createMarkerLocal createMenu createMine ' +
-	        'createMissionDisplay createSimpleTask createSite createSoundSource ' +
-	        'createTask createTeam createTrigger createUnit createUnit array ' +
-	        'createVehicle createVehicle array createVehicleCrew ' +
-	        'createVehicleLocal crew ctrlActivate ctrlAddEventHandler ' +
-	        'ctrlAutoScrollDelay ctrlAutoScrollRewind ctrlAutoScrollSpeed ' +
-	        'ctrlChecked ctrlClassName ctrlCommit ctrlCommitted ctrlCreate ' +
-	        'ctrlDelete ctrlEnable ctrlEnabled ctrlFade ctrlHTMLLoaded ctrlIDC ' +
-	        'ctrlIDD ctrlMapAnimAdd ctrlMapAnimClear ctrlMapAnimCommit ' +
-	        'ctrlMapAnimDone ctrlMapCursor ctrlMapMouseOver ctrlMapScale ' +
-	        'ctrlMapScreenToWorld ctrlMapWorldToScreen ctrlModel ' +
-	        'ctrlModelDirAndUp ctrlModelScale ctrlParent ctrlPosition ' +
-	        'ctrlRemoveAllEventHandlers ctrlRemoveEventHandler ctrlScale ' +
-	        'ctrlSetActiveColor ctrlSetAutoScrollDelay ctrlSetAutoScrollRewind ' +
-	        'ctrlSetAutoScrollSpeed ctrlSetBackgroundColor ctrlSetChecked ' +
-	        'ctrlSetEventHandler ctrlSetFade ctrlSetFocus ctrlSetFont ' +
-	        'ctrlSetFontH1 ctrlSetFontH1B ctrlSetFontH2 ctrlSetFontH2B ' +
-	        'ctrlSetFontH3 ctrlSetFontH3B ctrlSetFontH4 ctrlSetFontH4B ' +
-	        'ctrlSetFontH5 ctrlSetFontH5B ctrlSetFontH6 ctrlSetFontH6B ' +
-	        'ctrlSetFontHeight ctrlSetFontHeightH1 ctrlSetFontHeightH2 ' +
-	        'ctrlSetFontHeightH3 ctrlSetFontHeightH4 ctrlSetFontHeightH5 ' +
-	        'ctrlSetFontHeightH6 ctrlSetFontP ctrlSetFontPB ' +
-	        'ctrlSetForegroundColor ctrlSetModel ctrlSetModelDirAndUp ' +
-	        'ctrlSetModelScale ctrlSetPosition ctrlSetScale ' +
-	        'ctrlSetStructuredText ctrlSetText ctrlSetTextColor ctrlSetTooltip ' +
-	        'ctrlSetTooltipColorBox ctrlSetTooltipColorShade ' +
-	        'ctrlSetTooltipColorText ctrlShow ctrlShown ctrlText ctrlTextHeight ' +
-	        'ctrlType ctrlVisible curatorAddons curatorCamera curatorCameraArea ' +
-	        'curatorCameraAreaCeiling curatorCoef curatorEditableObjects ' +
-	        'curatorEditingArea curatorEditingAreaType curatorMouseOver ' +
-	        'curatorPoints curatorRegisteredObjects curatorSelected ' +
-	        'curatorWaypointCost currentChannel currentCommand currentMagazine ' +
-	        'currentMagazineDetail currentMagazineDetailTurret ' +
-	        'currentMagazineTurret currentMuzzle currentNamespace currentTask ' +
-	        'currentTasks currentThrowable currentVisionMode currentWaypoint ' +
-	        'currentWeapon currentWeaponMode currentWeaponTurret currentZeroing ' +
-	        'cursorTarget customChat customRadio cutFadeOut cutObj cutRsc ' +
-	        'cutText damage date dateToNumber daytime deActivateKey ' +
-	        'debriefingText debugFSM debugLog deg deleteAt deleteCenter ' +
-	        'deleteCollection deleteEditorObject deleteGroup deleteIdentity ' +
-	        'deleteLocation deleteMarker deleteMarkerLocal deleteRange ' +
-	        'deleteResources deleteSite deleteStatus deleteTeam deleteVehicle ' +
-	        'deleteVehicleCrew deleteWaypoint detach detectedMines ' +
-	        'diag activeMissionFSMs diag activeSQFScripts diag activeSQSScripts ' +
-	        'diag captureFrame diag captureSlowFrame diag fps diag fpsMin ' +
-	        'diag frameNo diag log diag logSlowFrame diag tickTime dialog ' +
-	        'diarySubjectExists didJIP didJIPOwner difficulty difficultyEnabled ' +
-	        'difficultyEnabledRTD direction directSay disableAI ' +
-	        'disableCollisionWith disableConversation disableDebriefingStats ' +
-	        'disableSerialization disableTIEquipment disableUAVConnectability ' +
-	        'disableUserInput displayAddEventHandler displayCtrl displayNull ' +
-	        'displayRemoveAllEventHandlers displayRemoveEventHandler ' +
-	        'displaySetEventHandler dissolveTeam distance distance2D ' +
-	        'distanceSqr distributionRegion doArtilleryFire doFire doFollow ' +
-	        'doFSM doGetOut doMove doorPhase doStop doTarget doWatch drawArrow ' +
-	        'drawEllipse drawIcon drawIcon3D drawLine drawLine3D drawLink ' +
-	        'drawLocation drawRectangle driver drop east echo editObject ' +
-	        'editorSetEventHandler effectiveCommander emptyPositions enableAI ' +
-	        'enableAIFeature enableAttack enableCamShake enableCaustics ' +
-	        'enableCollisionWith enableCopilot enableDebriefingStats ' +
-	        'enableDiagLegend enableEndDialog enableEngineArtillery ' +
-	        'enableEnvironment enableFatigue enableGunLights enableIRLasers ' +
-	        'enableMimics enablePersonTurret enableRadio enableReload ' +
-	        'enableRopeAttach enableSatNormalOnDetail enableSaving ' +
-	        'enableSentences enableSimulation enableSimulationGlobal ' +
-	        'enableTeamSwitch enableUAVConnectability enableUAVWaypoints ' +
-	        'endLoadingScreen endMission engineOn enginesIsOnRTD enginesRpmRTD ' +
-	        'enginesTorqueRTD entities estimatedEndServerTime estimatedTimeLeft ' +
-	        'evalObjectArgument everyBackpack everyContainer exec ' +
-	        'execEditorScript execFSM execVM exp expectedDestination ' +
-	        'eyeDirection eyePos face faction fadeMusic fadeRadio fadeSound ' +
-	        'fadeSpeech failMission fillWeaponsFromPool find findCover ' +
-	        'findDisplay findEditorObject findEmptyPosition ' +
-	        'findEmptyPositionReady findNearestEnemy finishMissionInit finite ' +
-	        'fire fireAtTarget firstBackpack flag flagOwner fleeing floor ' +
-	        'flyInHeight fog fogForecast fogParams forceAddUniform forceEnd ' +
-	        'forceMap forceRespawn forceSpeed forceWalk forceWeaponFire ' +
-	        'forceWeatherChange forEachMember forEachMemberAgent ' +
-	        'forEachMemberTeam format formation formationDirection ' +
-	        'formationLeader formationMembers formationPosition formationTask ' +
-	        'formatText formLeader freeLook fromEditor fuel fullCrew ' +
-	        'gearSlotAmmoCount gearSlotData getAllHitPointsDamage getAmmoCargo ' +
-	        'getArray getArtilleryAmmo getArtilleryComputerSettings ' +
-	        'getArtilleryETA getAssignedCuratorLogic getAssignedCuratorUnit ' +
-	        'getBackpackCargo getBleedingRemaining getBurningValue ' +
-	        'getCargoIndex getCenterOfMass getClientState getConnectedUAV ' +
-	        'getDammage getDescription getDir getDirVisual getDLCs ' +
-	        'getEditorCamera getEditorMode getEditorObjectScope ' +
-	        'getElevationOffset getFatigue getFriend getFSMVariable ' +
-	        'getFuelCargo getGroupIcon getGroupIconParams getGroupIcons ' +
-	        'getHideFrom getHit getHitIndex getHitPointDamage getItemCargo ' +
-	        'getMagazineCargo getMarkerColor getMarkerPos getMarkerSize ' +
-	        'getMarkerType getMass getModelInfo getNumber getObjectArgument ' +
-	        'getObjectChildren getObjectDLC getObjectMaterials getObjectProxy ' +
-	        'getObjectTextures getObjectType getObjectViewDistance ' +
-	        'getOxygenRemaining getPersonUsedDLCs getPlayerChannel getPlayerUID ' +
-	        'getPos getPosASL getPosASLVisual getPosASLW getPosATL ' +
-	        'getPosATLVisual getPosVisual getPosWorld getRepairCargo ' +
-	        'getResolution getShadowDistance getSlingLoad getSpeed ' +
-	        'getSuppression getTerrainHeightASL getText getVariable ' +
-	        'getWeaponCargo getWPPos glanceAt globalChat globalRadio goggles ' +
-	        'goto group groupChat groupFromNetId groupIconSelectable ' +
-	        'groupIconsVisible groupId groupOwner groupRadio groupSelectedUnits ' +
-	        'groupSelectUnit grpNull gunner gusts halt handgunItems ' +
-	        'handgunMagazine handgunWeapon handsHit hasInterface hasWeapon ' +
-	        'hcAllGroups hcGroupParams hcLeader hcRemoveAllGroups hcRemoveGroup ' +
-	        'hcSelected hcSelectGroup hcSetGroup hcShowBar hcShownBar headgear ' +
-	        'hideBody hideObject hideObjectGlobal hint hintC hintCadet ' +
-	        'hintSilent hmd hostMission htmlLoad HUDMovementLevels humidity ' +
-	        'image importAllGroups importance in incapacitatedState independent ' +
-	        'inflame inflamed inGameUISetEventHandler inheritsFrom ' +
-	        'initAmbientLife inputAction inRangeOfArtillery insertEditorObject ' +
-	        'intersect isAbleToBreathe isAgent isArray isAutoHoverOn ' +
-	        'isAutonomous isAutotest isBleeding isBurning isClass ' +
-	        'isCollisionLightOn isCopilotEnabled isDedicated isDLCAvailable ' +
-	        'isEngineOn isEqualTo isFlashlightOn isFlatEmpty isForcedWalk ' +
-	        'isFormationLeader isHidden isInRemainsCollector ' +
-	        'isInstructorFigureEnabled isIRLaserOn isKeyActive isKindOf ' +
-	        'isLightOn isLocalized isManualFire isMarkedForCollection ' +
-	        'isMultiplayer isNil isNull isNumber isObjectHidden isObjectRTD ' +
-	        'isOnRoad isPipEnabled isPlayer isRealTime isServer ' +
-	        'isShowing3DIcons isSteamMission isStreamFriendlyUIEnabled isText ' +
-	        'isTouchingGround isTurnedOut isTutHintsEnabled isUAVConnectable ' +
-	        'isUAVConnected isUniformAllowed isWalking isWeaponDeployed ' +
-	        'isWeaponRested itemCargo items itemsWithMagazines join joinAs ' +
-	        'joinAsSilent joinSilent joinString kbAddDatabase ' +
-	        'kbAddDatabaseTargets kbAddTopic kbHasTopic kbReact kbRemoveTopic ' +
-	        'kbTell kbWasSaid keyImage keyName knowsAbout land landAt ' +
-	        'landResult language laserTarget lbAdd lbClear lbColor lbCurSel ' +
-	        'lbData lbDelete lbIsSelected lbPicture lbSelection lbSetColor ' +
-	        'lbSetCurSel lbSetData lbSetPicture lbSetPictureColor ' +
-	        'lbSetPictureColorDisabled lbSetPictureColorSelected ' +
-	        'lbSetSelectColor lbSetSelectColorRight lbSetSelected lbSetTooltip ' +
-	        'lbSetValue lbSize lbSort lbSortByValue lbText lbValue leader ' +
-	        'leaderboardDeInit leaderboardGetRows leaderboardInit leaveVehicle ' +
-	        'libraryCredits libraryDisclaimers lifeState lightAttachObject ' +
-	        'lightDetachObject lightIsOn lightnings limitSpeed linearConversion ' +
-	        'lineBreak lineIntersects lineIntersectsObjs lineIntersectsSurfaces ' +
-	        'lineIntersectsWith linkItem list listObjects ln lnbAddArray ' +
-	        'lnbAddColumn lnbAddRow lnbClear lnbColor lnbCurSelRow lnbData ' +
-	        'lnbDeleteColumn lnbDeleteRow lnbGetColumnsPosition lnbPicture ' +
-	        'lnbSetColor lnbSetColumnsPos lnbSetCurSelRow lnbSetData ' +
-	        'lnbSetPicture lnbSetText lnbSetValue lnbSize lnbText lnbValue load ' +
-	        'loadAbs loadBackpack loadFile loadGame loadIdentity loadMagazine ' +
-	        'loadOverlay loadStatus loadUniform loadVest local localize ' +
-	        'locationNull locationPosition lock lockCameraTo lockCargo ' +
-	        'lockDriver locked lockedCargo lockedDriver lockedTurret lockTurret ' +
-	        'lockWP log logEntities lookAt lookAtPos magazineCargo magazines ' +
-	        'magazinesAllTurrets magazinesAmmo magazinesAmmoCargo ' +
-	        'magazinesAmmoFull magazinesDetail magazinesDetailBackpack ' +
-	        'magazinesDetailUniform magazinesDetailVest magazinesTurret ' +
-	        'magazineTurretAmmo mapAnimAdd mapAnimClear mapAnimCommit ' +
-	        'mapAnimDone mapCenterOnCamera mapGridPosition ' +
-	        'markAsFinishedOnSteam markerAlpha markerBrush markerColor ' +
-	        'markerDir markerPos markerShape markerSize markerText markerType ' +
-	        'max members min mineActive mineDetectedBy missionConfigFile ' +
-	        'missionName missionNamespace missionStart mod modelToWorld ' +
-	        'modelToWorldVisual moonIntensity morale move moveInAny moveInCargo ' +
-	        'moveInCommander moveInDriver moveInGunner moveInTurret ' +
-	        'moveObjectToEnd moveOut moveTime moveTo moveToCompleted ' +
-	        'moveToFailed musicVolume name name location nameSound nearEntities ' +
-	        'nearestBuilding nearestLocation nearestLocations ' +
-	        'nearestLocationWithDubbing nearestObject nearestObjects ' +
-	        'nearObjects nearObjectsReady nearRoads nearSupplies nearTargets ' +
-	        'needReload netId netObjNull newOverlay nextMenuItemIndex ' +
-	        'nextWeatherChange nMenuItems not numberToDate objectCurators ' +
-	        'objectFromNetId objectParent objNull objStatus onBriefingGroup ' +
-	        'onBriefingNotes onBriefingPlan onBriefingTeamSwitch ' +
-	        'onCommandModeChanged onDoubleClick onEachFrame onGroupIconClick ' +
-	        'onGroupIconOverEnter onGroupIconOverLeave ' +
-	        'onHCGroupSelectionChanged onMapSingleClick onPlayerConnected ' +
-	        'onPlayerDisconnected onPreloadFinished onPreloadStarted ' +
-	        'onShowNewObject onTeamSwitch openCuratorInterface openMap ' +
-	        'openYoutubeVideo opfor or orderGetIn overcast overcastForecast ' +
-	        'owner param params parseNumber parseText parsingNamespace ' +
-	        'particlesQuality pi pickWeaponPool pitch playableSlotsNumber ' +
-	        'playableUnits playAction playActionNow player playerRespawnTime ' +
-	        'playerSide playersNumber playGesture playMission playMove ' +
-	        'playMoveNow playMusic playScriptedMission playSound playSound3D ' +
-	        'position positionCameraToWorld posScreenToWorld posWorldToScreen ' +
-	        'ppEffectAdjust ppEffectCommit ppEffectCommitted ppEffectCreate ' +
-	        'ppEffectDestroy ppEffectEnable ppEffectForceInNVG precision ' +
-	        'preloadCamera preloadObject preloadSound preloadTitleObj ' +
-	        'preloadTitleRsc preprocessFile preprocessFileLineNumbers ' +
-	        'primaryWeapon primaryWeaponItems primaryWeaponMagazine priority ' +
-	        'private processDiaryLink productVersion profileName ' +
-	        'profileNamespace profileNameSteam progressLoadingScreen ' +
-	        'progressPosition progressSetPosition publicVariable ' +
-	        'publicVariableClient publicVariableServer pushBack putWeaponPool ' +
-	        'queryItemsPool queryMagazinePool queryWeaponPool rad ' +
-	        'radioChannelAdd radioChannelCreate radioChannelRemove ' +
-	        'radioChannelSetCallSign radioChannelSetLabel radioVolume rain ' +
-	        'rainbow random rank rankId rating rectangular registeredTasks ' +
-	        'registerTask reload reloadEnabled remoteControl remoteExec ' +
-	        'remoteExecCall removeAction removeAllActions ' +
-	        'removeAllAssignedItems removeAllContainers removeAllCuratorAddons ' +
-	        'removeAllCuratorCameraAreas removeAllCuratorEditingAreas ' +
-	        'removeAllEventHandlers removeAllHandgunItems removeAllItems ' +
-	        'removeAllItemsWithMagazines removeAllMissionEventHandlers ' +
-	        'removeAllMPEventHandlers removeAllMusicEventHandlers ' +
-	        'removeAllPrimaryWeaponItems removeAllWeapons removeBackpack ' +
-	        'removeBackpackGlobal removeCuratorAddons removeCuratorCameraArea ' +
-	        'removeCuratorEditableObjects removeCuratorEditingArea ' +
-	        'removeDrawIcon removeDrawLinks removeEventHandler ' +
-	        'removeFromRemainsCollector removeGoggles removeGroupIcon ' +
-	        'removeHandgunItem removeHeadgear removeItem removeItemFromBackpack ' +
-	        'removeItemFromUniform removeItemFromVest removeItems ' +
-	        'removeMagazine removeMagazineGlobal removeMagazines ' +
-	        'removeMagazinesTurret removeMagazineTurret removeMenuItem ' +
-	        'removeMissionEventHandler removeMPEventHandler ' +
-	        'removeMusicEventHandler removePrimaryWeaponItem ' +
-	        'removeSecondaryWeaponItem removeSimpleTask removeSwitchableUnit ' +
-	        'removeTeamMember removeUniform removeVest removeWeapon ' +
-	        'removeWeaponGlobal removeWeaponTurret requiredVersion ' +
-	        'resetCamShake resetSubgroupDirection resistance resize resources ' +
-	        'respawnVehicle restartEditorCamera reveal revealMine reverse ' +
-	        'reversedMouseY roadsConnectedTo roleDescription ' +
-	        'ropeAttachedObjects ropeAttachedTo ropeAttachEnabled ropeAttachTo ' +
-	        'ropeCreate ropeCut ropeEndPosition ropeLength ropes ropeUnwind ' +
-	        'ropeUnwound rotorsForcesRTD rotorsRpmRTD round runInitScript ' +
-	        'safeZoneH safeZoneW safeZoneWAbs safeZoneX safeZoneXAbs safeZoneY ' +
-	        'saveGame saveIdentity saveJoysticks saveOverlay ' +
-	        'saveProfileNamespace saveStatus saveVar savingEnabled say say2D ' +
-	        'say3D scopeName score scoreSide screenToWorld scriptDone ' +
-	        'scriptName scriptNull scudState secondaryWeapon ' +
-	        'secondaryWeaponItems secondaryWeaponMagazine select ' +
-	        'selectBestPlaces selectDiarySubject selectedEditorObjects ' +
-	        'selectEditorObject selectionPosition selectLeader selectNoPlayer ' +
-	        'selectPlayer selectWeapon selectWeaponTurret sendAUMessage ' +
-	        'sendSimpleCommand sendTask sendTaskResult sendUDPMessage ' +
-	        'serverCommand serverCommandAvailable serverCommandExecutable ' +
-	        'serverName serverTime set setAccTime setAirportSide setAmmo ' +
-	        'setAmmoCargo setAperture setApertureNew setArmoryPoints ' +
-	        'setAttributes setAutonomous setBehaviour setBleedingRemaining ' +
-	        'setCameraInterest setCamShakeDefParams setCamShakeParams ' +
-	        'setCamUseTi setCaptive setCenterOfMass setCollisionLight ' +
-	        'setCombatMode setCompassOscillation setCuratorCameraAreaCeiling ' +
-	        'setCuratorCoef setCuratorEditingAreaType setCuratorWaypointCost ' +
-	        'setCurrentChannel setCurrentTask setCurrentWaypoint setDamage ' +
-	        'setDammage setDate setDebriefingText setDefaultCamera ' +
-	        'setDestination setDetailMapBlendPars setDir setDirection ' +
-	        'setDrawIcon setDropInterval setEditorMode setEditorObjectScope ' +
-	        'setEffectCondition setFace setFaceAnimation setFatigue ' +
-	        'setFlagOwner setFlagSide setFlagTexture setFog setFog array ' +
-	        'setFormation setFormationTask setFormDir setFriend setFromEditor ' +
-	        'setFSMVariable setFuel setFuelCargo setGroupIcon ' +
-	        'setGroupIconParams setGroupIconsSelectable setGroupIconsVisible ' +
-	        'setGroupId setGroupIdGlobal setGroupOwner setGusts setHideBehind ' +
-	        'setHit setHitIndex setHitPointDamage setHorizonParallaxCoef ' +
-	        'setHUDMovementLevels setIdentity setImportance setLeader ' +
-	        'setLightAmbient setLightAttenuation setLightBrightness ' +
-	        'setLightColor setLightDayLight setLightFlareMaxDistance ' +
-	        'setLightFlareSize setLightIntensity setLightnings setLightUseFlare ' +
-	        'setLocalWindParams setMagazineTurretAmmo setMarkerAlpha ' +
-	        'setMarkerAlphaLocal setMarkerBrush setMarkerBrushLocal ' +
-	        'setMarkerColor setMarkerColorLocal setMarkerDir setMarkerDirLocal ' +
-	        'setMarkerPos setMarkerPosLocal setMarkerShape setMarkerShapeLocal ' +
-	        'setMarkerSize setMarkerSizeLocal setMarkerText setMarkerTextLocal ' +
-	        'setMarkerType setMarkerTypeLocal setMass setMimic setMousePosition ' +
-	        'setMusicEffect setMusicEventHandler setName setNameSound ' +
-	        'setObjectArguments setObjectMaterial setObjectProxy ' +
-	        'setObjectTexture setObjectTextureGlobal setObjectViewDistance ' +
-	        'setOvercast setOwner setOxygenRemaining setParticleCircle ' +
-	        'setParticleClass setParticleFire setParticleParams ' +
-	        'setParticleRandom setPilotLight setPiPEffect setPitch setPlayable ' +
-	        'setPlayerRespawnTime setPos setPosASL setPosASL2 setPosASLW ' +
-	        'setPosATL setPosition setPosWorld setRadioMsg setRain setRainbow ' +
-	        'setRandomLip setRank setRectangular setRepairCargo ' +
-	        'setShadowDistance setSide setSimpleTaskDescription ' +
-	        'setSimpleTaskDestination setSimpleTaskTarget setSimulWeatherLayers ' +
-	        'setSize setSkill setSkill array setSlingLoad setSoundEffect ' +
-	        'setSpeaker setSpeech setSpeedMode setStatValue setSuppression ' +
-	        'setSystemOfUnits setTargetAge setTaskResult setTaskState ' +
-	        'setTerrainGrid setText setTimeMultiplier setTitleEffect ' +
-	        'setTriggerActivation setTriggerArea setTriggerStatements ' +
-	        'setTriggerText setTriggerTimeout setTriggerType setType ' +
-	        'setUnconscious setUnitAbility setUnitPos setUnitPosWeak ' +
-	        'setUnitRank setUnitRecoilCoefficient setUnloadInCombat ' +
-	        'setUserActionText setVariable setVectorDir setVectorDirAndUp ' +
-	        'setVectorUp setVehicleAmmo setVehicleAmmoDef setVehicleArmor ' +
-	        'setVehicleId setVehicleLock setVehiclePosition setVehicleTiPars ' +
-	        'setVehicleVarName setVelocity setVelocityTransformation ' +
-	        'setViewDistance setVisibleIfTreeCollapsed setWaves ' +
-	        'setWaypointBehaviour setWaypointCombatMode ' +
-	        'setWaypointCompletionRadius setWaypointDescription ' +
-	        'setWaypointFormation setWaypointHousePosition ' +
-	        'setWaypointLoiterRadius setWaypointLoiterType setWaypointName ' +
-	        'setWaypointPosition setWaypointScript setWaypointSpeed ' +
-	        'setWaypointStatements setWaypointTimeout setWaypointType ' +
-	        'setWaypointVisible setWeaponReloadingTime setWind setWindDir ' +
-	        'setWindForce setWindStr setWPPos show3DIcons showChat ' +
-	        'showCinemaBorder showCommandingMenu showCompass showCuratorCompass ' +
-	        'showGPS showHUD showLegend showMap shownArtilleryComputer ' +
-	        'shownChat shownCompass shownCuratorCompass showNewEditorObject ' +
-	        'shownGPS shownHUD shownMap shownPad shownRadio shownUAVFeed ' +
-	        'shownWarrant shownWatch showPad showRadio showSubtitles ' +
-	        'showUAVFeed showWarrant showWatch showWaypoint side sideChat ' +
-	        'sideEnemy sideFriendly sideLogic sideRadio sideUnknown simpleTasks ' +
-	        'simulationEnabled simulCloudDensity simulCloudOcclusion ' +
-	        'simulInClouds simulWeatherSync sin size sizeOf skill skillFinal ' +
-	        'skipTime sleep sliderPosition sliderRange sliderSetPosition ' +
-	        'sliderSetRange sliderSetSpeed sliderSpeed slingLoadAssistantShown ' +
-	        'soldierMagazines someAmmo sort soundVolume spawn speaker speed ' +
-	        'speedMode splitString sqrt squadParams stance startLoadingScreen ' +
-	        'step stop stopped str sunOrMoon supportInfo suppressFor ' +
-	        'surfaceIsWater surfaceNormal surfaceType swimInDepth ' +
-	        'switchableUnits switchAction switchCamera switchGesture ' +
-	        'switchLight switchMove synchronizedObjects synchronizedTriggers ' +
-	        'synchronizedWaypoints synchronizeObjectsAdd ' +
-	        'synchronizeObjectsRemove synchronizeTrigger synchronizeWaypoint ' +
-	        'synchronizeWaypoint trigger systemChat systemOfUnits tan ' +
-	        'targetKnowledge targetsAggregate targetsQuery taskChildren ' +
-	        'taskCompleted taskDescription taskDestination taskHint taskNull ' +
-	        'taskParent taskResult taskState teamMember teamMemberNull teamName ' +
-	        'teams teamSwitch teamSwitchEnabled teamType terminate ' +
-	        'terrainIntersect terrainIntersectASL text text location textLog ' +
-	        'textLogFormat tg time timeMultiplier titleCut titleFadeOut ' +
-	        'titleObj titleRsc titleText toArray toLower toString toUpper ' +
-	        'triggerActivated triggerActivation triggerArea ' +
-	        'triggerAttachedVehicle triggerAttachObject triggerAttachVehicle ' +
-	        'triggerStatements triggerText triggerTimeout triggerTimeoutCurrent ' +
-	        'triggerType turretLocal turretOwner turretUnit tvAdd tvClear ' +
-	        'tvCollapse tvCount tvCurSel tvData tvDelete tvExpand tvPicture ' +
-	        'tvSetCurSel tvSetData tvSetPicture tvSetPictureColor tvSetTooltip ' +
-	        'tvSetValue tvSort tvSortByValue tvText tvValue type typeName ' +
-	        'typeOf UAVControl uiNamespace uiSleep unassignCurator unassignItem ' +
-	        'unassignTeam unassignVehicle underwater uniform uniformContainer ' +
-	        'uniformItems uniformMagazines unitAddons unitBackpack unitPos ' +
-	        'unitReady unitRecoilCoefficient units unitsBelowHeight unlinkItem ' +
-	        'unlockAchievement unregisterTask updateDrawIcon updateMenuItem ' +
-	        'updateObjectTree useAudioTimeForMoves vectorAdd vectorCos ' +
-	        'vectorCrossProduct vectorDiff vectorDir vectorDirVisual ' +
-	        'vectorDistance vectorDistanceSqr vectorDotProduct vectorFromTo ' +
-	        'vectorMagnitude vectorMagnitudeSqr vectorMultiply vectorNormalized ' +
-	        'vectorUp vectorUpVisual vehicle vehicleChat vehicleRadio vehicles ' +
-	        'vehicleVarName velocity velocityModelSpace verifySignature vest ' +
-	        'vestContainer vestItems vestMagazines viewDistance visibleCompass ' +
-	        'visibleGPS visibleMap visiblePosition visiblePositionASL ' +
-	        'visibleWatch waitUntil waves waypointAttachedObject ' +
-	        'waypointAttachedVehicle waypointAttachObject waypointAttachVehicle ' +
-	        'waypointBehaviour waypointCombatMode waypointCompletionRadius ' +
-	        'waypointDescription waypointFormation waypointHousePosition ' +
-	        'waypointLoiterRadius waypointLoiterType waypointName ' +
-	        'waypointPosition waypoints waypointScript waypointsEnabledUAV ' +
-	        'waypointShow waypointSpeed waypointStatements waypointTimeout ' +
-	        'waypointTimeoutCurrent waypointType waypointVisible ' +
-	        'weaponAccessories weaponCargo weaponDirection weaponLowered ' +
-	        'weapons weaponsItems weaponsItemsCargo weaponState weaponsTurret ' +
-	        'weightRTD west WFSideText wind windDir windStr wingsForcesRTD ' +
-	        'worldName worldSize worldToModel worldToModelVisual worldToScreen ' +
-	        '_forEachIndex _this _x',
+	        'abs accTime acos action actionIDs actionKeys actionKeysImages actionKeysNames ' +
+	        'actionKeysNamesArray actionName actionParams activateAddons activatedAddons activateKey ' +
+	        'add3DENConnection add3DENEventHandler add3DENLayer addAction addBackpack addBackpackCargo ' +
+	        'addBackpackCargoGlobal addBackpackGlobal addCamShake addCuratorAddons addCuratorCameraArea ' +
+	        'addCuratorEditableObjects addCuratorEditingArea addCuratorPoints addEditorObject addEventHandler ' +
+	        'addGoggles addGroupIcon addHandgunItem addHeadgear addItem addItemCargo addItemCargoGlobal ' +
+	        'addItemPool addItemToBackpack addItemToUniform addItemToVest addLiveStats addMagazine ' +
+	        'addMagazineAmmoCargo addMagazineCargo addMagazineCargoGlobal addMagazineGlobal addMagazinePool ' +
+	        'addMagazines addMagazineTurret addMenu addMenuItem addMissionEventHandler addMPEventHandler ' +
+	        'addMusicEventHandler addOwnedMine addPlayerScores addPrimaryWeaponItem ' +
+	        'addPublicVariableEventHandler addRating addResources addScore addScoreSide addSecondaryWeaponItem ' +
+	        'addSwitchableUnit addTeamMember addToRemainsCollector addUniform addVehicle addVest addWaypoint ' +
+	        'addWeapon addWeaponCargo addWeaponCargoGlobal addWeaponGlobal addWeaponItem addWeaponPool ' +
+	        'addWeaponTurret agent agents AGLToASL aimedAtTarget aimPos airDensityRTD airportSide ' +
+	        'AISFinishHeal alive all3DENEntities allControls allCurators allCutLayers allDead allDeadMen ' +
+	        'allDisplays allGroups allMapMarkers allMines allMissionObjects allow3DMode allowCrewInImmobile ' +
+	        'allowCuratorLogicIgnoreAreas allowDamage allowDammage allowFileOperations allowFleeing allowGetIn ' +
+	        'allowSprint allPlayers allSites allTurrets allUnits allUnitsUAV allVariables ammo and animate ' +
+	        'animateDoor animateSource animationNames animationPhase animationSourcePhase animationState ' +
+	        'append apply armoryPoints arrayIntersect asin ASLToAGL ASLToATL assert assignAsCargo ' +
+	        'assignAsCargoIndex assignAsCommander assignAsDriver assignAsGunner assignAsTurret assignCurator ' +
+	        'assignedCargo assignedCommander assignedDriver assignedGunner assignedItems assignedTarget ' +
+	        'assignedTeam assignedVehicle assignedVehicleRole assignItem assignTeam assignToAirport atan atan2 ' +
+	        'atg ATLToASL attachedObject attachedObjects attachedTo attachObject attachTo attackEnabled ' +
+	        'backpack backpackCargo backpackContainer backpackItems backpackMagazines backpackSpaceFor ' +
+	        'behaviour benchmark binocular blufor boundingBox boundingBoxReal boundingCenter breakOut breakTo ' +
+	        'briefingName buildingExit buildingPos buttonAction buttonSetAction cadetMode call callExtension ' +
+	        'camCommand camCommit camCommitPrepared camCommitted camConstuctionSetParams camCreate camDestroy ' +
+	        'cameraEffect cameraEffectEnableHUD cameraInterest cameraOn cameraView campaignConfigFile ' +
+	        'camPreload camPreloaded camPrepareBank camPrepareDir camPrepareDive camPrepareFocus camPrepareFov ' +
+	        'camPrepareFovRange camPreparePos camPrepareRelPos camPrepareTarget camSetBank camSetDir ' +
+	        'camSetDive camSetFocus camSetFov camSetFovRange camSetPos camSetRelPos camSetTarget camTarget ' +
+	        'camUseNVG canAdd canAddItemToBackpack canAddItemToUniform canAddItemToVest ' +
+	        'cancelSimpleTaskDestination canFire canMove canSlingLoad canStand canSuspend canUnloadInCombat ' +
+	        'canVehicleCargo captive captiveNum cbChecked cbSetChecked ceil channelEnabled cheatsEnabled ' +
+	        'checkAIFeature checkVisibility civilian className clearAllItemsFromBackpack clearBackpackCargo ' +
+	        'clearBackpackCargoGlobal clearGroupIcons clearItemCargo clearItemCargoGlobal clearItemPool ' +
+	        'clearMagazineCargo clearMagazineCargoGlobal clearMagazinePool clearOverlay clearRadio ' +
+	        'clearWeaponCargo clearWeaponCargoGlobal clearWeaponPool clientOwner closeDialog closeDisplay ' +
+	        'closeOverlay collapseObjectTree collect3DENHistory combatMode commandArtilleryFire commandChat ' +
+	        'commander commandFire commandFollow commandFSM commandGetOut commandingMenu commandMove ' +
+	        'commandRadio commandStop commandSuppressiveFire commandTarget commandWatch comment commitOverlay ' +
+	        'compile compileFinal completedFSM composeText configClasses configFile configHierarchy configName ' +
+	        'configNull configProperties configSourceAddonList configSourceMod configSourceModList ' +
+	        'connectTerminalToUAV controlNull controlsGroupCtrl copyFromClipboard copyToClipboard ' +
+	        'copyWaypoints cos count countEnemy countFriendly countSide countType countUnknown ' +
+	        'create3DENComposition create3DENEntity createAgent createCenter createDialog createDiaryLink ' +
+	        'createDiaryRecord createDiarySubject createDisplay createGearDialog createGroup ' +
+	        'createGuardedPoint createLocation createMarker createMarkerLocal createMenu createMine ' +
+	        'createMissionDisplay createMPCampaignDisplay createSimpleObject createSimpleTask createSite ' +
+	        'createSoundSource createTask createTeam createTrigger createUnit createVehicle createVehicleCrew ' +
+	        'createVehicleLocal crew ctrlActivate ctrlAddEventHandler ctrlAngle ctrlAutoScrollDelay ' +
+	        'ctrlAutoScrollRewind ctrlAutoScrollSpeed ctrlChecked ctrlClassName ctrlCommit ctrlCommitted ' +
+	        'ctrlCreate ctrlDelete ctrlEnable ctrlEnabled ctrlFade ctrlHTMLLoaded ctrlIDC ctrlIDD ' +
+	        'ctrlMapAnimAdd ctrlMapAnimClear ctrlMapAnimCommit ctrlMapAnimDone ctrlMapCursor ctrlMapMouseOver ' +
+	        'ctrlMapScale ctrlMapScreenToWorld ctrlMapWorldToScreen ctrlModel ctrlModelDirAndUp ctrlModelScale ' +
+	        'ctrlParent ctrlParentControlsGroup ctrlPosition ctrlRemoveAllEventHandlers ctrlRemoveEventHandler ' +
+	        'ctrlScale ctrlSetActiveColor ctrlSetAngle ctrlSetAutoScrollDelay ctrlSetAutoScrollRewind ' +
+	        'ctrlSetAutoScrollSpeed ctrlSetBackgroundColor ctrlSetChecked ctrlSetEventHandler ctrlSetFade ' +
+	        'ctrlSetFocus ctrlSetFont ctrlSetFontH1 ctrlSetFontH1B ctrlSetFontH2 ctrlSetFontH2B ctrlSetFontH3 ' +
+	        'ctrlSetFontH3B ctrlSetFontH4 ctrlSetFontH4B ctrlSetFontH5 ctrlSetFontH5B ctrlSetFontH6 ' +
+	        'ctrlSetFontH6B ctrlSetFontHeight ctrlSetFontHeightH1 ctrlSetFontHeightH2 ctrlSetFontHeightH3 ' +
+	        'ctrlSetFontHeightH4 ctrlSetFontHeightH5 ctrlSetFontHeightH6 ctrlSetFontHeightSecondary ' +
+	        'ctrlSetFontP ctrlSetFontPB ctrlSetFontSecondary ctrlSetForegroundColor ctrlSetModel ' +
+	        'ctrlSetModelDirAndUp ctrlSetModelScale ctrlSetPosition ctrlSetScale ctrlSetStructuredText ' +
+	        'ctrlSetText ctrlSetTextColor ctrlSetTooltip ctrlSetTooltipColorBox ctrlSetTooltipColorShade ' +
+	        'ctrlSetTooltipColorText ctrlShow ctrlShown ctrlText ctrlTextHeight ctrlType ctrlVisible ' +
+	        'curatorAddons curatorCamera curatorCameraArea curatorCameraAreaCeiling curatorCoef ' +
+	        'curatorEditableObjects curatorEditingArea curatorEditingAreaType curatorMouseOver curatorPoints ' +
+	        'curatorRegisteredObjects curatorSelected curatorWaypointCost current3DENOperation currentChannel ' +
+	        'currentCommand currentMagazine currentMagazineDetail currentMagazineDetailTurret ' +
+	        'currentMagazineTurret currentMuzzle currentNamespace currentTask currentTasks currentThrowable ' +
+	        'currentVisionMode currentWaypoint currentWeapon currentWeaponMode currentWeaponTurret ' +
+	        'currentZeroing cursorObject cursorTarget customChat customRadio cutFadeOut cutObj cutRsc cutText ' +
+	        'damage date dateToNumber daytime deActivateKey debriefingText debugFSM debugLog deg ' +
+	        'delete3DENEntities deleteAt deleteCenter deleteCollection deleteEditorObject deleteGroup ' +
+	        'deleteIdentity deleteLocation deleteMarker deleteMarkerLocal deleteRange deleteResources ' +
+	        'deleteSite deleteStatus deleteTeam deleteVehicle deleteVehicleCrew deleteWaypoint detach ' +
+	        'detectedMines diag_activeMissionFSMs diag_activeScripts diag_activeSQFScripts ' +
+	        'diag_activeSQSScripts diag_captureFrame diag_captureSlowFrame diag_codePerformance diag_drawMode ' +
+	        'diag_enable diag_enabled diag_fps diag_fpsMin diag_frameNo diag_list diag_log diag_logSlowFrame ' +
+	        'diag_mergeConfigFile diag_recordTurretLimits diag_tickTime diag_toggle dialog diarySubjectExists ' +
+	        'didJIP didJIPOwner difficulty difficultyEnabled difficultyEnabledRTD difficultyOption direction ' +
+	        'directSay disableAI disableCollisionWith disableConversation disableDebriefingStats ' +
+	        'disableNVGEquipment disableRemoteSensors disableSerialization disableTIEquipment ' +
+	        'disableUAVConnectability disableUserInput displayAddEventHandler displayCtrl displayNull ' +
+	        'displayParent displayRemoveAllEventHandlers displayRemoveEventHandler displaySetEventHandler ' +
+	        'dissolveTeam distance distance2D distanceSqr distributionRegion do3DENAction doArtilleryFire ' +
+	        'doFire doFollow doFSM doGetOut doMove doorPhase doStop doSuppressiveFire doTarget doWatch ' +
+	        'drawArrow drawEllipse drawIcon drawIcon3D drawLine drawLine3D drawLink drawLocation drawPolygon ' +
+	        'drawRectangle driver drop east echo edit3DENMissionAttributes editObject editorSetEventHandler ' +
+	        'effectiveCommander emptyPositions enableAI enableAIFeature enableAimPrecision enableAttack ' +
+	        'enableAudioFeature enableCamShake enableCaustics enableChannel enableCollisionWith enableCopilot ' +
+	        'enableDebriefingStats enableDiagLegend enableEndDialog enableEngineArtillery enableEnvironment ' +
+	        'enableFatigue enableGunLights enableIRLasers enableMimics enablePersonTurret enableRadio ' +
+	        'enableReload enableRopeAttach enableSatNormalOnDetail enableSaving enableSentences ' +
+	        'enableSimulation enableSimulationGlobal enableStamina enableTeamSwitch enableUAVConnectability ' +
+	        'enableUAVWaypoints enableVehicleCargo endLoadingScreen endMission engineOn enginesIsOnRTD ' +
+	        'enginesRpmRTD enginesTorqueRTD entities estimatedEndServerTime estimatedTimeLeft ' +
+	        'evalObjectArgument everyBackpack everyContainer exec execEditorScript execFSM execVM exp ' +
+	        'expectedDestination exportJIPMessages eyeDirection eyePos face faction fadeMusic fadeRadio ' +
+	        'fadeSound fadeSpeech failMission fillWeaponsFromPool find findCover findDisplay findEditorObject ' +
+	        'findEmptyPosition findEmptyPositionReady findNearestEnemy finishMissionInit finite fire ' +
+	        'fireAtTarget firstBackpack flag flagOwner flagSide flagTexture fleeing floor flyInHeight ' +
+	        'flyInHeightASL fog fogForecast fogParams forceAddUniform forcedMap forceEnd forceMap forceRespawn ' +
+	        'forceSpeed forceWalk forceWeaponFire forceWeatherChange forEachMember forEachMemberAgent ' +
+	        'forEachMemberTeam format formation formationDirection formationLeader formationMembers ' +
+	        'formationPosition formationTask formatText formLeader freeLook fromEditor fuel fullCrew ' +
+	        'gearIDCAmmoCount gearSlotAmmoCount gearSlotData get3DENActionState get3DENAttribute get3DENCamera ' +
+	        'get3DENConnections get3DENEntity get3DENEntityID get3DENGrid get3DENIconsVisible ' +
+	        'get3DENLayerEntities get3DENLinesVisible get3DENMissionAttribute get3DENMouseOver get3DENSelected ' +
+	        'getAimingCoef getAllHitPointsDamage getAllOwnedMines getAmmoCargo getAnimAimPrecision ' +
+	        'getAnimSpeedCoef getArray getArtilleryAmmo getArtilleryComputerSettings getArtilleryETA ' +
+	        'getAssignedCuratorLogic getAssignedCuratorUnit getBackpackCargo getBleedingRemaining ' +
+	        'getBurningValue getCameraViewDirection getCargoIndex getCenterOfMass getClientState ' +
+	        'getClientStateNumber getConnectedUAV getCustomAimingCoef getDammage getDescription getDir ' +
+	        'getDirVisual getDLCs getEditorCamera getEditorMode getEditorObjectScope getElevationOffset ' +
+	        'getFatigue getFriend getFSMVariable getFuelCargo getGroupIcon getGroupIconParams getGroupIcons ' +
+	        'getHideFrom getHit getHitIndex getHitPointDamage getItemCargo getMagazineCargo getMarkerColor ' +
+	        'getMarkerPos getMarkerSize getMarkerType getMass getMissionConfig getMissionConfigValue ' +
+	        'getMissionDLCs getMissionLayerEntities getModelInfo getMousePosition getNumber getObjectArgument ' +
+	        'getObjectChildren getObjectDLC getObjectMaterials getObjectProxy getObjectTextures getObjectType ' +
+	        'getObjectViewDistance getOxygenRemaining getPersonUsedDLCs getPilotCameraDirection ' +
+	        'getPilotCameraPosition getPilotCameraRotation getPilotCameraTarget getPlayerChannel ' +
+	        'getPlayerScores getPlayerUID getPos getPosASL getPosASLVisual getPosASLW getPosATL ' +
+	        'getPosATLVisual getPosVisual getPosWorld getRelDir getRelPos getRemoteSensorsDisabled ' +
+	        'getRepairCargo getResolution getShadowDistance getShotParents getSlingLoad getSpeed getStamina ' +
+	        'getStatValue getSuppression getTerrainHeightASL getText getUnitLoadout getUnitTrait getVariable ' +
+	        'getVehicleCargo getWeaponCargo getWeaponSway getWPPos glanceAt globalChat globalRadio goggles ' +
+	        'goto group groupChat groupFromNetId groupIconSelectable groupIconsVisible groupId groupOwner ' +
+	        'groupRadio groupSelectedUnits groupSelectUnit grpNull gunner gusts halt handgunItems ' +
+	        'handgunMagazine handgunWeapon handsHit hasInterface hasPilotCamera hasWeapon hcAllGroups ' +
+	        'hcGroupParams hcLeader hcRemoveAllGroups hcRemoveGroup hcSelected hcSelectGroup hcSetGroup ' +
+	        'hcShowBar hcShownBar headgear hideBody hideObject hideObjectGlobal hideSelection hint hintC ' +
+	        'hintCadet hintSilent hmd hostMission htmlLoad HUDMovementLevels humidity image importAllGroups ' +
+	        'importance in inArea inAreaArray incapacitatedState independent inflame inflamed ' +
+	        'inGameUISetEventHandler inheritsFrom initAmbientLife inPolygon inputAction inRangeOfArtillery ' +
+	        'insertEditorObject intersect is3DEN is3DENMultiplayer isAbleToBreathe isAgent isArray ' +
+	        'isAutoHoverOn isAutonomous isAutotest isBleeding isBurning isClass isCollisionLightOn ' +
+	        'isCopilotEnabled isDedicated isDLCAvailable isEngineOn isEqualTo isEqualType isEqualTypeAll ' +
+	        'isEqualTypeAny isEqualTypeArray isEqualTypeParams isFilePatchingEnabled isFlashlightOn ' +
+	        'isFlatEmpty isForcedWalk isFormationLeader isHidden isInRemainsCollector ' +
+	        'isInstructorFigureEnabled isIRLaserOn isKeyActive isKindOf isLightOn isLocalized isManualFire ' +
+	        'isMarkedForCollection isMultiplayer isMultiplayerSolo isNil isNull isNumber isObjectHidden ' +
+	        'isObjectRTD isOnRoad isPipEnabled isPlayer isRealTime isRemoteExecuted isRemoteExecutedJIP ' +
+	        'isServer isShowing3DIcons isSprintAllowed isStaminaEnabled isSteamMission ' +
+	        'isStreamFriendlyUIEnabled isText isTouchingGround isTurnedOut isTutHintsEnabled isUAVConnectable ' +
+	        'isUAVConnected isUniformAllowed isVehicleCargo isWalking isWeaponDeployed isWeaponRested ' +
+	        'itemCargo items itemsWithMagazines join joinAs joinAsSilent joinSilent joinString kbAddDatabase ' +
+	        'kbAddDatabaseTargets kbAddTopic kbHasTopic kbReact kbRemoveTopic kbTell kbWasSaid keyImage ' +
+	        'keyName knowsAbout land landAt landResult language laserTarget lbAdd lbClear lbColor lbCurSel ' +
+	        'lbData lbDelete lbIsSelected lbPicture lbSelection lbSetColor lbSetCurSel lbSetData lbSetPicture ' +
+	        'lbSetPictureColor lbSetPictureColorDisabled lbSetPictureColorSelected lbSetSelectColor ' +
+	        'lbSetSelectColorRight lbSetSelected lbSetTooltip lbSetValue lbSize lbSort lbSortByValue lbText ' +
+	        'lbValue leader leaderboardDeInit leaderboardGetRows leaderboardInit leaveVehicle libraryCredits ' +
+	        'libraryDisclaimers lifeState lightAttachObject lightDetachObject lightIsOn lightnings limitSpeed ' +
+	        'linearConversion lineBreak lineIntersects lineIntersectsObjs lineIntersectsSurfaces ' +
+	        'lineIntersectsWith linkItem list listObjects ln lnbAddArray lnbAddColumn lnbAddRow lnbClear ' +
+	        'lnbColor lnbCurSelRow lnbData lnbDeleteColumn lnbDeleteRow lnbGetColumnsPosition lnbPicture ' +
+	        'lnbSetColor lnbSetColumnsPos lnbSetCurSelRow lnbSetData lnbSetPicture lnbSetText lnbSetValue ' +
+	        'lnbSize lnbText lnbValue load loadAbs loadBackpack loadFile loadGame loadIdentity loadMagazine ' +
+	        'loadOverlay loadStatus loadUniform loadVest local localize locationNull locationPosition lock ' +
+	        'lockCameraTo lockCargo lockDriver locked lockedCargo lockedDriver lockedTurret lockIdentity ' +
+	        'lockTurret lockWP log logEntities logNetwork logNetworkTerminate lookAt lookAtPos magazineCargo ' +
+	        'magazines magazinesAllTurrets magazinesAmmo magazinesAmmoCargo magazinesAmmoFull magazinesDetail ' +
+	        'magazinesDetailBackpack magazinesDetailUniform magazinesDetailVest magazinesTurret ' +
+	        'magazineTurretAmmo mapAnimAdd mapAnimClear mapAnimCommit mapAnimDone mapCenterOnCamera ' +
+	        'mapGridPosition markAsFinishedOnSteam markerAlpha markerBrush markerColor markerDir markerPos ' +
+	        'markerShape markerSize markerText markerType max members menuAction menuAdd menuChecked menuClear ' +
+	        'menuCollapse menuData menuDelete menuEnable menuEnabled menuExpand menuHover menuPicture ' +
+	        'menuSetAction menuSetCheck menuSetData menuSetPicture menuSetValue menuShortcut menuShortcutText ' +
+	        'menuSize menuSort menuText menuURL menuValue min mineActive mineDetectedBy missionConfigFile ' +
+	        'missionDifficulty missionName missionNamespace missionStart missionVersion mod modelToWorld ' +
+	        'modelToWorldVisual modParams moonIntensity moonPhase morale move move3DENCamera moveInAny ' +
+	        'moveInCargo moveInCommander moveInDriver moveInGunner moveInTurret moveObjectToEnd moveOut ' +
+	        'moveTime moveTo moveToCompleted moveToFailed musicVolume name nameSound nearEntities ' +
+	        'nearestBuilding nearestLocation nearestLocations nearestLocationWithDubbing nearestObject ' +
+	        'nearestObjects nearestTerrainObjects nearObjects nearObjectsReady nearRoads nearSupplies ' +
+	        'nearTargets needReload netId netObjNull newOverlay nextMenuItemIndex nextWeatherChange nMenuItems ' +
+	        'not numberToDate objectCurators objectFromNetId objectParent objNull objStatus onBriefingGroup ' +
+	        'onBriefingNotes onBriefingPlan onBriefingTeamSwitch onCommandModeChanged onDoubleClick ' +
+	        'onEachFrame onGroupIconClick onGroupIconOverEnter onGroupIconOverLeave onHCGroupSelectionChanged ' +
+	        'onMapSingleClick onPlayerConnected onPlayerDisconnected onPreloadFinished onPreloadStarted ' +
+	        'onShowNewObject onTeamSwitch openCuratorInterface openDLCPage openMap openYoutubeVideo opfor or ' +
+	        'orderGetIn overcast overcastForecast owner param params parseNumber parseText parsingNamespace ' +
+	        'particlesQuality pi pickWeaponPool pitch pixelGrid pixelGridBase pixelGridNoUIScale pixelH pixelW ' +
+	        'playableSlotsNumber playableUnits playAction playActionNow player playerRespawnTime playerSide ' +
+	        'playersNumber playGesture playMission playMove playMoveNow playMusic playScriptedMission ' +
+	        'playSound playSound3D position positionCameraToWorld posScreenToWorld posWorldToScreen ' +
+	        'ppEffectAdjust ppEffectCommit ppEffectCommitted ppEffectCreate ppEffectDestroy ppEffectEnable ' +
+	        'ppEffectEnabled ppEffectForceInNVG precision preloadCamera preloadObject preloadSound ' +
+	        'preloadTitleObj preloadTitleRsc preprocessFile preprocessFileLineNumbers primaryWeapon ' +
+	        'primaryWeaponItems primaryWeaponMagazine priority private processDiaryLink productVersion ' +
+	        'profileName profileNamespace profileNameSteam progressLoadingScreen progressPosition ' +
+	        'progressSetPosition publicVariable publicVariableClient publicVariableServer pushBack ' +
+	        'pushBackUnique putWeaponPool queryItemsPool queryMagazinePool queryWeaponPool rad radioChannelAdd ' +
+	        'radioChannelCreate radioChannelRemove radioChannelSetCallSign radioChannelSetLabel radioVolume ' +
+	        'rain rainbow random rank rankId rating rectangular registeredTasks registerTask reload ' +
+	        'reloadEnabled remoteControl remoteExec remoteExecCall remove3DENConnection remove3DENEventHandler ' +
+	        'remove3DENLayer removeAction removeAll3DENEventHandlers removeAllActions removeAllAssignedItems ' +
+	        'removeAllContainers removeAllCuratorAddons removeAllCuratorCameraAreas ' +
+	        'removeAllCuratorEditingAreas removeAllEventHandlers removeAllHandgunItems removeAllItems ' +
+	        'removeAllItemsWithMagazines removeAllMissionEventHandlers removeAllMPEventHandlers ' +
+	        'removeAllMusicEventHandlers removeAllOwnedMines removeAllPrimaryWeaponItems removeAllWeapons ' +
+	        'removeBackpack removeBackpackGlobal removeCuratorAddons removeCuratorCameraArea ' +
+	        'removeCuratorEditableObjects removeCuratorEditingArea removeDrawIcon removeDrawLinks ' +
+	        'removeEventHandler removeFromRemainsCollector removeGoggles removeGroupIcon removeHandgunItem ' +
+	        'removeHeadgear removeItem removeItemFromBackpack removeItemFromUniform removeItemFromVest ' +
+	        'removeItems removeMagazine removeMagazineGlobal removeMagazines removeMagazinesTurret ' +
+	        'removeMagazineTurret removeMenuItem removeMissionEventHandler removeMPEventHandler ' +
+	        'removeMusicEventHandler removeOwnedMine removePrimaryWeaponItem removeSecondaryWeaponItem ' +
+	        'removeSimpleTask removeSwitchableUnit removeTeamMember removeUniform removeVest removeWeapon ' +
+	        'removeWeaponGlobal removeWeaponTurret requiredVersion resetCamShake resetSubgroupDirection ' +
+	        'resistance resize resources respawnVehicle restartEditorCamera reveal revealMine reverse ' +
+	        'reversedMouseY roadAt roadsConnectedTo roleDescription ropeAttachedObjects ropeAttachedTo ' +
+	        'ropeAttachEnabled ropeAttachTo ropeCreate ropeCut ropeDestroy ropeDetach ropeEndPosition ' +
+	        'ropeLength ropes ropeUnwind ropeUnwound rotorsForcesRTD rotorsRpmRTD round runInitScript ' +
+	        'safeZoneH safeZoneW safeZoneWAbs safeZoneX safeZoneXAbs safeZoneY save3DENInventory saveGame ' +
+	        'saveIdentity saveJoysticks saveOverlay saveProfileNamespace saveStatus saveVar savingEnabled say ' +
+	        'say2D say3D scopeName score scoreSide screenshot screenToWorld scriptDone scriptName scriptNull ' +
+	        'scudState secondaryWeapon secondaryWeaponItems secondaryWeaponMagazine select selectBestPlaces ' +
+	        'selectDiarySubject selectedEditorObjects selectEditorObject selectionNames selectionPosition ' +
+	        'selectLeader selectMax selectMin selectNoPlayer selectPlayer selectRandom selectWeapon ' +
+	        'selectWeaponTurret sendAUMessage sendSimpleCommand sendTask sendTaskResult sendUDPMessage ' +
+	        'serverCommand serverCommandAvailable serverCommandExecutable serverName serverTime set ' +
+	        'set3DENAttribute set3DENAttributes set3DENGrid set3DENIconsVisible set3DENLayer ' +
+	        'set3DENLinesVisible set3DENMissionAttributes set3DENModelsVisible set3DENObjectType ' +
+	        'set3DENSelected setAccTime setAirportSide setAmmo setAmmoCargo setAnimSpeedCoef setAperture ' +
+	        'setApertureNew setArmoryPoints setAttributes setAutonomous setBehaviour setBleedingRemaining ' +
+	        'setCameraInterest setCamShakeDefParams setCamShakeParams setCamUseTi setCaptive setCenterOfMass ' +
+	        'setCollisionLight setCombatMode setCompassOscillation setCuratorCameraAreaCeiling setCuratorCoef ' +
+	        'setCuratorEditingAreaType setCuratorWaypointCost setCurrentChannel setCurrentTask ' +
+	        'setCurrentWaypoint setCustomAimCoef setDamage setDammage setDate setDebriefingText ' +
+	        'setDefaultCamera setDestination setDetailMapBlendPars setDir setDirection setDrawIcon ' +
+	        'setDropInterval setEditorMode setEditorObjectScope setEffectCondition setFace setFaceAnimation ' +
+	        'setFatigue setFlagOwner setFlagSide setFlagTexture setFog setFormation setFormationTask ' +
+	        'setFormDir setFriend setFromEditor setFSMVariable setFuel setFuelCargo setGroupIcon ' +
+	        'setGroupIconParams setGroupIconsSelectable setGroupIconsVisible setGroupId setGroupIdGlobal ' +
+	        'setGroupOwner setGusts setHideBehind setHit setHitIndex setHitPointDamage setHorizonParallaxCoef ' +
+	        'setHUDMovementLevels setIdentity setImportance setLeader setLightAmbient setLightAttenuation ' +
+	        'setLightBrightness setLightColor setLightDayLight setLightFlareMaxDistance setLightFlareSize ' +
+	        'setLightIntensity setLightnings setLightUseFlare setLocalWindParams setMagazineTurretAmmo ' +
+	        'setMarkerAlpha setMarkerAlphaLocal setMarkerBrush setMarkerBrushLocal setMarkerColor ' +
+	        'setMarkerColorLocal setMarkerDir setMarkerDirLocal setMarkerPos setMarkerPosLocal setMarkerShape ' +
+	        'setMarkerShapeLocal setMarkerSize setMarkerSizeLocal setMarkerText setMarkerTextLocal ' +
+	        'setMarkerType setMarkerTypeLocal setMass setMimic setMousePosition setMusicEffect ' +
+	        'setMusicEventHandler setName setNameSound setObjectArguments setObjectMaterial ' +
+	        'setObjectMaterialGlobal setObjectProxy setObjectTexture setObjectTextureGlobal ' +
+	        'setObjectViewDistance setOvercast setOwner setOxygenRemaining setParticleCircle setParticleClass ' +
+	        'setParticleFire setParticleParams setParticleRandom setPilotCameraDirection ' +
+	        'setPilotCameraRotation setPilotCameraTarget setPilotLight setPiPEffect setPitch setPlayable ' +
+	        'setPlayerRespawnTime setPos setPosASL setPosASL2 setPosASLW setPosATL setPosition setPosWorld ' +
+	        'setRadioMsg setRain setRainbow setRandomLip setRank setRectangular setRepairCargo ' +
+	        'setShadowDistance setShotParents setSide setSimpleTaskAlwaysVisible setSimpleTaskCustomData ' +
+	        'setSimpleTaskDescription setSimpleTaskDestination setSimpleTaskTarget setSimpleTaskType ' +
+	        'setSimulWeatherLayers setSize setSkill setSlingLoad setSoundEffect setSpeaker setSpeech ' +
+	        'setSpeedMode setStamina setStaminaScheme setStatValue setSuppression setSystemOfUnits ' +
+	        'setTargetAge setTaskResult setTaskState setTerrainGrid setText setTimeMultiplier setTitleEffect ' +
+	        'setTriggerActivation setTriggerArea setTriggerStatements setTriggerText setTriggerTimeout ' +
+	        'setTriggerType setType setUnconscious setUnitAbility setUnitLoadout setUnitPos setUnitPosWeak ' +
+	        'setUnitRank setUnitRecoilCoefficient setUnitTrait setUnloadInCombat setUserActionText setVariable ' +
+	        'setVectorDir setVectorDirAndUp setVectorUp setVehicleAmmo setVehicleAmmoDef setVehicleArmor ' +
+	        'setVehicleCargo setVehicleId setVehicleLock setVehiclePosition setVehicleTiPars setVehicleVarName ' +
+	        'setVelocity setVelocityTransformation setViewDistance setVisibleIfTreeCollapsed setWaves ' +
+	        'setWaypointBehaviour setWaypointCombatMode setWaypointCompletionRadius setWaypointDescription ' +
+	        'setWaypointForceBehaviour setWaypointFormation setWaypointHousePosition setWaypointLoiterRadius ' +
+	        'setWaypointLoiterType setWaypointName setWaypointPosition setWaypointScript setWaypointSpeed ' +
+	        'setWaypointStatements setWaypointTimeout setWaypointType setWaypointVisible ' +
+	        'setWeaponReloadingTime setWind setWindDir setWindForce setWindStr setWPPos show3DIcons showChat ' +
+	        'showCinemaBorder showCommandingMenu showCompass showCuratorCompass showGPS showHUD showLegend ' +
+	        'showMap shownArtilleryComputer shownChat shownCompass shownCuratorCompass showNewEditorObject ' +
+	        'shownGPS shownHUD shownMap shownPad shownRadio shownScoretable shownUAVFeed shownWarrant ' +
+	        'shownWatch showPad showRadio showScoretable showSubtitles showUAVFeed showWarrant showWatch ' +
+	        'showWaypoint showWaypoints side sideAmbientLife sideChat sideEmpty sideEnemy sideFriendly ' +
+	        'sideLogic sideRadio sideUnknown simpleTasks simulationEnabled simulCloudDensity ' +
+	        'simulCloudOcclusion simulInClouds simulWeatherSync sin size sizeOf skill skillFinal skipTime ' +
+	        'sleep sliderPosition sliderRange sliderSetPosition sliderSetRange sliderSetSpeed sliderSpeed ' +
+	        'slingLoadAssistantShown soldierMagazines someAmmo sort soundVolume spawn speaker speed speedMode ' +
+	        'splitString sqrt squadParams stance startLoadingScreen step stop stopEngineRTD stopped str ' +
+	        'sunOrMoon supportInfo suppressFor surfaceIsWater surfaceNormal surfaceType swimInDepth ' +
+	        'switchableUnits switchAction switchCamera switchGesture switchLight switchMove ' +
+	        'synchronizedObjects synchronizedTriggers synchronizedWaypoints synchronizeObjectsAdd ' +
+	        'synchronizeObjectsRemove synchronizeTrigger synchronizeWaypoint systemChat systemOfUnits tan ' +
+	        'targetKnowledge targetsAggregate targetsQuery taskAlwaysVisible taskChildren taskCompleted ' +
+	        'taskCustomData taskDescription taskDestination taskHint taskMarkerOffset taskNull taskParent ' +
+	        'taskResult taskState taskType teamMember teamMemberNull teamName teams teamSwitch ' +
+	        'teamSwitchEnabled teamType terminate terrainIntersect terrainIntersectASL text textLog ' +
+	        'textLogFormat tg time timeMultiplier titleCut titleFadeOut titleObj titleRsc titleText toArray ' +
+	        'toFixed toLower toString toUpper triggerActivated triggerActivation triggerArea ' +
+	        'triggerAttachedVehicle triggerAttachObject triggerAttachVehicle triggerStatements triggerText ' +
+	        'triggerTimeout triggerTimeoutCurrent triggerType turretLocal turretOwner turretUnit tvAdd tvClear ' +
+	        'tvCollapse tvCount tvCurSel tvData tvDelete tvExpand tvPicture tvSetCurSel tvSetData tvSetPicture ' +
+	        'tvSetPictureColor tvSetPictureColorDisabled tvSetPictureColorSelected tvSetPictureRight ' +
+	        'tvSetPictureRightColor tvSetPictureRightColorDisabled tvSetPictureRightColorSelected tvSetText ' +
+	        'tvSetTooltip tvSetValue tvSort tvSortByValue tvText tvTooltip tvValue type typeName typeOf ' +
+	        'UAVControl uiNamespace uiSleep unassignCurator unassignItem unassignTeam unassignVehicle ' +
+	        'underwater uniform uniformContainer uniformItems uniformMagazines unitAddons unitAimPosition ' +
+	        'unitAimPositionVisual unitBackpack unitIsUAV unitPos unitReady unitRecoilCoefficient units ' +
+	        'unitsBelowHeight unlinkItem unlockAchievement unregisterTask updateDrawIcon updateMenuItem ' +
+	        'updateObjectTree useAISteeringComponent useAudioTimeForMoves vectorAdd vectorCos ' +
+	        'vectorCrossProduct vectorDiff vectorDir vectorDirVisual vectorDistance vectorDistanceSqr ' +
+	        'vectorDotProduct vectorFromTo vectorMagnitude vectorMagnitudeSqr vectorMultiply vectorNormalized ' +
+	        'vectorUp vectorUpVisual vehicle vehicleCargoEnabled vehicleChat vehicleRadio vehicles ' +
+	        'vehicleVarName velocity velocityModelSpace verifySignature vest vestContainer vestItems ' +
+	        'vestMagazines viewDistance visibleCompass visibleGPS visibleMap visiblePosition ' +
+	        'visiblePositionASL visibleScoretable visibleWatch waves waypointAttachedObject ' +
+	        'waypointAttachedVehicle waypointAttachObject waypointAttachVehicle waypointBehaviour ' +
+	        'waypointCombatMode waypointCompletionRadius waypointDescription waypointForceBehaviour ' +
+	        'waypointFormation waypointHousePosition waypointLoiterRadius waypointLoiterType waypointName ' +
+	        'waypointPosition waypoints waypointScript waypointsEnabledUAV waypointShow waypointSpeed ' +
+	        'waypointStatements waypointTimeout waypointTimeoutCurrent waypointType waypointVisible ' +
+	        'weaponAccessories weaponAccessoriesCargo weaponCargo weaponDirection weaponInertia weaponLowered ' +
+	        'weapons weaponsItems weaponsItemsCargo weaponState weaponsTurret weightRTD west WFSideText wind',
 	      literal:
 	        'true false nil'
 	    },
@@ -34180,6 +35629,8 @@
 	      hljs.C_LINE_COMMENT_MODE,
 	      hljs.C_BLOCK_COMMENT_MODE,
 	      hljs.NUMBER_MODE,
+	      VARIABLE,
+	      FUNCTION,
 	      STRINGS,
 	      CPP.preprocessor
 	    ],
@@ -34187,9 +35638,9 @@
 	  };
 	};
 
-/***/ },
-/* 312 */
-/***/ function(module, exports) {
+/***/ }),
+/* 324 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var COMMENT_MODE = hljs.COMMENT('--', '$');
@@ -34351,9 +35802,9 @@
 	  };
 	};
 
-/***/ },
-/* 313 */
-/***/ function(module, exports) {
+/***/ }),
+/* 325 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  return {
@@ -34438,9 +35889,9 @@
 	  };
 	};
 
-/***/ },
-/* 314 */
-/***/ function(module, exports) {
+/***/ }),
+/* 326 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  return {
@@ -34480,9 +35931,9 @@
 	  };
 	};
 
-/***/ },
-/* 315 */
-/***/ function(module, exports) {
+/***/ }),
+/* 327 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var STEP21_IDENT_RE = '[A-Z_][A-Z0-9_.]*';
@@ -34531,9 +35982,9 @@
 	  };
 	};
 
-/***/ },
-/* 316 */
-/***/ function(module, exports) {
+/***/ }),
+/* 328 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 
@@ -34989,9 +36440,9 @@
 	  };
 	};
 
-/***/ },
-/* 317 */
-/***/ function(module, exports) {
+/***/ }),
+/* 329 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var DETAILS = {
@@ -35027,17 +36478,17 @@
 	  };
 	};
 
-/***/ },
-/* 318 */
-/***/ function(module, exports) {
+/***/ }),
+/* 330 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var SWIFT_KEYWORDS = {
 	      keyword: '__COLUMN__ __FILE__ __FUNCTION__ __LINE__ as as! as? associativity ' +
 	        'break case catch class continue convenience default defer deinit didSet do ' +
-	        'dynamic dynamicType else enum extension fallthrough false final for func ' +
+	        'dynamic dynamicType else enum extension fallthrough false fileprivate final for func ' +
 	        'get guard if import in indirect infix init inout internal is lazy left let ' +
-	        'mutating nil none nonmutating operator optional override postfix precedence ' +
+	        'mutating nil none nonmutating open operator optional override postfix precedence ' +
 	        'prefix private protocol Protocol public repeat required rethrows return ' +
 	        'right self Self set static struct subscript super switch throw throws true ' +
 	        'try try! try? Type typealias unowned var weak where while willSet',
@@ -35148,9 +36599,9 @@
 	  };
 	};
 
-/***/ },
-/* 319 */
-/***/ function(module, exports) {
+/***/ }),
+/* 331 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 
@@ -35196,12 +36647,12 @@
 	  };
 	};
 
-/***/ },
-/* 320 */
-/***/ function(module, exports) {
+/***/ }),
+/* 332 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
-	  var LITERALS = {literal: '{ } true false yes no Yes No True False null'};
+	  var LITERALS = 'true false yes no null';
 
 	  var keyPrefix = '^[ \\-]*';
 	  var keyName =  '[a-zA-Z_][\\w\\-]*';
@@ -35226,7 +36677,8 @@
 	    relevance: 0,
 	    variants: [
 	      {begin: /'/, end: /'/},
-	      {begin: /"/, end: /"/}
+	      {begin: /"/, end: /"/},
+	      {begin: /\S+/}
 	    ],
 	    contains: [
 	      hljs.BACKSLASH_ESCAPE,
@@ -35276,17 +36728,20 @@
 	        begin: '^ *-',
 	        relevance: 0
 	      },
-	      STRING,
 	      hljs.HASH_COMMENT_MODE,
-	      hljs.C_NUMBER_MODE
-	    ],
-	    keywords: LITERALS
+	      {
+	        beginKeywords: LITERALS,
+	        keywords: {literal: LITERALS}
+	      },
+	      hljs.C_NUMBER_MODE,
+	      STRING
+	    ]
 	  };
 	};
 
-/***/ },
-/* 321 */
-/***/ function(module, exports) {
+/***/ }),
+/* 333 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  return {
@@ -35324,9 +36779,9 @@
 	  };
 	};
 
-/***/ },
-/* 322 */
-/***/ function(module, exports) {
+/***/ }),
+/* 334 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  return {
@@ -35389,9 +36844,9 @@
 	  }
 	};
 
-/***/ },
-/* 323 */
-/***/ function(module, exports) {
+/***/ }),
+/* 335 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var COMMAND = {
@@ -35455,9 +36910,9 @@
 	  };
 	};
 
-/***/ },
-/* 324 */
-/***/ function(module, exports) {
+/***/ }),
+/* 336 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var BUILT_IN_TYPES = 'bool byte i16 i32 i64 double string binary';
@@ -35494,9 +36949,9 @@
 	  };
 	};
 
-/***/ },
-/* 325 */
-/***/ function(module, exports) {
+/***/ }),
+/* 337 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var TPID = {
@@ -35582,9 +37037,9 @@
 	  };
 	};
 
-/***/ },
-/* 326 */
-/***/ function(module, exports) {
+/***/ }),
+/* 338 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var PARAMS = {
@@ -35652,9 +37107,9 @@
 	  };
 	};
 
-/***/ },
-/* 327 */
-/***/ function(module, exports) {
+/***/ }),
+/* 339 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var KEYWORDS = {
@@ -35662,7 +37117,8 @@
 	      'in if for while finally var new function do return void else break catch ' +
 	      'instanceof with throw case default try this switch continue typeof delete ' +
 	      'let yield const class public private protected get set super ' +
-	      'static implements enum export import declare type namespace abstract',
+	      'static implements enum export import declare type namespace abstract ' +
+	      'as from extends async await',
 	    literal:
 	      'true false null undefined NaN Infinity',
 	    built_in:
@@ -35672,7 +37128,7 @@
 	      'TypeError URIError Number Math Date String RegExp Array Float32Array ' +
 	      'Float64Array Int16Array Int32Array Int8Array Uint16Array Uint32Array ' +
 	      'Uint8Array Uint8ClampedArray ArrayBuffer DataView JSON Intl arguments require ' +
-	      'module console window document any number boolean string void'
+	      'module console window document any number boolean string void Promise'
 	  };
 
 	  return {
@@ -35713,7 +37169,35 @@
 	        contains: [
 	          hljs.C_LINE_COMMENT_MODE,
 	          hljs.C_BLOCK_COMMENT_MODE,
-	          hljs.REGEXP_MODE
+	          hljs.REGEXP_MODE,
+	          {
+	            className: 'function',
+	            begin: '(\\(.*?\\)|' + hljs.IDENT_RE + ')\\s*=>', returnBegin: true,
+	            end: '\\s*=>',
+	            contains: [
+	              {
+	                className: 'params',
+	                variants: [
+	                  {
+	                    begin: hljs.IDENT_RE
+	                  },
+	                  {
+	                    begin: /\(\s*\)/,
+	                  },
+	                  {
+	                    begin: /\(/, end: /\)/,
+	                    excludeBegin: true, excludeEnd: true,
+	                    keywords: KEYWORDS,
+	                    contains: [
+	                      'self',
+	                      hljs.C_LINE_COMMENT_MODE,
+	                      hljs.C_BLOCK_COMMENT_MODE
+	                    ]
+	                  }
+	                ]
+	              }
+	            ]
+	          }
 	        ],
 	        relevance: 0
 	      },
@@ -35741,7 +37225,22 @@
 	        relevance: 0 // () => {} is more typical in TypeScript
 	      },
 	      {
-	        beginKeywords: 'constructor', end: /\{/, excludeEnd: true
+	        beginKeywords: 'constructor', end: /\{/, excludeEnd: true,
+	        contains: [
+	          'self',
+	          {
+	            className: 'params',
+	            begin: /\(/, end: /\)/,
+	            excludeBegin: true,
+	            excludeEnd: true,
+	            keywords: KEYWORDS,
+	            contains: [
+	              hljs.C_LINE_COMMENT_MODE,
+	              hljs.C_BLOCK_COMMENT_MODE
+	            ],
+	            illegal: /["'\(]/
+	          }
+	        ]
 	      },
 	      { // prevent references like module.id from being higlighted as module definitions
 	        begin: /module\./,
@@ -35760,14 +37259,17 @@
 	      },
 	      {
 	        begin: '\\.' + hljs.IDENT_RE, relevance: 0 // hack: prevents detection of keywords after dots
+	      },
+	      {
+	        className: 'meta', begin: '@[A-Za-z]+'
 	      }
 	    ]
 	  };
 	};
 
-/***/ },
-/* 328 */
-/***/ function(module, exports) {
+/***/ }),
+/* 340 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  return {
@@ -35819,9 +37321,9 @@
 	  };
 	};
 
-/***/ },
-/* 329 */
-/***/ function(module, exports) {
+/***/ }),
+/* 341 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  return {
@@ -35879,9 +37381,9 @@
 	  };
 	};
 
-/***/ },
-/* 330 */
-/***/ function(module, exports) {
+/***/ }),
+/* 342 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  return {
@@ -35922,9 +37424,9 @@
 	  };
 	};
 
-/***/ },
-/* 331 */
-/***/ function(module, exports) {
+/***/ }),
+/* 343 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  return {
@@ -35938,9 +37440,9 @@
 	  };
 	};
 
-/***/ },
-/* 332 */
-/***/ function(module, exports) {
+/***/ }),
+/* 344 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var SV_KEYWORDS = {
@@ -36041,9 +37543,9 @@
 	  }; // return
 	};
 
-/***/ },
-/* 333 */
-/***/ function(module, exports) {
+/***/ }),
+/* 345 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  // Regular expression for VHDL numeric literals.
@@ -36106,9 +37608,9 @@
 	  };
 	};
 
-/***/ },
-/* 334 */
-/***/ function(module, exports) {
+/***/ }),
+/* 346 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  return {
@@ -36216,9 +37718,9 @@
 	  };
 	};
 
-/***/ },
-/* 335 */
-/***/ function(module, exports) {
+/***/ }),
+/* 347 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  return {
@@ -36356,9 +37858,9 @@
 	  };
 	};
 
-/***/ },
-/* 336 */
-/***/ function(module, exports) {
+/***/ }),
+/* 348 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var BUILTIN_MODULES =
@@ -36433,9 +37935,9 @@
 	  };
 	};
 
-/***/ },
-/* 337 */
-/***/ function(module, exports) {
+/***/ }),
+/* 349 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var KEYWORDS = 'for let if while then else return where group by xquery encoding version' +
@@ -36508,9 +38010,9 @@
 	  };
 	};
 
-/***/ },
-/* 338 */
-/***/ function(module, exports) {
+/***/ }),
+/* 350 */
+/***/ (function(module, exports) {
 
 	module.exports = function(hljs) {
 	  var STRING = {
@@ -36619,9 +38121,9 @@
 	  };
 	};
 
-/***/ },
-/* 339 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 351 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -36633,11 +38135,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDatepicker = __webpack_require__(340);
+	var _reactDatepicker = __webpack_require__(352);
 
 	var _reactDatepicker2 = _interopRequireDefault(_reactDatepicker);
 
-	var _momentHijri = __webpack_require__(342);
+	var _momentHijri = __webpack_require__(354);
 
 	var _momentHijri2 = _interopRequireDefault(_momentHijri);
 
@@ -36684,17 +38186,17 @@
 	  }
 	});
 
-/***/ },
-/* 340 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 352 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _date_input = __webpack_require__(341);
+	var _date_input = __webpack_require__(353);
 
 	var _date_input2 = _interopRequireDefault(_date_input);
 
-	var _calendar = __webpack_require__(456);
+	var _calendar = __webpack_require__(478);
 
 	var _calendar2 = _interopRequireDefault(_calendar);
 
@@ -36702,21 +38204,21 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _defer = __webpack_require__(585);
+	var _defer = __webpack_require__(613);
 
 	var _defer2 = _interopRequireDefault(_defer);
 
-	var _tether_component = __webpack_require__(595);
+	var _tether_component = __webpack_require__(623);
 
 	var _tether_component2 = _interopRequireDefault(_tether_component);
 
-	var _classnames2 = __webpack_require__(574);
+	var _classnames2 = __webpack_require__(602);
 
 	var _classnames3 = _interopRequireDefault(_classnames2);
 
-	var _date_utils = __webpack_require__(455);
+	var _date_utils = __webpack_require__(477);
 
-	var _momentHijri = __webpack_require__(342);
+	var _momentHijri = __webpack_require__(354);
 
 	var _momentHijri2 = _interopRequireDefault(_momentHijri);
 
@@ -37019,15 +38521,15 @@
 
 	module.exports = DatePicker;
 
-/***/ },
-/* 341 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 353 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-	var _momentHijri = __webpack_require__(342);
+	var _momentHijri = __webpack_require__(354);
 
 	var _momentHijri2 = _interopRequireDefault(_momentHijri);
 
@@ -37035,7 +38537,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _date_utils = __webpack_require__(455);
+	var _date_utils = __webpack_require__(477);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -37147,9 +38649,9 @@
 
 	module.exports = DateInput;
 
-/***/ },
-/* 342 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 354 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;// moment-hijri.js
 	// author: Suhail Alkowaileet
@@ -37164,7 +38666,7 @@
 	(function (root, factory) {
 		/* global define */
 		if (true) {
-			!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(343)], __WEBPACK_AMD_DEFINE_RESULT__ = function (moment) {
+			!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(355)], __WEBPACK_AMD_DEFINE_RESULT__ = function (moment) {
 				root.moment = factory(moment)
 				return root.moment
 			}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__))
@@ -38100,12 +39602,12 @@
 	});
 
 
-/***/ },
-/* 343 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 355 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(module) {//! moment.js
-	//! version : 2.17.0
+	var require;/* WEBPACK VAR INJECTION */(function(module) {//! moment.js
+	//! version : 2.20.1
 	//! authors : Tim Wood, Iskren Chernev, Moment.js contributors
 	//! license : MIT
 	//! momentjs.com
@@ -38139,12 +39641,21 @@
 	}
 
 	function isObjectEmpty(obj) {
-	    var k;
-	    for (k in obj) {
-	        // even if its not own property I'd still call it non-empty
-	        return false;
+	    if (Object.getOwnPropertyNames) {
+	        return (Object.getOwnPropertyNames(obj).length === 0);
+	    } else {
+	        var k;
+	        for (k in obj) {
+	            if (obj.hasOwnProperty(k)) {
+	                return false;
+	            }
+	        }
+	        return true;
 	    }
-	    return true;
+	}
+
+	function isUndefined(input) {
+	    return input === void 0;
 	}
 
 	function isNumber(input) {
@@ -38203,7 +39714,9 @@
 	        userInvalidated : false,
 	        iso             : false,
 	        parsedDateParts : [],
-	        meridiem        : null
+	        meridiem        : null,
+	        rfc2822         : false,
+	        weekdayMismatch : false
 	    };
 	}
 
@@ -38232,12 +39745,10 @@
 	    };
 	}
 
-	var some$1 = some;
-
 	function isValid(m) {
 	    if (m._isValid == null) {
 	        var flags = getParsingFlags(m);
-	        var parsedParts = some$1.call(flags.parsedDateParts, function (i) {
+	        var parsedParts = some.call(flags.parsedDateParts, function (i) {
 	            return i != null;
 	        });
 	        var isNowValid = !isNaN(m._d.getTime()) &&
@@ -38245,6 +39756,7 @@
 	            !flags.empty &&
 	            !flags.invalidMonth &&
 	            !flags.invalidWeekday &&
+	            !flags.weekdayMismatch &&
 	            !flags.nullInput &&
 	            !flags.invalidFormat &&
 	            !flags.userInvalidated &&
@@ -38277,10 +39789,6 @@
 	    }
 
 	    return m;
-	}
-
-	function isUndefined(input) {
-	    return input === void 0;
 	}
 
 	// Plugins that add properties should also add the key here (null value),
@@ -38322,7 +39830,7 @@
 	    }
 
 	    if (momentProperties.length > 0) {
-	        for (i in momentProperties) {
+	        for (i = 0; i < momentProperties.length; i++) {
 	            prop = momentProperties[i];
 	            val = from[prop];
 	            if (!isUndefined(val)) {
@@ -38459,8 +39967,11 @@
 	    }
 	    this._config = config;
 	    // Lenient ordinal parsing accepts just a number in addition to
-	    // number + (possibly) stuff coming from _ordinalParseLenient.
-	    this._ordinalParseLenient = new RegExp(this._ordinalParse.source + '|' + (/\d{1,2}/).source);
+	    // number + (possibly) stuff coming from _dayOfMonthOrdinalParse.
+	    // TODO: Remove "ordinalParse" fallback in next major release.
+	    this._dayOfMonthOrdinalParseLenient = new RegExp(
+	        (this._dayOfMonthOrdinalParse.source || this._ordinalParse.source) +
+	            '|' + (/\d{1,2}/).source);
 	}
 
 	function mergeConfigs(parentConfig, childConfig) {
@@ -38511,8 +40022,6 @@
 	    };
 	}
 
-	var keys$1 = keys;
-
 	var defaultCalendar = {
 	    sameDay : '[Today at] LT',
 	    nextDay : '[Tomorrow at] LT',
@@ -38558,7 +40067,7 @@
 	}
 
 	var defaultOrdinal = '%d';
-	var defaultOrdinalParse = /\d{1,2}/;
+	var defaultDayOfMonthOrdinalParse = /\d{1,2}/;
 
 	function ordinal (number) {
 	    return this._ordinal.replace('%d', number);
@@ -38568,6 +40077,7 @@
 	    future : 'in %s',
 	    past   : '%s ago',
 	    s  : 'a few seconds',
+	    ss : '%d seconds',
 	    m  : 'a minute',
 	    mm : '%d minutes',
 	    h  : 'an hour',
@@ -38637,56 +40147,6 @@
 	    return units;
 	}
 
-	function makeGetSet (unit, keepTime) {
-	    return function (value) {
-	        if (value != null) {
-	            set$1(this, unit, value);
-	            hooks.updateOffset(this, keepTime);
-	            return this;
-	        } else {
-	            return get(this, unit);
-	        }
-	    };
-	}
-
-	function get (mom, unit) {
-	    return mom.isValid() ?
-	        mom._d['get' + (mom._isUTC ? 'UTC' : '') + unit]() : NaN;
-	}
-
-	function set$1 (mom, unit, value) {
-	    if (mom.isValid()) {
-	        mom._d['set' + (mom._isUTC ? 'UTC' : '') + unit](value);
-	    }
-	}
-
-	// MOMENTS
-
-	function stringGet (units) {
-	    units = normalizeUnits(units);
-	    if (isFunction(this[units])) {
-	        return this[units]();
-	    }
-	    return this;
-	}
-
-
-	function stringSet (units, value) {
-	    if (typeof units === 'object') {
-	        units = normalizeObjectUnits(units);
-	        var prioritized = getPrioritizedUnits(units);
-	        for (var i = 0; i < prioritized.length; i++) {
-	            this[prioritized[i].unit](units[prioritized[i].unit]);
-	        }
-	    } else {
-	        units = normalizeUnits(units);
-	        if (isFunction(this[units])) {
-	            return this[units](value);
-	        }
-	    }
-	    return this;
-	}
-
 	function zeroFill(number, targetLength, forceSign) {
 	    var absNumber = '' + Math.abs(number),
 	        zerosToFill = targetLength - absNumber.length,
@@ -38750,7 +40210,7 @@
 	    return function (mom) {
 	        var output = '', i;
 	        for (i = 0; i < length; i++) {
-	            output += array[i] instanceof Function ? array[i].call(mom, format) : array[i];
+	            output += isFunction(array[i]) ? array[i].call(mom, format) : array[i];
 	        }
 	        return output;
 	    };
@@ -38807,7 +40267,7 @@
 
 	// any word (or two) characters or numbers including two/three word month in arabic.
 	// includes scottish gaelic two word and hyphenated months
-	var matchWord = /[0-9]*['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+|[\u0600-\u06FF\/]+(\s*?[\u0600-\u06FF]+){1,2}/i;
+	var matchWord = /[0-9]{0,256}['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFF07\uFF10-\uFFEF]{1,256}|[\u0600-\u06FF\/]{1,256}(\s*?[\u0600-\u06FF]{1,256}){1,2}/i;
 
 
 	var regexes = {};
@@ -38877,6 +40337,131 @@
 	var WEEK = 7;
 	var WEEKDAY = 8;
 
+	// FORMATTING
+
+	addFormatToken('Y', 0, 0, function () {
+	    var y = this.year();
+	    return y <= 9999 ? '' + y : '+' + y;
+	});
+
+	addFormatToken(0, ['YY', 2], 0, function () {
+	    return this.year() % 100;
+	});
+
+	addFormatToken(0, ['YYYY',   4],       0, 'year');
+	addFormatToken(0, ['YYYYY',  5],       0, 'year');
+	addFormatToken(0, ['YYYYYY', 6, true], 0, 'year');
+
+	// ALIASES
+
+	addUnitAlias('year', 'y');
+
+	// PRIORITIES
+
+	addUnitPriority('year', 1);
+
+	// PARSING
+
+	addRegexToken('Y',      matchSigned);
+	addRegexToken('YY',     match1to2, match2);
+	addRegexToken('YYYY',   match1to4, match4);
+	addRegexToken('YYYYY',  match1to6, match6);
+	addRegexToken('YYYYYY', match1to6, match6);
+
+	addParseToken(['YYYYY', 'YYYYYY'], YEAR);
+	addParseToken('YYYY', function (input, array) {
+	    array[YEAR] = input.length === 2 ? hooks.parseTwoDigitYear(input) : toInt(input);
+	});
+	addParseToken('YY', function (input, array) {
+	    array[YEAR] = hooks.parseTwoDigitYear(input);
+	});
+	addParseToken('Y', function (input, array) {
+	    array[YEAR] = parseInt(input, 10);
+	});
+
+	// HELPERS
+
+	function daysInYear(year) {
+	    return isLeapYear(year) ? 366 : 365;
+	}
+
+	function isLeapYear(year) {
+	    return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+	}
+
+	// HOOKS
+
+	hooks.parseTwoDigitYear = function (input) {
+	    return toInt(input) + (toInt(input) > 68 ? 1900 : 2000);
+	};
+
+	// MOMENTS
+
+	var getSetYear = makeGetSet('FullYear', true);
+
+	function getIsLeapYear () {
+	    return isLeapYear(this.year());
+	}
+
+	function makeGetSet (unit, keepTime) {
+	    return function (value) {
+	        if (value != null) {
+	            set$1(this, unit, value);
+	            hooks.updateOffset(this, keepTime);
+	            return this;
+	        } else {
+	            return get(this, unit);
+	        }
+	    };
+	}
+
+	function get (mom, unit) {
+	    return mom.isValid() ?
+	        mom._d['get' + (mom._isUTC ? 'UTC' : '') + unit]() : NaN;
+	}
+
+	function set$1 (mom, unit, value) {
+	    if (mom.isValid() && !isNaN(value)) {
+	        if (unit === 'FullYear' && isLeapYear(mom.year()) && mom.month() === 1 && mom.date() === 29) {
+	            mom._d['set' + (mom._isUTC ? 'UTC' : '') + unit](value, mom.month(), daysInMonth(value, mom.month()));
+	        }
+	        else {
+	            mom._d['set' + (mom._isUTC ? 'UTC' : '') + unit](value);
+	        }
+	    }
+	}
+
+	// MOMENTS
+
+	function stringGet (units) {
+	    units = normalizeUnits(units);
+	    if (isFunction(this[units])) {
+	        return this[units]();
+	    }
+	    return this;
+	}
+
+
+	function stringSet (units, value) {
+	    if (typeof units === 'object') {
+	        units = normalizeObjectUnits(units);
+	        var prioritized = getPrioritizedUnits(units);
+	        for (var i = 0; i < prioritized.length; i++) {
+	            this[prioritized[i].unit](units[prioritized[i].unit]);
+	        }
+	    } else {
+	        units = normalizeUnits(units);
+	        if (isFunction(this[units])) {
+	            return this[units](value);
+	        }
+	    }
+	    return this;
+	}
+
+	function mod(n, x) {
+	    return ((n % x) + x) % x;
+	}
+
 	var indexOf;
 
 	if (Array.prototype.indexOf) {
@@ -38894,10 +40479,13 @@
 	    };
 	}
 
-	var indexOf$1 = indexOf;
-
 	function daysInMonth(year, month) {
-	    return new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
+	    if (isNaN(year) || isNaN(month)) {
+	        return NaN;
+	    }
+	    var modMonth = mod(month, 12);
+	    year += (month - modMonth) / 12;
+	    return modMonth === 1 ? (isLeapYear(year) ? 29 : 28) : (31 - modMonth % 7 % 2);
 	}
 
 	// FORMATTING
@@ -38953,7 +40541,8 @@
 	var defaultLocaleMonths = 'January_February_March_April_May_June_July_August_September_October_November_December'.split('_');
 	function localeMonths (m, format) {
 	    if (!m) {
-	        return this._months;
+	        return isArray(this._months) ? this._months :
+	            this._months['standalone'];
 	    }
 	    return isArray(this._months) ? this._months[m.month()] :
 	        this._months[(this._months.isFormat || MONTHS_IN_FORMAT).test(format) ? 'format' : 'standalone'][m.month()];
@@ -38962,7 +40551,8 @@
 	var defaultLocaleMonthsShort = 'Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec'.split('_');
 	function localeMonthsShort (m, format) {
 	    if (!m) {
-	        return this._monthsShort;
+	        return isArray(this._monthsShort) ? this._monthsShort :
+	            this._monthsShort['standalone'];
 	    }
 	    return isArray(this._monthsShort) ? this._monthsShort[m.month()] :
 	        this._monthsShort[MONTHS_IN_FORMAT.test(format) ? 'format' : 'standalone'][m.month()];
@@ -38984,26 +40574,26 @@
 
 	    if (strict) {
 	        if (format === 'MMM') {
-	            ii = indexOf$1.call(this._shortMonthsParse, llc);
+	            ii = indexOf.call(this._shortMonthsParse, llc);
 	            return ii !== -1 ? ii : null;
 	        } else {
-	            ii = indexOf$1.call(this._longMonthsParse, llc);
+	            ii = indexOf.call(this._longMonthsParse, llc);
 	            return ii !== -1 ? ii : null;
 	        }
 	    } else {
 	        if (format === 'MMM') {
-	            ii = indexOf$1.call(this._shortMonthsParse, llc);
+	            ii = indexOf.call(this._shortMonthsParse, llc);
 	            if (ii !== -1) {
 	                return ii;
 	            }
-	            ii = indexOf$1.call(this._longMonthsParse, llc);
+	            ii = indexOf.call(this._longMonthsParse, llc);
 	            return ii !== -1 ? ii : null;
 	        } else {
-	            ii = indexOf$1.call(this._longMonthsParse, llc);
+	            ii = indexOf.call(this._longMonthsParse, llc);
 	            if (ii !== -1) {
 	                return ii;
 	            }
-	            ii = indexOf$1.call(this._shortMonthsParse, llc);
+	            ii = indexOf.call(this._shortMonthsParse, llc);
 	            return ii !== -1 ? ii : null;
 	        }
 	    }
@@ -39162,78 +40752,12 @@
 	    this._monthsShortStrictRegex = new RegExp('^(' + shortPieces.join('|') + ')', 'i');
 	}
 
-	// FORMATTING
-
-	addFormatToken('Y', 0, 0, function () {
-	    var y = this.year();
-	    return y <= 9999 ? '' + y : '+' + y;
-	});
-
-	addFormatToken(0, ['YY', 2], 0, function () {
-	    return this.year() % 100;
-	});
-
-	addFormatToken(0, ['YYYY',   4],       0, 'year');
-	addFormatToken(0, ['YYYYY',  5],       0, 'year');
-	addFormatToken(0, ['YYYYYY', 6, true], 0, 'year');
-
-	// ALIASES
-
-	addUnitAlias('year', 'y');
-
-	// PRIORITIES
-
-	addUnitPriority('year', 1);
-
-	// PARSING
-
-	addRegexToken('Y',      matchSigned);
-	addRegexToken('YY',     match1to2, match2);
-	addRegexToken('YYYY',   match1to4, match4);
-	addRegexToken('YYYYY',  match1to6, match6);
-	addRegexToken('YYYYYY', match1to6, match6);
-
-	addParseToken(['YYYYY', 'YYYYYY'], YEAR);
-	addParseToken('YYYY', function (input, array) {
-	    array[YEAR] = input.length === 2 ? hooks.parseTwoDigitYear(input) : toInt(input);
-	});
-	addParseToken('YY', function (input, array) {
-	    array[YEAR] = hooks.parseTwoDigitYear(input);
-	});
-	addParseToken('Y', function (input, array) {
-	    array[YEAR] = parseInt(input, 10);
-	});
-
-	// HELPERS
-
-	function daysInYear(year) {
-	    return isLeapYear(year) ? 366 : 365;
-	}
-
-	function isLeapYear(year) {
-	    return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
-	}
-
-	// HOOKS
-
-	hooks.parseTwoDigitYear = function (input) {
-	    return toInt(input) + (toInt(input) > 68 ? 1900 : 2000);
-	};
-
-	// MOMENTS
-
-	var getSetYear = makeGetSet('FullYear', true);
-
-	function getIsLeapYear () {
-	    return isLeapYear(this.year());
-	}
-
 	function createDate (y, m, d, h, M, s, ms) {
-	    //can't just apply() to create a date:
-	    //http://stackoverflow.com/questions/181348/instantiating-a-javascript-object-by-calling-prototype-constructor-apply
+	    // can't just apply() to create a date:
+	    // https://stackoverflow.com/q/181348
 	    var date = new Date(y, m, d, h, M, s, ms);
 
-	    //the date constructor remaps years 0-99 to 1900-1999
+	    // the date constructor remaps years 0-99 to 1900-1999
 	    if (y < 100 && y >= 0 && isFinite(date.getFullYear())) {
 	        date.setFullYear(y);
 	    }
@@ -39243,7 +40767,7 @@
 	function createUTCDate (y) {
 	    var date = new Date(Date.UTC.apply(null, arguments));
 
-	    //the Date.UTC function remaps years 0-99 to 1900-1999
+	    // the Date.UTC function remaps years 0-99 to 1900-1999
 	    if (y < 100 && y >= 0 && isFinite(date.getUTCFullYear())) {
 	        date.setUTCFullYear(y);
 	    }
@@ -39260,7 +40784,7 @@
 	    return -fwdlw + fwd - 1;
 	}
 
-	//http://en.wikipedia.org/wiki/ISO_week_date#Calculating_a_date_given_the_year.2C_week_number_and_weekday
+	// https://en.wikipedia.org/wiki/ISO_week_date#Calculating_a_date_given_the_year.2C_week_number_and_weekday
 	function dayOfYearFromWeeks(year, week, weekday, dow, doy) {
 	    var localWeekday = (7 + weekday - dow) % 7,
 	        weekOffset = firstWeekOffset(year, dow, doy),
@@ -39461,7 +40985,8 @@
 	var defaultLocaleWeekdays = 'Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday'.split('_');
 	function localeWeekdays (m, format) {
 	    if (!m) {
-	        return this._weekdays;
+	        return isArray(this._weekdays) ? this._weekdays :
+	            this._weekdays['standalone'];
 	    }
 	    return isArray(this._weekdays) ? this._weekdays[m.day()] :
 	        this._weekdays[this._weekdays.isFormat.test(format) ? 'format' : 'standalone'][m.day()];
@@ -39494,48 +41019,48 @@
 
 	    if (strict) {
 	        if (format === 'dddd') {
-	            ii = indexOf$1.call(this._weekdaysParse, llc);
+	            ii = indexOf.call(this._weekdaysParse, llc);
 	            return ii !== -1 ? ii : null;
 	        } else if (format === 'ddd') {
-	            ii = indexOf$1.call(this._shortWeekdaysParse, llc);
+	            ii = indexOf.call(this._shortWeekdaysParse, llc);
 	            return ii !== -1 ? ii : null;
 	        } else {
-	            ii = indexOf$1.call(this._minWeekdaysParse, llc);
+	            ii = indexOf.call(this._minWeekdaysParse, llc);
 	            return ii !== -1 ? ii : null;
 	        }
 	    } else {
 	        if (format === 'dddd') {
-	            ii = indexOf$1.call(this._weekdaysParse, llc);
+	            ii = indexOf.call(this._weekdaysParse, llc);
 	            if (ii !== -1) {
 	                return ii;
 	            }
-	            ii = indexOf$1.call(this._shortWeekdaysParse, llc);
+	            ii = indexOf.call(this._shortWeekdaysParse, llc);
 	            if (ii !== -1) {
 	                return ii;
 	            }
-	            ii = indexOf$1.call(this._minWeekdaysParse, llc);
+	            ii = indexOf.call(this._minWeekdaysParse, llc);
 	            return ii !== -1 ? ii : null;
 	        } else if (format === 'ddd') {
-	            ii = indexOf$1.call(this._shortWeekdaysParse, llc);
+	            ii = indexOf.call(this._shortWeekdaysParse, llc);
 	            if (ii !== -1) {
 	                return ii;
 	            }
-	            ii = indexOf$1.call(this._weekdaysParse, llc);
+	            ii = indexOf.call(this._weekdaysParse, llc);
 	            if (ii !== -1) {
 	                return ii;
 	            }
-	            ii = indexOf$1.call(this._minWeekdaysParse, llc);
+	            ii = indexOf.call(this._minWeekdaysParse, llc);
 	            return ii !== -1 ? ii : null;
 	        } else {
-	            ii = indexOf$1.call(this._minWeekdaysParse, llc);
+	            ii = indexOf.call(this._minWeekdaysParse, llc);
 	            if (ii !== -1) {
 	                return ii;
 	            }
-	            ii = indexOf$1.call(this._weekdaysParse, llc);
+	            ii = indexOf.call(this._weekdaysParse, llc);
 	            if (ii !== -1) {
 	                return ii;
 	            }
-	            ii = indexOf$1.call(this._shortWeekdaysParse, llc);
+	            ii = indexOf.call(this._shortWeekdaysParse, llc);
 	            return ii !== -1 ? ii : null;
 	        }
 	    }
@@ -39781,8 +41306,10 @@
 	addRegexToken('A',  matchMeridiem);
 	addRegexToken('H',  match1to2);
 	addRegexToken('h',  match1to2);
+	addRegexToken('k',  match1to2);
 	addRegexToken('HH', match1to2, match2);
 	addRegexToken('hh', match1to2, match2);
+	addRegexToken('kk', match1to2, match2);
 
 	addRegexToken('hmm', match3to4);
 	addRegexToken('hmmss', match5to6);
@@ -39790,6 +41317,10 @@
 	addRegexToken('Hmmss', match5to6);
 
 	addParseToken(['H', 'HH'], HOUR);
+	addParseToken(['k', 'kk'], function (input, array, config) {
+	    var kInput = toInt(input);
+	    array[HOUR] = kInput === 24 ? 0 : kInput;
+	});
 	addParseToken(['a', 'A'], function (input, array, config) {
 	    config._isPm = config._locale.isPM(input);
 	    config._meridiem = input;
@@ -39860,7 +41391,7 @@
 	    longDateFormat: defaultLongDateFormat,
 	    invalidDate: defaultInvalidDate,
 	    ordinal: defaultOrdinal,
-	    ordinalParse: defaultOrdinalParse,
+	    dayOfMonthOrdinalParse: defaultDayOfMonthOrdinalParse,
 	    relativeTime: defaultRelativeTime,
 
 	    months: defaultLocaleMonths,
@@ -39918,11 +41449,10 @@
 	            module && module.exports) {
 	        try {
 	            oldLocale = globalLocale._abbr;
-	            __webpack_require__(345)("./" + name);
-	            // because defineLocale currently also sets the global locale, we
-	            // want to undo that for lazy loaded locales
+	            var aliasedRequire = require;
+	            __webpack_require__(357)("./" + name);
 	            getSetGlobalLocale(oldLocale);
-	        } catch (e) { }
+	        } catch (e) {}
 	    }
 	    return locales[name];
 	}
@@ -39998,10 +41528,11 @@
 
 	function updateLocale(name, config) {
 	    if (config != null) {
-	        var locale, parentConfig = baseConfig;
+	        var locale, tmpLocale, parentConfig = baseConfig;
 	        // MERGE
-	        if (locales[name] != null) {
-	            parentConfig = locales[name]._config;
+	        tmpLocale = loadLocale(name);
+	        if (tmpLocale != null) {
+	            parentConfig = tmpLocale._config;
 	        }
 	        config = mergeConfigs(parentConfig, config);
 	        locale = new Locale(config);
@@ -40048,7 +41579,7 @@
 	}
 
 	function listLocales() {
-	    return keys$1(locales);
+	    return keys(locales);
 	}
 
 	function checkOverflow (m) {
@@ -40079,6 +41610,156 @@
 	    }
 
 	    return m;
+	}
+
+	// Pick the first defined of two or three arguments.
+	function defaults(a, b, c) {
+	    if (a != null) {
+	        return a;
+	    }
+	    if (b != null) {
+	        return b;
+	    }
+	    return c;
+	}
+
+	function currentDateArray(config) {
+	    // hooks is actually the exported moment object
+	    var nowValue = new Date(hooks.now());
+	    if (config._useUTC) {
+	        return [nowValue.getUTCFullYear(), nowValue.getUTCMonth(), nowValue.getUTCDate()];
+	    }
+	    return [nowValue.getFullYear(), nowValue.getMonth(), nowValue.getDate()];
+	}
+
+	// convert an array to a date.
+	// the array should mirror the parameters below
+	// note: all values past the year are optional and will default to the lowest possible value.
+	// [year, month, day , hour, minute, second, millisecond]
+	function configFromArray (config) {
+	    var i, date, input = [], currentDate, expectedWeekday, yearToUse;
+
+	    if (config._d) {
+	        return;
+	    }
+
+	    currentDate = currentDateArray(config);
+
+	    //compute day of the year from weeks and weekdays
+	    if (config._w && config._a[DATE] == null && config._a[MONTH] == null) {
+	        dayOfYearFromWeekInfo(config);
+	    }
+
+	    //if the day of the year is set, figure out what it is
+	    if (config._dayOfYear != null) {
+	        yearToUse = defaults(config._a[YEAR], currentDate[YEAR]);
+
+	        if (config._dayOfYear > daysInYear(yearToUse) || config._dayOfYear === 0) {
+	            getParsingFlags(config)._overflowDayOfYear = true;
+	        }
+
+	        date = createUTCDate(yearToUse, 0, config._dayOfYear);
+	        config._a[MONTH] = date.getUTCMonth();
+	        config._a[DATE] = date.getUTCDate();
+	    }
+
+	    // Default to current date.
+	    // * if no year, month, day of month are given, default to today
+	    // * if day of month is given, default month and year
+	    // * if month is given, default only year
+	    // * if year is given, don't default anything
+	    for (i = 0; i < 3 && config._a[i] == null; ++i) {
+	        config._a[i] = input[i] = currentDate[i];
+	    }
+
+	    // Zero out whatever was not defaulted, including time
+	    for (; i < 7; i++) {
+	        config._a[i] = input[i] = (config._a[i] == null) ? (i === 2 ? 1 : 0) : config._a[i];
+	    }
+
+	    // Check for 24:00:00.000
+	    if (config._a[HOUR] === 24 &&
+	            config._a[MINUTE] === 0 &&
+	            config._a[SECOND] === 0 &&
+	            config._a[MILLISECOND] === 0) {
+	        config._nextDay = true;
+	        config._a[HOUR] = 0;
+	    }
+
+	    config._d = (config._useUTC ? createUTCDate : createDate).apply(null, input);
+	    expectedWeekday = config._useUTC ? config._d.getUTCDay() : config._d.getDay();
+
+	    // Apply timezone offset from input. The actual utcOffset can be changed
+	    // with parseZone.
+	    if (config._tzm != null) {
+	        config._d.setUTCMinutes(config._d.getUTCMinutes() - config._tzm);
+	    }
+
+	    if (config._nextDay) {
+	        config._a[HOUR] = 24;
+	    }
+
+	    // check for mismatching day of week
+	    if (config._w && typeof config._w.d !== 'undefined' && config._w.d !== expectedWeekday) {
+	        getParsingFlags(config).weekdayMismatch = true;
+	    }
+	}
+
+	function dayOfYearFromWeekInfo(config) {
+	    var w, weekYear, week, weekday, dow, doy, temp, weekdayOverflow;
+
+	    w = config._w;
+	    if (w.GG != null || w.W != null || w.E != null) {
+	        dow = 1;
+	        doy = 4;
+
+	        // TODO: We need to take the current isoWeekYear, but that depends on
+	        // how we interpret now (local, utc, fixed offset). So create
+	        // a now version of current config (take local/utc/offset flags, and
+	        // create now).
+	        weekYear = defaults(w.GG, config._a[YEAR], weekOfYear(createLocal(), 1, 4).year);
+	        week = defaults(w.W, 1);
+	        weekday = defaults(w.E, 1);
+	        if (weekday < 1 || weekday > 7) {
+	            weekdayOverflow = true;
+	        }
+	    } else {
+	        dow = config._locale._week.dow;
+	        doy = config._locale._week.doy;
+
+	        var curWeek = weekOfYear(createLocal(), dow, doy);
+
+	        weekYear = defaults(w.gg, config._a[YEAR], curWeek.year);
+
+	        // Default to current week.
+	        week = defaults(w.w, curWeek.week);
+
+	        if (w.d != null) {
+	            // weekday -- low day numbers are considered next week
+	            weekday = w.d;
+	            if (weekday < 0 || weekday > 6) {
+	                weekdayOverflow = true;
+	            }
+	        } else if (w.e != null) {
+	            // local weekday -- counting starts from begining of week
+	            weekday = w.e + dow;
+	            if (w.e < 0 || w.e > 6) {
+	                weekdayOverflow = true;
+	            }
+	        } else {
+	            // default to begining of week
+	            weekday = dow;
+	        }
+	    }
+	    if (week < 1 || week > weeksInYear(weekYear, dow, doy)) {
+	        getParsingFlags(config)._overflowWeeks = true;
+	    } else if (weekdayOverflow != null) {
+	        getParsingFlags(config)._overflowWeekday = true;
+	    } else {
+	        temp = dayOfYearFromWeeks(weekYear, week, weekday, dow, doy);
+	        config._a[YEAR] = temp.year;
+	        config._dayOfYear = temp.dayOfYear;
+	    }
 	}
 
 	// iso 8601 regex
@@ -40171,6 +41852,101 @@
 	    }
 	}
 
+	// RFC 2822 regex: For details see https://tools.ietf.org/html/rfc2822#section-3.3
+	var rfc2822 = /^(?:(Mon|Tue|Wed|Thu|Fri|Sat|Sun),?\s)?(\d{1,2})\s(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s(\d{2,4})\s(\d\d):(\d\d)(?::(\d\d))?\s(?:(UT|GMT|[ECMP][SD]T)|([Zz])|([+-]\d{4}))$/;
+
+	function extractFromRFC2822Strings(yearStr, monthStr, dayStr, hourStr, minuteStr, secondStr) {
+	    var result = [
+	        untruncateYear(yearStr),
+	        defaultLocaleMonthsShort.indexOf(monthStr),
+	        parseInt(dayStr, 10),
+	        parseInt(hourStr, 10),
+	        parseInt(minuteStr, 10)
+	    ];
+
+	    if (secondStr) {
+	        result.push(parseInt(secondStr, 10));
+	    }
+
+	    return result;
+	}
+
+	function untruncateYear(yearStr) {
+	    var year = parseInt(yearStr, 10);
+	    if (year <= 49) {
+	        return 2000 + year;
+	    } else if (year <= 999) {
+	        return 1900 + year;
+	    }
+	    return year;
+	}
+
+	function preprocessRFC2822(s) {
+	    // Remove comments and folding whitespace and replace multiple-spaces with a single space
+	    return s.replace(/\([^)]*\)|[\n\t]/g, ' ').replace(/(\s\s+)/g, ' ').trim();
+	}
+
+	function checkWeekday(weekdayStr, parsedInput, config) {
+	    if (weekdayStr) {
+	        // TODO: Replace the vanilla JS Date object with an indepentent day-of-week check.
+	        var weekdayProvided = defaultLocaleWeekdaysShort.indexOf(weekdayStr),
+	            weekdayActual = new Date(parsedInput[0], parsedInput[1], parsedInput[2]).getDay();
+	        if (weekdayProvided !== weekdayActual) {
+	            getParsingFlags(config).weekdayMismatch = true;
+	            config._isValid = false;
+	            return false;
+	        }
+	    }
+	    return true;
+	}
+
+	var obsOffsets = {
+	    UT: 0,
+	    GMT: 0,
+	    EDT: -4 * 60,
+	    EST: -5 * 60,
+	    CDT: -5 * 60,
+	    CST: -6 * 60,
+	    MDT: -6 * 60,
+	    MST: -7 * 60,
+	    PDT: -7 * 60,
+	    PST: -8 * 60
+	};
+
+	function calculateOffset(obsOffset, militaryOffset, numOffset) {
+	    if (obsOffset) {
+	        return obsOffsets[obsOffset];
+	    } else if (militaryOffset) {
+	        // the only allowed military tz is Z
+	        return 0;
+	    } else {
+	        var hm = parseInt(numOffset, 10);
+	        var m = hm % 100, h = (hm - m) / 100;
+	        return h * 60 + m;
+	    }
+	}
+
+	// date and time from ref 2822 format
+	function configFromRFC2822(config) {
+	    var match = rfc2822.exec(preprocessRFC2822(config._i));
+	    if (match) {
+	        var parsedArray = extractFromRFC2822Strings(match[4], match[3], match[2], match[5], match[6], match[7]);
+	        if (!checkWeekday(match[1], parsedArray, config)) {
+	            return;
+	        }
+
+	        config._a = parsedArray;
+	        config._tzm = calculateOffset(match[8], match[9], match[10]);
+
+	        config._d = createUTCDate.apply(null, config._a);
+	        config._d.setUTCMinutes(config._d.getUTCMinutes() - config._tzm);
+
+	        getParsingFlags(config).rfc2822 = true;
+	    } else {
+	        config._isValid = false;
+	    }
+	}
+
 	// date from iso format or fallback
 	function configFromString(config) {
 	    var matched = aspNetJsonRegex.exec(config._i);
@@ -40183,13 +41959,24 @@
 	    configFromISO(config);
 	    if (config._isValid === false) {
 	        delete config._isValid;
-	        hooks.createFromInputFallback(config);
+	    } else {
+	        return;
 	    }
+
+	    configFromRFC2822(config);
+	    if (config._isValid === false) {
+	        delete config._isValid;
+	    } else {
+	        return;
+	    }
+
+	    // Final attempt, use Input Fallback
+	    hooks.createFromInputFallback(config);
 	}
 
 	hooks.createFromInputFallback = deprecate(
-	    'value provided is not in a recognized ISO format. moment construction falls back to js Date(), ' +
-	    'which is not reliable across all browsers and versions. Non ISO date formats are ' +
+	    'value provided is not in a recognized RFC2822 or ISO format. moment construction falls back to js Date(), ' +
+	    'which is not reliable across all browsers and versions. Non RFC2822/ISO date formats are ' +
 	    'discouraged and will be removed in an upcoming major release. Please refer to ' +
 	    'http://momentjs.com/guides/#/warnings/js-date/ for more info.',
 	    function (config) {
@@ -40197,151 +41984,11 @@
 	    }
 	);
 
-	// Pick the first defined of two or three arguments.
-	function defaults(a, b, c) {
-	    if (a != null) {
-	        return a;
-	    }
-	    if (b != null) {
-	        return b;
-	    }
-	    return c;
-	}
-
-	function currentDateArray(config) {
-	    // hooks is actually the exported moment object
-	    var nowValue = new Date(hooks.now());
-	    if (config._useUTC) {
-	        return [nowValue.getUTCFullYear(), nowValue.getUTCMonth(), nowValue.getUTCDate()];
-	    }
-	    return [nowValue.getFullYear(), nowValue.getMonth(), nowValue.getDate()];
-	}
-
-	// convert an array to a date.
-	// the array should mirror the parameters below
-	// note: all values past the year are optional and will default to the lowest possible value.
-	// [year, month, day , hour, minute, second, millisecond]
-	function configFromArray (config) {
-	    var i, date, input = [], currentDate, yearToUse;
-
-	    if (config._d) {
-	        return;
-	    }
-
-	    currentDate = currentDateArray(config);
-
-	    //compute day of the year from weeks and weekdays
-	    if (config._w && config._a[DATE] == null && config._a[MONTH] == null) {
-	        dayOfYearFromWeekInfo(config);
-	    }
-
-	    //if the day of the year is set, figure out what it is
-	    if (config._dayOfYear) {
-	        yearToUse = defaults(config._a[YEAR], currentDate[YEAR]);
-
-	        if (config._dayOfYear > daysInYear(yearToUse)) {
-	            getParsingFlags(config)._overflowDayOfYear = true;
-	        }
-
-	        date = createUTCDate(yearToUse, 0, config._dayOfYear);
-	        config._a[MONTH] = date.getUTCMonth();
-	        config._a[DATE] = date.getUTCDate();
-	    }
-
-	    // Default to current date.
-	    // * if no year, month, day of month are given, default to today
-	    // * if day of month is given, default month and year
-	    // * if month is given, default only year
-	    // * if year is given, don't default anything
-	    for (i = 0; i < 3 && config._a[i] == null; ++i) {
-	        config._a[i] = input[i] = currentDate[i];
-	    }
-
-	    // Zero out whatever was not defaulted, including time
-	    for (; i < 7; i++) {
-	        config._a[i] = input[i] = (config._a[i] == null) ? (i === 2 ? 1 : 0) : config._a[i];
-	    }
-
-	    // Check for 24:00:00.000
-	    if (config._a[HOUR] === 24 &&
-	            config._a[MINUTE] === 0 &&
-	            config._a[SECOND] === 0 &&
-	            config._a[MILLISECOND] === 0) {
-	        config._nextDay = true;
-	        config._a[HOUR] = 0;
-	    }
-
-	    config._d = (config._useUTC ? createUTCDate : createDate).apply(null, input);
-	    // Apply timezone offset from input. The actual utcOffset can be changed
-	    // with parseZone.
-	    if (config._tzm != null) {
-	        config._d.setUTCMinutes(config._d.getUTCMinutes() - config._tzm);
-	    }
-
-	    if (config._nextDay) {
-	        config._a[HOUR] = 24;
-	    }
-	}
-
-	function dayOfYearFromWeekInfo(config) {
-	    var w, weekYear, week, weekday, dow, doy, temp, weekdayOverflow;
-
-	    w = config._w;
-	    if (w.GG != null || w.W != null || w.E != null) {
-	        dow = 1;
-	        doy = 4;
-
-	        // TODO: We need to take the current isoWeekYear, but that depends on
-	        // how we interpret now (local, utc, fixed offset). So create
-	        // a now version of current config (take local/utc/offset flags, and
-	        // create now).
-	        weekYear = defaults(w.GG, config._a[YEAR], weekOfYear(createLocal(), 1, 4).year);
-	        week = defaults(w.W, 1);
-	        weekday = defaults(w.E, 1);
-	        if (weekday < 1 || weekday > 7) {
-	            weekdayOverflow = true;
-	        }
-	    } else {
-	        dow = config._locale._week.dow;
-	        doy = config._locale._week.doy;
-
-	        var curWeek = weekOfYear(createLocal(), dow, doy);
-
-	        weekYear = defaults(w.gg, config._a[YEAR], curWeek.year);
-
-	        // Default to current week.
-	        week = defaults(w.w, curWeek.week);
-
-	        if (w.d != null) {
-	            // weekday -- low day numbers are considered next week
-	            weekday = w.d;
-	            if (weekday < 0 || weekday > 6) {
-	                weekdayOverflow = true;
-	            }
-	        } else if (w.e != null) {
-	            // local weekday -- counting starts from begining of week
-	            weekday = w.e + dow;
-	            if (w.e < 0 || w.e > 6) {
-	                weekdayOverflow = true;
-	            }
-	        } else {
-	            // default to begining of week
-	            weekday = dow;
-	        }
-	    }
-	    if (week < 1 || week > weeksInYear(weekYear, dow, doy)) {
-	        getParsingFlags(config)._overflowWeeks = true;
-	    } else if (weekdayOverflow != null) {
-	        getParsingFlags(config)._overflowWeekday = true;
-	    } else {
-	        temp = dayOfYearFromWeeks(weekYear, week, weekday, dow, doy);
-	        config._a[YEAR] = temp.year;
-	        config._dayOfYear = temp.dayOfYear;
-	    }
-	}
-
 	// constant that refers to the ISO standard
 	hooks.ISO_8601 = function () {};
+
+	// constant that refers to the RFC 2822 form
+	hooks.RFC_2822 = function () {};
 
 	// date from string and format string
 	function configFromStringAndFormat(config) {
@@ -40350,7 +41997,10 @@
 	        configFromISO(config);
 	        return;
 	    }
-
+	    if (config._f === hooks.RFC_2822) {
+	        configFromRFC2822(config);
+	        return;
+	    }
 	    config._a = [];
 	    getParsingFlags(config).empty = true;
 
@@ -40542,7 +42192,7 @@
 
 	function configFromInput(config) {
 	    var input = config._i;
-	    if (input === undefined) {
+	    if (isUndefined(input)) {
 	        config._d = new Date(hooks.now());
 	    } else if (isDate(input)) {
 	        config._d = new Date(input.valueOf());
@@ -40553,7 +42203,7 @@
 	            return parseInt(obj, 10);
 	        });
 	        configFromArray(config);
-	    } else if (typeof(input) === 'object') {
+	    } else if (isObject(input)) {
 	        configFromObject(config);
 	    } else if (isNumber(input)) {
 	        // from milliseconds
@@ -40654,6 +42304,38 @@
 	    return Date.now ? Date.now() : +(new Date());
 	};
 
+	var ordering = ['year', 'quarter', 'month', 'week', 'day', 'hour', 'minute', 'second', 'millisecond'];
+
+	function isDurationValid(m) {
+	    for (var key in m) {
+	        if (!(indexOf.call(ordering, key) !== -1 && (m[key] == null || !isNaN(m[key])))) {
+	            return false;
+	        }
+	    }
+
+	    var unitHasDecimal = false;
+	    for (var i = 0; i < ordering.length; ++i) {
+	        if (m[ordering[i]]) {
+	            if (unitHasDecimal) {
+	                return false; // only allow non-integers for smallest unit
+	            }
+	            if (parseFloat(m[ordering[i]]) !== toInt(m[ordering[i]])) {
+	                unitHasDecimal = true;
+	            }
+	        }
+	    }
+
+	    return true;
+	}
+
+	function isValid$1() {
+	    return this._isValid;
+	}
+
+	function createInvalid$1() {
+	    return createDuration(NaN);
+	}
+
 	function Duration (duration) {
 	    var normalizedInput = normalizeObjectUnits(duration),
 	        years = normalizedInput.year || 0,
@@ -40666,6 +42348,8 @@
 	        seconds = normalizedInput.second || 0,
 	        milliseconds = normalizedInput.millisecond || 0;
 
+	    this._isValid = isDurationValid(normalizedInput);
+
 	    // representation for dateAddRemove
 	    this._milliseconds = +milliseconds +
 	        seconds * 1e3 + // 1000
@@ -40675,7 +42359,7 @@
 	    // day when working around DST, we need to store them separately
 	    this._days = +days +
 	        weeks * 7;
-	    // It is impossible translate months into days without knowing
+	    // It is impossible to translate months into days without knowing
 	    // which months you are are talking about, so we have to store
 	    // it separately.
 	    this._months = +months +
@@ -40789,7 +42473,7 @@
 	// a second time. In case it wants us to change the offset again
 	// _changeInProgress == true case, then we have to adjust, because
 	// there is no such time in the given timezone.
-	function getSetOffset (input, keepLocalTime) {
+	function getSetOffset (input, keepLocalTime, keepMinutes) {
 	    var offset = this._offset || 0,
 	        localAdjust;
 	    if (!this.isValid()) {
@@ -40801,7 +42485,7 @@
 	            if (input === null) {
 	                return this;
 	            }
-	        } else if (Math.abs(input) < 16) {
+	        } else if (Math.abs(input) < 16 && !keepMinutes) {
 	            input = input * 60;
 	        }
 	        if (!this._isUTC && keepLocalTime) {
@@ -40859,7 +42543,7 @@
 
 	function setOffsetToParsedOffset () {
 	    if (this._tzm != null) {
-	        this.utcOffset(this._tzm);
+	        this.utcOffset(this._tzm, false, true);
 	    } else if (typeof this._i === 'string') {
 	        var tZone = offsetFromString(matchOffset, this._i);
 	        if (tZone != null) {
@@ -40922,12 +42606,12 @@
 	}
 
 	// ASP.NET json date format regex
-	var aspNetRegex = /^(\-)?(?:(\d*)[. ])?(\d+)\:(\d+)(?:\:(\d+)(\.\d*)?)?$/;
+	var aspNetRegex = /^(\-|\+)?(?:(\d*)[. ])?(\d+)\:(\d+)(?:\:(\d+)(\.\d*)?)?$/;
 
 	// from http://docs.closure-library.googlecode.com/git/closure_goog_date_date.js.source.html
 	// somewhat more in line with 4.4.3.2 2004 spec, but allows decimal anywhere
 	// and further modified to allow for strings containing both week and day
-	var isoRegex = /^(-)?P(?:(-?[0-9,.]*)Y)?(?:(-?[0-9,.]*)M)?(?:(-?[0-9,.]*)W)?(?:(-?[0-9,.]*)D)?(?:T(?:(-?[0-9,.]*)H)?(?:(-?[0-9,.]*)M)?(?:(-?[0-9,.]*)S)?)?$/;
+	var isoRegex = /^(-|\+)?P(?:([-+]?[0-9,.]*)Y)?(?:([-+]?[0-9,.]*)M)?(?:([-+]?[0-9,.]*)W)?(?:([-+]?[0-9,.]*)D)?(?:T(?:([-+]?[0-9,.]*)H)?(?:([-+]?[0-9,.]*)M)?(?:([-+]?[0-9,.]*)S)?)?$/;
 
 	function createDuration (input, key) {
 	    var duration = input,
@@ -40961,7 +42645,7 @@
 	            ms : toInt(absRound(match[MILLISECOND] * 1000)) * sign // the millisecond decimal point is included in the match
 	        };
 	    } else if (!!(match = isoRegex.exec(input))) {
-	        sign = (match[1] === '-') ? -1 : 1;
+	        sign = (match[1] === '-') ? -1 : (match[1] === '+') ? 1 : 1;
 	        duration = {
 	            y : parseIso(match[2], sign),
 	            M : parseIso(match[3], sign),
@@ -40991,6 +42675,7 @@
 	}
 
 	createDuration.fn = Duration.prototype;
+	createDuration.invalid = createInvalid$1;
 
 	function parseIso (inp, sign) {
 	    // We'd normally use ~~inp for this, but unfortunately it also
@@ -41063,14 +42748,14 @@
 
 	    updateOffset = updateOffset == null ? true : updateOffset;
 
-	    if (milliseconds) {
-	        mom._d.setTime(mom._d.valueOf() + milliseconds * isAdding);
+	    if (months) {
+	        setMonth(mom, get(mom, 'Month') + months * isAdding);
 	    }
 	    if (days) {
 	        set$1(mom, 'Date', get(mom, 'Date') + days * isAdding);
 	    }
-	    if (months) {
-	        setMonth(mom, get(mom, 'Month') + months * isAdding);
+	    if (milliseconds) {
+	        mom._d.setTime(mom._d.valueOf() + milliseconds * isAdding);
 	    }
 	    if (updateOffset) {
 	        hooks.updateOffset(mom, days || months);
@@ -41180,22 +42865,18 @@
 
 	    units = normalizeUnits(units);
 
-	    if (units === 'year' || units === 'month' || units === 'quarter') {
-	        output = monthDiff(this, that);
-	        if (units === 'quarter') {
-	            output = output / 3;
-	        } else if (units === 'year') {
-	            output = output / 12;
-	        }
-	    } else {
-	        delta = this - that;
-	        output = units === 'second' ? delta / 1e3 : // 1000
-	            units === 'minute' ? delta / 6e4 : // 1000 * 60
-	            units === 'hour' ? delta / 36e5 : // 1000 * 60 * 60
-	            units === 'day' ? (delta - zoneDelta) / 864e5 : // 1000 * 60 * 60 * 24, negate dst
-	            units === 'week' ? (delta - zoneDelta) / 6048e5 : // 1000 * 60 * 60 * 24 * 7, negate dst
-	            delta;
+	    switch (units) {
+	        case 'year': output = monthDiff(this, that) / 12; break;
+	        case 'month': output = monthDiff(this, that); break;
+	        case 'quarter': output = monthDiff(this, that) / 3; break;
+	        case 'second': output = (this - that) / 1e3; break; // 1000
+	        case 'minute': output = (this - that) / 6e4; break; // 1000 * 60
+	        case 'hour': output = (this - that) / 36e5; break; // 1000 * 60 * 60
+	        case 'day': output = (this - that - zoneDelta) / 864e5; break; // 1000 * 60 * 60 * 24, negate dst
+	        case 'week': output = (this - that - zoneDelta) / 6048e5; break; // 1000 * 60 * 60 * 24 * 7, negate dst
+	        default: output = this - that;
 	    }
+
 	    return asFloat ? output : absFloor(output);
 	}
 
@@ -41227,18 +42908,24 @@
 	    return this.clone().locale('en').format('ddd MMM DD YYYY HH:mm:ss [GMT]ZZ');
 	}
 
-	function toISOString () {
-	    var m = this.clone().utc();
-	    if (0 < m.year() && m.year() <= 9999) {
-	        if (isFunction(Date.prototype.toISOString)) {
-	            // native implementation is ~50x faster, use it when we can
+	function toISOString(keepOffset) {
+	    if (!this.isValid()) {
+	        return null;
+	    }
+	    var utc = keepOffset !== true;
+	    var m = utc ? this.clone().utc() : this;
+	    if (m.year() < 0 || m.year() > 9999) {
+	        return formatMoment(m, utc ? 'YYYYYY-MM-DD[T]HH:mm:ss.SSS[Z]' : 'YYYYYY-MM-DD[T]HH:mm:ss.SSSZ');
+	    }
+	    if (isFunction(Date.prototype.toISOString)) {
+	        // native implementation is ~50x faster, use it when we can
+	        if (utc) {
 	            return this.toDate().toISOString();
 	        } else {
-	            return formatMoment(m, 'YYYY-MM-DD[T]HH:mm:ss.SSS[Z]');
+	            return new Date(this._d.valueOf()).toISOString().replace('Z', formatMoment(m, 'Z'));
 	        }
-	    } else {
-	        return formatMoment(m, 'YYYYYY-MM-DD[T]HH:mm:ss.SSS[Z]');
 	    }
+	    return formatMoment(m, utc ? 'YYYY-MM-DD[T]HH:mm:ss.SSS[Z]' : 'YYYY-MM-DD[T]HH:mm:ss.SSSZ');
 	}
 
 	/**
@@ -41258,7 +42945,7 @@
 	        zone = 'Z';
 	    }
 	    var prefix = '[' + func + '("]';
-	    var year = (0 < this.year() && this.year() <= 9999) ? 'YYYY' : 'YYYYYY';
+	    var year = (0 <= this.year() && this.year() <= 9999) ? 'YYYY' : 'YYYYYY';
 	    var datetime = '-MM-DD[T]HH:mm:ss.SSS';
 	    var suffix = zone + '[")]';
 
@@ -41426,7 +43113,7 @@
 	    return this.isValid() ? this.toISOString() : null;
 	}
 
-	function isValid$1 () {
+	function isValid$2 () {
 	    return isValid(this);
 	}
 
@@ -41586,12 +43273,15 @@
 	addRegexToken('D',  match1to2);
 	addRegexToken('DD', match1to2, match2);
 	addRegexToken('Do', function (isStrict, locale) {
-	    return isStrict ? locale._ordinalParse : locale._ordinalParseLenient;
+	    // TODO: Remove "ordinalParse" fallback in next major release.
+	    return isStrict ?
+	      (locale._dayOfMonthOrdinalParse || locale._ordinalParse) :
+	      locale._dayOfMonthOrdinalParseLenient;
 	});
 
 	addParseToken(['D', 'DD'], DATE);
 	addParseToken('Do', function (input, array) {
-	    array[DATE] = toInt(input.match(match1to2)[0], 10);
+	    array[DATE] = toInt(input.match(match1to2)[0]);
 	});
 
 	// MOMENTS
@@ -41766,7 +43456,7 @@
 	proto.isSame            = isSame;
 	proto.isSameOrAfter     = isSameOrAfter;
 	proto.isSameOrBefore    = isSameOrBefore;
-	proto.isValid           = isValid$1;
+	proto.isValid           = isValid$2;
 	proto.lang              = lang;
 	proto.locale            = locale;
 	proto.localeData        = localeData;
@@ -41991,7 +43681,7 @@
 	}
 
 	getSetGlobalLocale('en', {
-	    ordinalParse: /\d{1,2}(th|st|nd|rd)/,
+	    dayOfMonthOrdinalParse: /\d{1,2}(th|st|nd|rd)/,
 	    ordinal : function (number) {
 	        var b = number % 10,
 	            output = (toInt(number % 100 / 10) === 1) ? 'th' :
@@ -42112,6 +43802,9 @@
 	}
 
 	function as (units) {
+	    if (!this.isValid()) {
+	        return NaN;
+	    }
 	    var days;
 	    var months;
 	    var milliseconds = this._milliseconds;
@@ -42140,6 +43833,9 @@
 
 	// TODO: Use this.as('ms')?
 	function valueOf$1 () {
+	    if (!this.isValid()) {
+	        return NaN;
+	    }
 	    return (
 	        this._milliseconds +
 	        this._days * 864e5 +
@@ -42163,14 +43859,18 @@
 	var asMonths       = makeAs('M');
 	var asYears        = makeAs('y');
 
+	function clone$1 () {
+	    return createDuration(this);
+	}
+
 	function get$2 (units) {
 	    units = normalizeUnits(units);
-	    return this[units + 's']();
+	    return this.isValid() ? this[units + 's']() : NaN;
 	}
 
 	function makeGetter(name) {
 	    return function () {
-	        return this._data[name];
+	        return this.isValid() ? this._data[name] : NaN;
 	    };
 	}
 
@@ -42188,11 +43888,12 @@
 
 	var round = Math.round;
 	var thresholds = {
-	    s: 45,  // seconds to minute
-	    m: 45,  // minutes to hour
-	    h: 22,  // hours to day
-	    d: 26,  // days to month
-	    M: 11   // months to year
+	    ss: 44,         // a few seconds to seconds
+	    s : 45,         // seconds to minute
+	    m : 45,         // minutes to hour
+	    h : 22,         // hours to day
+	    d : 26,         // days to month
+	    M : 11          // months to year
 	};
 
 	// helper function for moment.fn.from, moment.fn.fromNow, and moment.duration.fn.humanize
@@ -42209,16 +43910,17 @@
 	    var months   = round(duration.as('M'));
 	    var years    = round(duration.as('y'));
 
-	    var a = seconds < thresholds.s && ['s', seconds]  ||
-	            minutes <= 1           && ['m']           ||
-	            minutes < thresholds.m && ['mm', minutes] ||
-	            hours   <= 1           && ['h']           ||
-	            hours   < thresholds.h && ['hh', hours]   ||
-	            days    <= 1           && ['d']           ||
-	            days    < thresholds.d && ['dd', days]    ||
-	            months  <= 1           && ['M']           ||
-	            months  < thresholds.M && ['MM', months]  ||
-	            years   <= 1           && ['y']           || ['yy', years];
+	    var a = seconds <= thresholds.ss && ['s', seconds]  ||
+	            seconds < thresholds.s   && ['ss', seconds] ||
+	            minutes <= 1             && ['m']           ||
+	            minutes < thresholds.m   && ['mm', minutes] ||
+	            hours   <= 1             && ['h']           ||
+	            hours   < thresholds.h   && ['hh', hours]   ||
+	            days    <= 1             && ['d']           ||
+	            days    < thresholds.d   && ['dd', days]    ||
+	            months  <= 1             && ['M']           ||
+	            months  < thresholds.M   && ['MM', months]  ||
+	            years   <= 1             && ['y']           || ['yy', years];
 
 	    a[2] = withoutSuffix;
 	    a[3] = +posNegDuration > 0;
@@ -42247,10 +43949,17 @@
 	        return thresholds[threshold];
 	    }
 	    thresholds[threshold] = limit;
+	    if (threshold === 's') {
+	        thresholds.ss = limit - 1;
+	    }
 	    return true;
 	}
 
 	function humanize (withSuffix) {
+	    if (!this.isValid()) {
+	        return this.localeData().invalidDate();
+	    }
+
 	    var locale = this.localeData();
 	    var output = relativeTime$1(this, !withSuffix, locale);
 
@@ -42263,6 +43972,10 @@
 
 	var abs$1 = Math.abs;
 
+	function sign(x) {
+	    return ((x > 0) - (x < 0)) || +x;
+	}
+
 	function toISOString$1() {
 	    // for ISO strings we do not use the normal bubbling rules:
 	    //  * milliseconds bubble up until they become hours
@@ -42271,6 +43984,10 @@
 	    // This is because there is no context-free conversion between hours and days
 	    // (think of clock changes)
 	    // and also not between days and months (28-31 days per month)
+	    if (!this.isValid()) {
+	        return this.localeData().invalidDate();
+	    }
+
 	    var seconds = abs$1(this._milliseconds) / 1000;
 	    var days         = abs$1(this._days);
 	    var months       = abs$1(this._months);
@@ -42293,7 +44010,7 @@
 	    var D = days;
 	    var h = hours;
 	    var m = minutes;
-	    var s = seconds;
+	    var s = seconds ? seconds.toFixed(3).replace(/\.?0+$/, '') : '';
 	    var total = this.asSeconds();
 
 	    if (!total) {
@@ -42302,19 +44019,24 @@
 	        return 'P0D';
 	    }
 
-	    return (total < 0 ? '-' : '') +
-	        'P' +
-	        (Y ? Y + 'Y' : '') +
-	        (M ? M + 'M' : '') +
-	        (D ? D + 'D' : '') +
+	    var totalSign = total < 0 ? '-' : '';
+	    var ymSign = sign(this._months) !== sign(total) ? '-' : '';
+	    var daysSign = sign(this._days) !== sign(total) ? '-' : '';
+	    var hmsSign = sign(this._milliseconds) !== sign(total) ? '-' : '';
+
+	    return totalSign + 'P' +
+	        (Y ? ymSign + Y + 'Y' : '') +
+	        (M ? ymSign + M + 'M' : '') +
+	        (D ? daysSign + D + 'D' : '') +
 	        ((h || m || s) ? 'T' : '') +
-	        (h ? h + 'H' : '') +
-	        (m ? m + 'M' : '') +
-	        (s ? s + 'S' : '');
+	        (h ? hmsSign + h + 'H' : '') +
+	        (m ? hmsSign + m + 'M' : '') +
+	        (s ? hmsSign + s + 'S' : '');
 	}
 
 	var proto$2 = Duration.prototype;
 
+	proto$2.isValid        = isValid$1;
 	proto$2.abs            = abs;
 	proto$2.add            = add$1;
 	proto$2.subtract       = subtract$1;
@@ -42329,6 +44051,7 @@
 	proto$2.asYears        = asYears;
 	proto$2.valueOf        = valueOf$1;
 	proto$2._bubble        = bubble;
+	proto$2.clone          = clone$1;
 	proto$2.get            = get$2;
 	proto$2.milliseconds   = milliseconds;
 	proto$2.seconds        = seconds;
@@ -42370,7 +44093,7 @@
 	// Side effect imports
 
 
-	hooks.version = '2.17.0';
+	hooks.version = '2.20.1';
 
 	setHookCallback(createLocal);
 
@@ -42397,20 +44120,33 @@
 	hooks.locales               = listLocales;
 	hooks.weekdaysShort         = listWeekdaysShort;
 	hooks.normalizeUnits        = normalizeUnits;
-	hooks.relativeTimeRounding = getSetRelativeTimeRounding;
+	hooks.relativeTimeRounding  = getSetRelativeTimeRounding;
 	hooks.relativeTimeThreshold = getSetRelativeTimeThreshold;
 	hooks.calendarFormat        = getCalendarFormat;
 	hooks.prototype             = proto;
+
+	// currently HTML5 input type only supports 24-hour formats
+	hooks.HTML5_FMT = {
+	    DATETIME_LOCAL: 'YYYY-MM-DDTHH:mm',             // <input type="datetime-local" />
+	    DATETIME_LOCAL_SECONDS: 'YYYY-MM-DDTHH:mm:ss',  // <input type="datetime-local" step="1" />
+	    DATETIME_LOCAL_MS: 'YYYY-MM-DDTHH:mm:ss.SSS',   // <input type="datetime-local" step="0.001" />
+	    DATE: 'YYYY-MM-DD',                             // <input type="date" />
+	    TIME: 'HH:mm',                                  // <input type="time" />
+	    TIME_SECONDS: 'HH:mm:ss',                       // <input type="time" step="1" />
+	    TIME_MS: 'HH:mm:ss.SSS',                        // <input type="time" step="0.001" />
+	    WEEK: 'YYYY-[W]WW',                             // <input type="week" />
+	    MONTH: 'YYYY-MM'                                // <input type="month" />
+	};
 
 	return hooks;
 
 	})));
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(344)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(356)(module)))
 
-/***/ },
-/* 344 */
-/***/ function(module, exports) {
+/***/ }),
+/* 356 */
+/***/ (function(module, exports) {
 
 	module.exports = function(module) {
 		if(!module.webpackPolyfill) {
@@ -42424,229 +44160,249 @@
 	}
 
 
-/***/ },
-/* 345 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 357 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	var map = {
-		"./af": 346,
-		"./af.js": 346,
-		"./ar": 347,
-		"./ar-dz": 348,
-		"./ar-dz.js": 348,
-		"./ar-ly": 349,
-		"./ar-ly.js": 349,
-		"./ar-ma": 350,
-		"./ar-ma.js": 350,
-		"./ar-sa": 351,
-		"./ar-sa.js": 351,
-		"./ar-tn": 352,
-		"./ar-tn.js": 352,
-		"./ar.js": 347,
-		"./az": 353,
-		"./az.js": 353,
-		"./be": 354,
-		"./be.js": 354,
-		"./bg": 355,
-		"./bg-x": 356,
-		"./bg-x.js": 356,
-		"./bg.js": 355,
-		"./bn": 357,
-		"./bn.js": 357,
-		"./bo": 358,
-		"./bo.js": 358,
-		"./br": 359,
-		"./br.js": 359,
-		"./bs": 360,
-		"./bs.js": 360,
-		"./ca": 361,
-		"./ca.js": 361,
-		"./cs": 362,
-		"./cs.js": 362,
-		"./cv": 363,
-		"./cv.js": 363,
-		"./cy": 364,
-		"./cy.js": 364,
-		"./da": 365,
-		"./da.js": 365,
-		"./de": 366,
-		"./de-at": 367,
-		"./de-at.js": 367,
-		"./de.js": 366,
-		"./dv": 368,
-		"./dv.js": 368,
-		"./el": 369,
-		"./el.js": 369,
-		"./en-au": 370,
-		"./en-au.js": 370,
-		"./en-ca": 371,
-		"./en-ca.js": 371,
-		"./en-gb": 372,
-		"./en-gb.js": 372,
-		"./en-ie": 373,
-		"./en-ie.js": 373,
-		"./en-nz": 374,
-		"./en-nz.js": 374,
-		"./eo": 375,
-		"./eo.js": 375,
-		"./es": 376,
-		"./es-do": 377,
-		"./es-do.js": 377,
-		"./es.js": 376,
-		"./et": 378,
-		"./et.js": 378,
-		"./eu": 379,
-		"./eu.js": 379,
-		"./fa": 380,
-		"./fa.js": 380,
-		"./fi": 381,
-		"./fi.js": 381,
-		"./fo": 382,
-		"./fo.js": 382,
-		"./fr": 383,
-		"./fr-ca": 384,
-		"./fr-ca.js": 384,
-		"./fr-ch": 385,
-		"./fr-ch.js": 385,
-		"./fr.js": 383,
-		"./fy": 386,
-		"./fy.js": 386,
-		"./gd": 387,
-		"./gd.js": 387,
-		"./gl": 388,
-		"./gl.js": 388,
-		"./he": 389,
-		"./he.js": 389,
-		"./hi": 390,
-		"./hi.js": 390,
-		"./hr": 391,
-		"./hr.js": 391,
-		"./hu": 392,
-		"./hu.js": 392,
-		"./hy-am": 393,
-		"./hy-am.js": 393,
-		"./id": 394,
-		"./id.js": 394,
-		"./is": 395,
-		"./is.js": 395,
-		"./it": 396,
-		"./it.js": 396,
-		"./ja": 397,
-		"./ja.js": 397,
-		"./jv": 398,
-		"./jv.js": 398,
-		"./ka": 399,
-		"./ka.js": 399,
-		"./kk": 400,
-		"./kk.js": 400,
-		"./km": 401,
-		"./km.js": 401,
-		"./ko": 402,
-		"./ko.js": 402,
-		"./ky": 403,
-		"./ky.js": 403,
-		"./lb": 404,
-		"./lb.js": 404,
-		"./lo": 405,
-		"./lo.js": 405,
-		"./lt": 406,
-		"./lt.js": 406,
-		"./lv": 407,
-		"./lv.js": 407,
-		"./me": 408,
-		"./me.js": 408,
-		"./mi": 409,
-		"./mi.js": 409,
-		"./mk": 410,
-		"./mk.js": 410,
-		"./ml": 411,
-		"./ml.js": 411,
-		"./mr": 412,
-		"./mr.js": 412,
-		"./ms": 413,
-		"./ms-my": 414,
-		"./ms-my.js": 414,
-		"./ms.js": 413,
-		"./my": 415,
-		"./my.js": 415,
-		"./nb": 416,
-		"./nb.js": 416,
-		"./ne": 417,
-		"./ne.js": 417,
-		"./nl": 418,
-		"./nl-be": 419,
-		"./nl-be.js": 419,
-		"./nl.js": 418,
-		"./nn": 420,
-		"./nn.js": 420,
-		"./pa-in": 421,
-		"./pa-in.js": 421,
-		"./pl": 422,
-		"./pl.js": 422,
-		"./pt": 423,
-		"./pt-br": 424,
-		"./pt-br.js": 424,
-		"./pt.js": 423,
-		"./ro": 425,
-		"./ro.js": 425,
-		"./ru": 426,
-		"./ru.js": 426,
-		"./se": 427,
-		"./se.js": 427,
-		"./si": 428,
-		"./si.js": 428,
-		"./sk": 429,
-		"./sk.js": 429,
-		"./sl": 430,
-		"./sl.js": 430,
-		"./sq": 431,
-		"./sq.js": 431,
-		"./sr": 432,
-		"./sr-cyrl": 433,
-		"./sr-cyrl.js": 433,
-		"./sr.js": 432,
-		"./ss": 434,
-		"./ss.js": 434,
-		"./sv": 435,
-		"./sv.js": 435,
-		"./sw": 436,
-		"./sw.js": 436,
-		"./ta": 437,
-		"./ta.js": 437,
-		"./te": 438,
-		"./te.js": 438,
-		"./tet": 439,
-		"./tet.js": 439,
-		"./th": 440,
-		"./th.js": 440,
-		"./tl-ph": 441,
-		"./tl-ph.js": 441,
-		"./tlh": 442,
-		"./tlh.js": 442,
-		"./tr": 443,
-		"./tr.js": 443,
-		"./tzl": 444,
-		"./tzl.js": 444,
-		"./tzm": 445,
-		"./tzm-latn": 446,
-		"./tzm-latn.js": 446,
-		"./tzm.js": 445,
-		"./uk": 447,
-		"./uk.js": 447,
-		"./uz": 448,
-		"./uz.js": 448,
-		"./vi": 449,
-		"./vi.js": 449,
-		"./x-pseudo": 450,
-		"./x-pseudo.js": 450,
-		"./yo": 451,
-		"./yo.js": 451,
-		"./zh-cn": 452,
-		"./zh-cn.js": 452,
-		"./zh-hk": 453,
-		"./zh-hk.js": 453,
-		"./zh-tw": 454,
-		"./zh-tw.js": 454
+		"./af": 358,
+		"./af.js": 358,
+		"./ar": 359,
+		"./ar-dz": 360,
+		"./ar-dz.js": 360,
+		"./ar-kw": 361,
+		"./ar-kw.js": 361,
+		"./ar-ly": 362,
+		"./ar-ly.js": 362,
+		"./ar-ma": 363,
+		"./ar-ma.js": 363,
+		"./ar-sa": 364,
+		"./ar-sa.js": 364,
+		"./ar-tn": 365,
+		"./ar-tn.js": 365,
+		"./ar.js": 359,
+		"./az": 366,
+		"./az.js": 366,
+		"./be": 367,
+		"./be.js": 367,
+		"./bg": 368,
+		"./bg.js": 368,
+		"./bm": 369,
+		"./bm.js": 369,
+		"./bn": 370,
+		"./bn.js": 370,
+		"./bo": 371,
+		"./bo.js": 371,
+		"./br": 372,
+		"./br.js": 372,
+		"./bs": 373,
+		"./bs.js": 373,
+		"./ca": 374,
+		"./ca.js": 374,
+		"./cs": 375,
+		"./cs.js": 375,
+		"./cv": 376,
+		"./cv.js": 376,
+		"./cy": 377,
+		"./cy.js": 377,
+		"./da": 378,
+		"./da.js": 378,
+		"./de": 379,
+		"./de-at": 380,
+		"./de-at.js": 380,
+		"./de-ch": 381,
+		"./de-ch.js": 381,
+		"./de.js": 379,
+		"./dv": 382,
+		"./dv.js": 382,
+		"./el": 383,
+		"./el.js": 383,
+		"./en-au": 384,
+		"./en-au.js": 384,
+		"./en-ca": 385,
+		"./en-ca.js": 385,
+		"./en-gb": 386,
+		"./en-gb.js": 386,
+		"./en-ie": 387,
+		"./en-ie.js": 387,
+		"./en-nz": 388,
+		"./en-nz.js": 388,
+		"./eo": 389,
+		"./eo.js": 389,
+		"./es": 390,
+		"./es-do": 391,
+		"./es-do.js": 391,
+		"./es-us": 392,
+		"./es-us.js": 392,
+		"./es.js": 390,
+		"./et": 393,
+		"./et.js": 393,
+		"./eu": 394,
+		"./eu.js": 394,
+		"./fa": 395,
+		"./fa.js": 395,
+		"./fi": 396,
+		"./fi.js": 396,
+		"./fo": 397,
+		"./fo.js": 397,
+		"./fr": 398,
+		"./fr-ca": 399,
+		"./fr-ca.js": 399,
+		"./fr-ch": 400,
+		"./fr-ch.js": 400,
+		"./fr.js": 398,
+		"./fy": 401,
+		"./fy.js": 401,
+		"./gd": 402,
+		"./gd.js": 402,
+		"./gl": 403,
+		"./gl.js": 403,
+		"./gom-latn": 404,
+		"./gom-latn.js": 404,
+		"./gu": 405,
+		"./gu.js": 405,
+		"./he": 406,
+		"./he.js": 406,
+		"./hi": 407,
+		"./hi.js": 407,
+		"./hr": 408,
+		"./hr.js": 408,
+		"./hu": 409,
+		"./hu.js": 409,
+		"./hy-am": 410,
+		"./hy-am.js": 410,
+		"./id": 411,
+		"./id.js": 411,
+		"./is": 412,
+		"./is.js": 412,
+		"./it": 413,
+		"./it.js": 413,
+		"./ja": 414,
+		"./ja.js": 414,
+		"./jv": 415,
+		"./jv.js": 415,
+		"./ka": 416,
+		"./ka.js": 416,
+		"./kk": 417,
+		"./kk.js": 417,
+		"./km": 418,
+		"./km.js": 418,
+		"./kn": 419,
+		"./kn.js": 419,
+		"./ko": 420,
+		"./ko.js": 420,
+		"./ky": 421,
+		"./ky.js": 421,
+		"./lb": 422,
+		"./lb.js": 422,
+		"./lo": 423,
+		"./lo.js": 423,
+		"./lt": 424,
+		"./lt.js": 424,
+		"./lv": 425,
+		"./lv.js": 425,
+		"./me": 426,
+		"./me.js": 426,
+		"./mi": 427,
+		"./mi.js": 427,
+		"./mk": 428,
+		"./mk.js": 428,
+		"./ml": 429,
+		"./ml.js": 429,
+		"./mr": 430,
+		"./mr.js": 430,
+		"./ms": 431,
+		"./ms-my": 432,
+		"./ms-my.js": 432,
+		"./ms.js": 431,
+		"./mt": 433,
+		"./mt.js": 433,
+		"./my": 434,
+		"./my.js": 434,
+		"./nb": 435,
+		"./nb.js": 435,
+		"./ne": 436,
+		"./ne.js": 436,
+		"./nl": 437,
+		"./nl-be": 438,
+		"./nl-be.js": 438,
+		"./nl.js": 437,
+		"./nn": 439,
+		"./nn.js": 439,
+		"./pa-in": 440,
+		"./pa-in.js": 440,
+		"./pl": 441,
+		"./pl.js": 441,
+		"./pt": 442,
+		"./pt-br": 443,
+		"./pt-br.js": 443,
+		"./pt.js": 442,
+		"./ro": 444,
+		"./ro.js": 444,
+		"./ru": 445,
+		"./ru.js": 445,
+		"./sd": 446,
+		"./sd.js": 446,
+		"./se": 447,
+		"./se.js": 447,
+		"./si": 448,
+		"./si.js": 448,
+		"./sk": 449,
+		"./sk.js": 449,
+		"./sl": 450,
+		"./sl.js": 450,
+		"./sq": 451,
+		"./sq.js": 451,
+		"./sr": 452,
+		"./sr-cyrl": 453,
+		"./sr-cyrl.js": 453,
+		"./sr.js": 452,
+		"./ss": 454,
+		"./ss.js": 454,
+		"./sv": 455,
+		"./sv.js": 455,
+		"./sw": 456,
+		"./sw.js": 456,
+		"./ta": 457,
+		"./ta.js": 457,
+		"./te": 458,
+		"./te.js": 458,
+		"./tet": 459,
+		"./tet.js": 459,
+		"./th": 460,
+		"./th.js": 460,
+		"./tl-ph": 461,
+		"./tl-ph.js": 461,
+		"./tlh": 462,
+		"./tlh.js": 462,
+		"./tr": 463,
+		"./tr.js": 463,
+		"./tzl": 464,
+		"./tzl.js": 464,
+		"./tzm": 465,
+		"./tzm-latn": 466,
+		"./tzm-latn.js": 466,
+		"./tzm.js": 465,
+		"./uk": 467,
+		"./uk.js": 467,
+		"./ur": 468,
+		"./ur.js": 468,
+		"./uz": 469,
+		"./uz-latn": 470,
+		"./uz-latn.js": 470,
+		"./uz.js": 469,
+		"./vi": 471,
+		"./vi.js": 471,
+		"./x-pseudo": 472,
+		"./x-pseudo.js": 472,
+		"./yo": 473,
+		"./yo.js": 473,
+		"./zh-cn": 474,
+		"./zh-cn.js": 474,
+		"./zh-hk": 475,
+		"./zh-hk.js": 475,
+		"./zh-tw": 476,
+		"./zh-tw.js": 476
 	};
 	function webpackContext(req) {
 		return __webpack_require__(webpackContextResolve(req));
@@ -42659,19 +44415,19 @@
 	};
 	webpackContext.resolve = webpackContextResolve;
 	module.exports = webpackContext;
-	webpackContext.id = 345;
+	webpackContext.id = 357;
 
 
-/***/ },
-/* 346 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 358 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Afrikaans [af]
 	//! author : Werner Mollentze : https://github.com/wernerm
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -42714,6 +44470,7 @@
 	        future : 'oor %s',
 	        past : '%s gelede',
 	        s : '\'n paar sekondes',
+	        ss : '%d sekondes',
 	        m : '\'n minuut',
 	        mm : '%d minute',
 	        h : '\'n uur',
@@ -42725,7 +44482,7 @@
 	        y : '\'n jaar',
 	        yy : '%d jaar'
 	    },
-	    ordinalParse: /\d{1,2}(ste|de)/,
+	    dayOfMonthOrdinalParse: /\d{1,2}(ste|de)/,
 	    ordinal : function (number) {
 	        return number + ((number === 1 || number === 8 || number >= 20) ? 'ste' : 'de'); // Thanks to Joris Röling : https://github.com/jjupiter
 	    },
@@ -42740,9 +44497,9 @@
 	})));
 
 
-/***/ },
-/* 347 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 359 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Arabic [ar]
@@ -42751,7 +44508,7 @@
 	//! author : forabi https://github.com/forabi
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -42803,18 +44560,18 @@
 	    };
 	};
 	var months = [
-	    'كانون الثاني يناير',
-	    'شباط فبراير',
-	    'آذار مارس',
-	    'نيسان أبريل',
-	    'أيار مايو',
-	    'حزيران يونيو',
-	    'تموز يوليو',
-	    'آب أغسطس',
-	    'أيلول سبتمبر',
-	    'تشرين الأول أكتوبر',
-	    'تشرين الثاني نوفمبر',
-	    'كانون الأول ديسمبر'
+	    'يناير',
+	    'فبراير',
+	    'مارس',
+	    'أبريل',
+	    'مايو',
+	    'يونيو',
+	    'يوليو',
+	    'أغسطس',
+	    'سبتمبر',
+	    'أكتوبر',
+	    'نوفمبر',
+	    'ديسمبر'
 	];
 
 	var ar = moment.defineLocale('ar', {
@@ -42855,6 +44612,7 @@
 	        future : 'بعد %s',
 	        past : 'منذ %s',
 	        s : pluralize('s'),
+	        ss : pluralize('s'),
 	        m : pluralize('m'),
 	        mm : pluralize('m'),
 	        h : pluralize('h'),
@@ -42867,7 +44625,7 @@
 	        yy : pluralize('y')
 	    },
 	    preparse: function (string) {
-	        return string.replace(/\u200f/g, '').replace(/[١٢٣٤٥٦٧٨٩٠]/g, function (match) {
+	        return string.replace(/[١٢٣٤٥٦٧٨٩٠]/g, function (match) {
 	            return numberMap[match];
 	        }).replace(/،/g, ',');
 	    },
@@ -42887,16 +44645,16 @@
 	})));
 
 
-/***/ },
-/* 348 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 360 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Arabic (Algeria) [ar-dz]
 	//! author : Noureddine LOUAHEDJ : https://github.com/noureddineme
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -42929,6 +44687,7 @@
 	        future : 'في %s',
 	        past : 'منذ %s',
 	        s : 'ثوان',
+	        ss : '%d ثانية',
 	        m : 'دقيقة',
 	        mm : '%d دقائق',
 	        h : 'ساعة',
@@ -42951,16 +44710,81 @@
 	})));
 
 
-/***/ },
-/* 349 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 361 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	//! moment.js locale configuration
+	//! locale : Arabic (Kuwait) [ar-kw]
+	//! author : Nusret Parlak: https://github.com/nusretparlak
+
+	;(function (global, factory) {
+	    true ? factory(__webpack_require__(355)) :
+	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
+	   factory(global.moment)
+	}(this, (function (moment) { 'use strict';
+
+
+	var arKw = moment.defineLocale('ar-kw', {
+	    months : 'يناير_فبراير_مارس_أبريل_ماي_يونيو_يوليوز_غشت_شتنبر_أكتوبر_نونبر_دجنبر'.split('_'),
+	    monthsShort : 'يناير_فبراير_مارس_أبريل_ماي_يونيو_يوليوز_غشت_شتنبر_أكتوبر_نونبر_دجنبر'.split('_'),
+	    weekdays : 'الأحد_الإتنين_الثلاثاء_الأربعاء_الخميس_الجمعة_السبت'.split('_'),
+	    weekdaysShort : 'احد_اتنين_ثلاثاء_اربعاء_خميس_جمعة_سبت'.split('_'),
+	    weekdaysMin : 'ح_ن_ث_ر_خ_ج_س'.split('_'),
+	    weekdaysParseExact : true,
+	    longDateFormat : {
+	        LT : 'HH:mm',
+	        LTS : 'HH:mm:ss',
+	        L : 'DD/MM/YYYY',
+	        LL : 'D MMMM YYYY',
+	        LLL : 'D MMMM YYYY HH:mm',
+	        LLLL : 'dddd D MMMM YYYY HH:mm'
+	    },
+	    calendar : {
+	        sameDay: '[اليوم على الساعة] LT',
+	        nextDay: '[غدا على الساعة] LT',
+	        nextWeek: 'dddd [على الساعة] LT',
+	        lastDay: '[أمس على الساعة] LT',
+	        lastWeek: 'dddd [على الساعة] LT',
+	        sameElse: 'L'
+	    },
+	    relativeTime : {
+	        future : 'في %s',
+	        past : 'منذ %s',
+	        s : 'ثوان',
+	        ss : '%d ثانية',
+	        m : 'دقيقة',
+	        mm : '%d دقائق',
+	        h : 'ساعة',
+	        hh : '%d ساعات',
+	        d : 'يوم',
+	        dd : '%d أيام',
+	        M : 'شهر',
+	        MM : '%d أشهر',
+	        y : 'سنة',
+	        yy : '%d سنوات'
+	    },
+	    week : {
+	        dow : 0, // Sunday is the first day of the week.
+	        doy : 12  // The week that contains Jan 1st is the first week of the year.
+	    }
+	});
+
+	return arKw;
+
+	})));
+
+
+/***/ }),
+/* 362 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Arabic (Lybia) [ar-ly]
 	//! author : Ali Hmer: https://github.com/kikoanis
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -43052,6 +44876,7 @@
 	        future : 'بعد %s',
 	        past : 'منذ %s',
 	        s : pluralize('s'),
+	        ss : pluralize('s'),
 	        m : pluralize('m'),
 	        mm : pluralize('m'),
 	        h : pluralize('h'),
@@ -43064,7 +44889,7 @@
 	        yy : pluralize('y')
 	    },
 	    preparse: function (string) {
-	        return string.replace(/\u200f/g, '').replace(/،/g, ',');
+	        return string.replace(/،/g, ',');
 	    },
 	    postformat: function (string) {
 	        return string.replace(/\d/g, function (match) {
@@ -43082,9 +44907,9 @@
 	})));
 
 
-/***/ },
-/* 350 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 363 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Arabic (Morocco) [ar-ma]
@@ -43092,7 +44917,7 @@
 	//! author : Abdel Said : https://github.com/abdelsaid
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -43125,6 +44950,7 @@
 	        future : 'في %s',
 	        past : 'منذ %s',
 	        s : 'ثوان',
+	        ss : '%d ثانية',
 	        m : 'دقيقة',
 	        mm : '%d دقائق',
 	        h : 'ساعة',
@@ -43147,16 +44973,16 @@
 	})));
 
 
-/***/ },
-/* 351 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 364 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Arabic (Saudi Arabia) [ar-sa]
 	//! author : Suhail Alkowaileet : https://github.com/xsoh
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -43225,6 +45051,7 @@
 	        future : 'في %s',
 	        past : 'منذ %s',
 	        s : 'ثوان',
+	        ss : '%d ثانية',
 	        m : 'دقيقة',
 	        mm : '%d دقائق',
 	        h : 'ساعة',
@@ -43257,16 +45084,16 @@
 	})));
 
 
-/***/ },
-/* 352 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 365 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale  :  Arabic (Tunisia) [ar-tn]
 	//! author : Nader Toukabri : https://github.com/naderio
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -43299,6 +45126,7 @@
 	        future: 'في %s',
 	        past: 'منذ %s',
 	        s: 'ثوان',
+	        ss : '%d ثانية',
 	        m: 'دقيقة',
 	        mm: '%d دقائق',
 	        h: 'ساعة',
@@ -43321,16 +45149,16 @@
 	})));
 
 
-/***/ },
-/* 353 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 366 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Azerbaijani [az]
 	//! author : topchiyev : https://github.com/topchiyev
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -43384,6 +45212,7 @@
 	        future : '%s sonra',
 	        past : '%s əvvəl',
 	        s : 'birneçə saniyyə',
+	        ss : '%d saniyə',
 	        m : 'bir dəqiqə',
 	        mm : '%d dəqiqə',
 	        h : 'bir saat',
@@ -43410,7 +45239,7 @@
 	            return 'axşam';
 	        }
 	    },
-	    ordinalParse: /\d{1,2}-(ıncı|inci|nci|üncü|ncı|uncu)/,
+	    dayOfMonthOrdinalParse: /\d{1,2}-(ıncı|inci|nci|üncü|ncı|uncu)/,
 	    ordinal : function (number) {
 	        if (number === 0) {  // special case for zero
 	            return number + '-ıncı';
@@ -43431,9 +45260,9 @@
 	})));
 
 
-/***/ },
-/* 354 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 367 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Belarusian [be]
@@ -43442,7 +45271,7 @@
 	//! Author : Menelion Elensúle : https://github.com/Oire
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -43454,6 +45283,7 @@
 	}
 	function relativeTimeWithPlural(number, withoutSuffix, key) {
 	    var format = {
+	        'ss': withoutSuffix ? 'секунда_секунды_секунд' : 'секунду_секунды_секунд',
 	        'mm': withoutSuffix ? 'хвіліна_хвіліны_хвілін' : 'хвіліну_хвіліны_хвілін',
 	        'hh': withoutSuffix ? 'гадзіна_гадзіны_гадзін' : 'гадзіну_гадзіны_гадзін',
 	        'dd': 'дзень_дні_дзён',
@@ -43544,7 +45374,7 @@
 	            return 'вечара';
 	        }
 	    },
-	    ordinalParse: /\d{1,2}-(і|ы|га)/,
+	    dayOfMonthOrdinalParse: /\d{1,2}-(і|ы|га)/,
 	    ordinal: function (number, period) {
 	        switch (period) {
 	            case 'M':
@@ -43570,16 +45400,16 @@
 	})));
 
 
-/***/ },
-/* 355 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 368 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Bulgarian [bg]
 	//! author : Krasen Borisov : https://github.com/kraz
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -43623,6 +45453,7 @@
 	        future : 'след %s',
 	        past : 'преди %s',
 	        s : 'няколко секунди',
+	        ss : '%d секунди',
 	        m : 'минута',
 	        mm : '%d минути',
 	        h : 'час',
@@ -43634,7 +45465,7 @@
 	        y : 'година',
 	        yy : '%d години'
 	    },
-	    ordinalParse: /\d{1,2}-(ев|ен|ти|ви|ри|ми)/,
+	    dayOfMonthOrdinalParse: /\d{1,2}-(ев|ен|ти|ви|ри|ми)/,
 	    ordinal : function (number) {
 	        var lastDigit = number % 10,
 	            last2Digits = number % 100;
@@ -43665,36 +45496,81 @@
 	})));
 
 
-/***/ },
-/* 356 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 369 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	
+	//! moment.js locale configuration
+	//! locale : Bambara [bm]
+	//! author : Estelle Comment : https://github.com/estellecomment
+
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
 
-	var bgX = moment.defineLocale('bg-x', {
-	    parentLocale: 'bg'
+	// Language contact person : Abdoufata Kane : https://github.com/abdoufata
+
+	var bm = moment.defineLocale('bm', {
+	    months : 'Zanwuyekalo_Fewuruyekalo_Marisikalo_Awirilikalo_Mɛkalo_Zuwɛnkalo_Zuluyekalo_Utikalo_Sɛtanburukalo_ɔkutɔburukalo_Nowanburukalo_Desanburukalo'.split('_'),
+	    monthsShort : 'Zan_Few_Mar_Awi_Mɛ_Zuw_Zul_Uti_Sɛt_ɔku_Now_Des'.split('_'),
+	    weekdays : 'Kari_Ntɛnɛn_Tarata_Araba_Alamisa_Juma_Sibiri'.split('_'),
+	    weekdaysShort : 'Kar_Ntɛ_Tar_Ara_Ala_Jum_Sib'.split('_'),
+	    weekdaysMin : 'Ka_Nt_Ta_Ar_Al_Ju_Si'.split('_'),
+	    longDateFormat : {
+	        LT : 'HH:mm',
+	        LTS : 'HH:mm:ss',
+	        L : 'DD/MM/YYYY',
+	        LL : 'MMMM [tile] D [san] YYYY',
+	        LLL : 'MMMM [tile] D [san] YYYY [lɛrɛ] HH:mm',
+	        LLLL : 'dddd MMMM [tile] D [san] YYYY [lɛrɛ] HH:mm'
+	    },
+	    calendar : {
+	        sameDay : '[Bi lɛrɛ] LT',
+	        nextDay : '[Sini lɛrɛ] LT',
+	        nextWeek : 'dddd [don lɛrɛ] LT',
+	        lastDay : '[Kunu lɛrɛ] LT',
+	        lastWeek : 'dddd [tɛmɛnen lɛrɛ] LT',
+	        sameElse : 'L'
+	    },
+	    relativeTime : {
+	        future : '%s kɔnɔ',
+	        past : 'a bɛ %s bɔ',
+	        s : 'sanga dama dama',
+	        ss : 'sekondi %d',
+	        m : 'miniti kelen',
+	        mm : 'miniti %d',
+	        h : 'lɛrɛ kelen',
+	        hh : 'lɛrɛ %d',
+	        d : 'tile kelen',
+	        dd : 'tile %d',
+	        M : 'kalo kelen',
+	        MM : 'kalo %d',
+	        y : 'san kelen',
+	        yy : 'san %d'
+	    },
+	    week : {
+	        dow : 1, // Monday is the first day of the week.
+	        doy : 4  // The week that contains Jan 4th is the first week of the year.
+	    }
 	});
 
-	return bgX;
+	return bm;
 
 	})));
 
 
-/***/ },
-/* 357 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 370 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Bengali [bn]
 	//! author : Kaushik Gandhi : https://github.com/kaushikgandhi
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -43751,6 +45627,7 @@
 	        future : '%s পরে',
 	        past : '%s আগে',
 	        s : 'কয়েক সেকেন্ড',
+	        ss : '%d সেকেন্ড',
 	        m : 'এক মিনিট',
 	        mm : '%d মিনিট',
 	        h : 'এক ঘন্টা',
@@ -43809,16 +45686,16 @@
 	})));
 
 
-/***/ },
-/* 358 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 371 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Tibetan [bo]
 	//! author : Thupten N. Chakrishar : https://github.com/vajradog
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -43875,6 +45752,7 @@
 	        future : '%s ལ་',
 	        past : '%s སྔན་ལ',
 	        s : 'ལམ་སང',
+	        ss : '%d སྐར་ཆ།',
 	        m : 'སྐར་མ་གཅིག',
 	        mm : '%d སྐར་མ',
 	        h : 'ཆུ་ཚོད་གཅིག',
@@ -43933,16 +45811,16 @@
 	})));
 
 
-/***/ },
-/* 359 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 372 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Breton [br]
 	//! author : Jean-Baptiste Le Duigou : https://github.com/jbleduigou
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -44019,6 +45897,7 @@
 	        future : 'a-benn %s',
 	        past : '%s \'zo',
 	        s : 'un nebeud segondennoù',
+	        ss : '%d eilenn',
 	        m : 'ur vunutenn',
 	        mm : relativeTimeWithMutation,
 	        h : 'un eur',
@@ -44030,7 +45909,7 @@
 	        y : 'ur bloaz',
 	        yy : specialMutationForYears
 	    },
-	    ordinalParse: /\d{1,2}(añ|vet)/,
+	    dayOfMonthOrdinalParse: /\d{1,2}(añ|vet)/,
 	    ordinal : function (number) {
 	        var output = (number === 1) ? 'añ' : 'vet';
 	        return number + output;
@@ -44046,9 +45925,9 @@
 	})));
 
 
-/***/ },
-/* 360 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 373 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Bosnian [bs]
@@ -44056,7 +45935,7 @@
 	//! based on (hr) translation by Bojan Marković
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -44065,6 +45944,15 @@
 	function translate(number, withoutSuffix, key) {
 	    var result = number + ' ';
 	    switch (key) {
+	        case 'ss':
+	            if (number === 1) {
+	                result += 'sekunda';
+	            } else if (number === 2 || number === 3 || number === 4) {
+	                result += 'sekunde';
+	            } else {
+	                result += 'sekundi';
+	            }
+	            return result;
 	        case 'm':
 	            return withoutSuffix ? 'jedna minuta' : 'jedne minute';
 	        case 'mm':
@@ -44170,6 +46058,7 @@
 	        future : 'za %s',
 	        past   : 'prije %s',
 	        s      : 'par sekundi',
+	        ss     : translate,
 	        m      : translate,
 	        mm     : translate,
 	        h      : translate,
@@ -44181,7 +46070,7 @@
 	        y      : 'godinu',
 	        yy     : translate
 	    },
-	    ordinalParse: /\d{1,2}\./,
+	    dayOfMonthOrdinalParse: /\d{1,2}\./,
 	    ordinal : '%d.',
 	    week : {
 	        dow : 1, // Monday is the first day of the week.
@@ -44194,36 +46083,43 @@
 	})));
 
 
-/***/ },
-/* 361 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 374 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Catalan [ca]
 	//! author : Juan G. Hurtado : https://github.com/juanghurtado
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
 
 
 	var ca = moment.defineLocale('ca', {
-	    months : 'gener_febrer_març_abril_maig_juny_juliol_agost_setembre_octubre_novembre_desembre'.split('_'),
-	    monthsShort : 'gen._febr._mar._abr._mai._jun._jul._ag._set._oct._nov._des.'.split('_'),
+	    months : {
+	        standalone: 'gener_febrer_març_abril_maig_juny_juliol_agost_setembre_octubre_novembre_desembre'.split('_'),
+	        format: 'de gener_de febrer_de març_d\'abril_de maig_de juny_de juliol_d\'agost_de setembre_d\'octubre_de novembre_de desembre'.split('_'),
+	        isFormat: /D[oD]?(\s)+MMMM/
+	    },
+	    monthsShort : 'gen._febr._març_abr._maig_juny_jul._ag._set._oct._nov._des.'.split('_'),
 	    monthsParseExact : true,
 	    weekdays : 'diumenge_dilluns_dimarts_dimecres_dijous_divendres_dissabte'.split('_'),
 	    weekdaysShort : 'dg._dl._dt._dc._dj._dv._ds.'.split('_'),
-	    weekdaysMin : 'Dg_Dl_Dt_Dc_Dj_Dv_Ds'.split('_'),
+	    weekdaysMin : 'dg_dl_dt_dc_dj_dv_ds'.split('_'),
 	    weekdaysParseExact : true,
 	    longDateFormat : {
 	        LT : 'H:mm',
 	        LTS : 'H:mm:ss',
 	        L : 'DD/MM/YYYY',
-	        LL : 'D MMMM YYYY',
-	        LLL : 'D MMMM YYYY H:mm',
-	        LLLL : 'dddd D MMMM YYYY H:mm'
+	        LL : 'D MMMM [de] YYYY',
+	        ll : 'D MMM YYYY',
+	        LLL : 'D MMMM [de] YYYY [a les] H:mm',
+	        lll : 'D MMM YYYY, H:mm',
+	        LLLL : 'dddd D MMMM [de] YYYY [a les] H:mm',
+	        llll : 'ddd D MMM YYYY, H:mm'
 	    },
 	    calendar : {
 	        sameDay : function () {
@@ -44247,6 +46143,7 @@
 	        future : 'd\'aquí %s',
 	        past : 'fa %s',
 	        s : 'uns segons',
+	        ss : '%d segons',
 	        m : 'un minut',
 	        mm : '%d minuts',
 	        h : 'una hora',
@@ -44258,7 +46155,7 @@
 	        y : 'un any',
 	        yy : '%d anys'
 	    },
-	    ordinalParse: /\d{1,2}(r|n|t|è|a)/,
+	    dayOfMonthOrdinalParse: /\d{1,2}(r|n|t|è|a)/,
 	    ordinal : function (number, period) {
 	        var output = (number === 1) ? 'r' :
 	            (number === 2) ? 'n' :
@@ -44280,16 +46177,16 @@
 	})));
 
 
-/***/ },
-/* 362 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 375 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Czech [cs]
 	//! author : petrbela : https://github.com/petrbela
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -44305,6 +46202,13 @@
 	    switch (key) {
 	        case 's':  // a few seconds / in a few seconds / a few seconds ago
 	            return (withoutSuffix || isFuture) ? 'pár sekund' : 'pár sekundami';
+	        case 'ss': // 9 seconds / in 9 seconds / 9 seconds ago
+	            if (withoutSuffix || isFuture) {
+	                return result + (plural(number) ? 'sekundy' : 'sekund');
+	            } else {
+	                return result + 'sekundami';
+	            }
+	            break;
 	        case 'm':  // a minute / in a minute / a minute ago
 	            return withoutSuffix ? 'minuta' : (isFuture ? 'minutu' : 'minutou');
 	        case 'mm': // 9 minutes / in 9 minutes / 9 minutes ago
@@ -44433,6 +46337,7 @@
 	        future : 'za %s',
 	        past : 'před %s',
 	        s : translate,
+	        ss : translate,
 	        m : translate,
 	        mm : translate,
 	        h : translate,
@@ -44444,7 +46349,7 @@
 	        y : translate,
 	        yy : translate
 	    },
-	    ordinalParse : /\d{1,2}\./,
+	    dayOfMonthOrdinalParse : /\d{1,2}\./,
 	    ordinal : '%d.',
 	    week : {
 	        dow : 1, // Monday is the first day of the week.
@@ -44457,16 +46362,16 @@
 	})));
 
 
-/***/ },
-/* 363 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 376 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Chuvash [cv]
 	//! author : Anatoly Mironov : https://github.com/mirontoli
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -44501,6 +46406,7 @@
 	        },
 	        past : '%s каялла',
 	        s : 'пӗр-ик ҫеккунт',
+	        ss : '%d ҫеккунт',
 	        m : 'пӗр минут',
 	        mm : '%d минут',
 	        h : 'пӗр сехет',
@@ -44512,7 +46418,7 @@
 	        y : 'пӗр ҫул',
 	        yy : '%d ҫул'
 	    },
-	    ordinalParse: /\d{1,2}-мӗш/,
+	    dayOfMonthOrdinalParse: /\d{1,2}-мӗш/,
 	    ordinal : '%d-мӗш',
 	    week : {
 	        dow : 1, // Monday is the first day of the week.
@@ -44525,9 +46431,9 @@
 	})));
 
 
-/***/ },
-/* 364 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 377 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Welsh [cy]
@@ -44535,7 +46441,7 @@
 	//! author : https://github.com/ryangreaves
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -44569,6 +46475,7 @@
 	        future: 'mewn %s',
 	        past: '%s yn ôl',
 	        s: 'ychydig eiliadau',
+	        ss: '%d eiliad',
 	        m: 'munud',
 	        mm: '%d munud',
 	        h: 'awr',
@@ -44580,7 +46487,7 @@
 	        y: 'blwyddyn',
 	        yy: '%d flynedd'
 	    },
-	    ordinalParse: /\d{1,2}(fed|ain|af|il|ydd|ed|eg)/,
+	    dayOfMonthOrdinalParse: /\d{1,2}(fed|ain|af|il|ydd|ed|eg)/,
 	    // traditional ordinal numbers above 31 are not commonly used in colloquial Welsh
 	    ordinal: function (number) {
 	        var b = number,
@@ -44611,16 +46518,16 @@
 	})));
 
 
-/***/ },
-/* 365 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 378 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Danish [da]
 	//! author : Ulrik Nielsen : https://github.com/mrbase
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -44635,23 +46542,24 @@
 	    longDateFormat : {
 	        LT : 'HH:mm',
 	        LTS : 'HH:mm:ss',
-	        L : 'DD/MM/YYYY',
+	        L : 'DD.MM.YYYY',
 	        LL : 'D. MMMM YYYY',
 	        LLL : 'D. MMMM YYYY HH:mm',
-	        LLLL : 'dddd [d.] D. MMMM YYYY HH:mm'
+	        LLLL : 'dddd [d.] D. MMMM YYYY [kl.] HH:mm'
 	    },
 	    calendar : {
-	        sameDay : '[I dag kl.] LT',
-	        nextDay : '[I morgen kl.] LT',
-	        nextWeek : 'dddd [kl.] LT',
-	        lastDay : '[I går kl.] LT',
-	        lastWeek : '[sidste] dddd [kl] LT',
+	        sameDay : '[i dag kl.] LT',
+	        nextDay : '[i morgen kl.] LT',
+	        nextWeek : 'på dddd [kl.] LT',
+	        lastDay : '[i går kl.] LT',
+	        lastWeek : '[i] dddd[s kl.] LT',
 	        sameElse : 'L'
 	    },
 	    relativeTime : {
 	        future : 'om %s',
 	        past : '%s siden',
 	        s : 'få sekunder',
+	        ss : '%d sekunder',
 	        m : 'et minut',
 	        mm : '%d minutter',
 	        h : 'en time',
@@ -44663,7 +46571,7 @@
 	        y : 'et år',
 	        yy : '%d år'
 	    },
-	    ordinalParse: /\d{1,2}\./,
+	    dayOfMonthOrdinalParse: /\d{1,2}\./,
 	    ordinal : '%d.',
 	    week : {
 	        dow : 1, // Monday is the first day of the week.
@@ -44676,9 +46584,9 @@
 	})));
 
 
-/***/ },
-/* 366 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 379 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : German [de]
@@ -44687,7 +46595,7 @@
 	//! author : Mikolaj Dadela : https://github.com/mik01aj
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -44709,7 +46617,7 @@
 
 	var de = moment.defineLocale('de', {
 	    months : 'Januar_Februar_März_April_Mai_Juni_Juli_August_September_Oktober_November_Dezember'.split('_'),
-	    monthsShort : 'Jan._Febr._Mrz._Apr._Mai_Jun._Jul._Aug._Sept._Okt._Nov._Dez.'.split('_'),
+	    monthsShort : 'Jan._Feb._März_Apr._Mai_Juni_Juli_Aug._Sep._Okt._Nov._Dez.'.split('_'),
 	    monthsParseExact : true,
 	    weekdays : 'Sonntag_Montag_Dienstag_Mittwoch_Donnerstag_Freitag_Samstag'.split('_'),
 	    weekdaysShort : 'So._Mo._Di._Mi._Do._Fr._Sa.'.split('_'),
@@ -44735,6 +46643,7 @@
 	        future : 'in %s',
 	        past : 'vor %s',
 	        s : 'ein paar Sekunden',
+	        ss : '%d Sekunden',
 	        m : processRelativeTime,
 	        mm : '%d Minuten',
 	        h : processRelativeTime,
@@ -44746,7 +46655,7 @@
 	        y : processRelativeTime,
 	        yy : processRelativeTime
 	    },
-	    ordinalParse: /\d{1,2}\./,
+	    dayOfMonthOrdinalParse: /\d{1,2}\./,
 	    ordinal : '%d.',
 	    week : {
 	        dow : 1, // Monday is the first day of the week.
@@ -44759,9 +46668,9 @@
 	})));
 
 
-/***/ },
-/* 367 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 380 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : German (Austria) [de-at]
@@ -44771,7 +46680,7 @@
 	//! author : Mikolaj Dadela : https://github.com/mik01aj
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -44793,7 +46702,7 @@
 
 	var deAt = moment.defineLocale('de-at', {
 	    months : 'Jänner_Februar_März_April_Mai_Juni_Juli_August_September_Oktober_November_Dezember'.split('_'),
-	    monthsShort : 'Jän._Febr._Mrz._Apr._Mai_Jun._Jul._Aug._Sept._Okt._Nov._Dez.'.split('_'),
+	    monthsShort : 'Jän._Feb._März_Apr._Mai_Juni_Juli_Aug._Sep._Okt._Nov._Dez.'.split('_'),
 	    monthsParseExact : true,
 	    weekdays : 'Sonntag_Montag_Dienstag_Mittwoch_Donnerstag_Freitag_Samstag'.split('_'),
 	    weekdaysShort : 'So._Mo._Di._Mi._Do._Fr._Sa.'.split('_'),
@@ -44819,6 +46728,7 @@
 	        future : 'in %s',
 	        past : 'vor %s',
 	        s : 'ein paar Sekunden',
+	        ss : '%d Sekunden',
 	        m : processRelativeTime,
 	        mm : '%d Minuten',
 	        h : processRelativeTime,
@@ -44830,7 +46740,7 @@
 	        y : processRelativeTime,
 	        yy : processRelativeTime
 	    },
-	    ordinalParse: /\d{1,2}\./,
+	    dayOfMonthOrdinalParse: /\d{1,2}\./,
 	    ordinal : '%d.',
 	    week : {
 	        dow : 1, // Monday is the first day of the week.
@@ -44843,16 +46753,100 @@
 	})));
 
 
-/***/ },
-/* 368 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 381 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	//! moment.js locale configuration
+	//! locale : German (Switzerland) [de-ch]
+	//! author : sschueller : https://github.com/sschueller
+
+	;(function (global, factory) {
+	    true ? factory(__webpack_require__(355)) :
+	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
+	   factory(global.moment)
+	}(this, (function (moment) { 'use strict';
+
+
+	// based on: https://www.bk.admin.ch/dokumentation/sprachen/04915/05016/index.html?lang=de#
+
+	function processRelativeTime(number, withoutSuffix, key, isFuture) {
+	    var format = {
+	        'm': ['eine Minute', 'einer Minute'],
+	        'h': ['eine Stunde', 'einer Stunde'],
+	        'd': ['ein Tag', 'einem Tag'],
+	        'dd': [number + ' Tage', number + ' Tagen'],
+	        'M': ['ein Monat', 'einem Monat'],
+	        'MM': [number + ' Monate', number + ' Monaten'],
+	        'y': ['ein Jahr', 'einem Jahr'],
+	        'yy': [number + ' Jahre', number + ' Jahren']
+	    };
+	    return withoutSuffix ? format[key][0] : format[key][1];
+	}
+
+	var deCh = moment.defineLocale('de-ch', {
+	    months : 'Januar_Februar_März_April_Mai_Juni_Juli_August_September_Oktober_November_Dezember'.split('_'),
+	    monthsShort : 'Jan._Feb._März_Apr._Mai_Juni_Juli_Aug._Sep._Okt._Nov._Dez.'.split('_'),
+	    monthsParseExact : true,
+	    weekdays : 'Sonntag_Montag_Dienstag_Mittwoch_Donnerstag_Freitag_Samstag'.split('_'),
+	    weekdaysShort : 'So_Mo_Di_Mi_Do_Fr_Sa'.split('_'),
+	    weekdaysMin : 'So_Mo_Di_Mi_Do_Fr_Sa'.split('_'),
+	    weekdaysParseExact : true,
+	    longDateFormat : {
+	        LT: 'HH:mm',
+	        LTS: 'HH:mm:ss',
+	        L : 'DD.MM.YYYY',
+	        LL : 'D. MMMM YYYY',
+	        LLL : 'D. MMMM YYYY HH:mm',
+	        LLLL : 'dddd, D. MMMM YYYY HH:mm'
+	    },
+	    calendar : {
+	        sameDay: '[heute um] LT [Uhr]',
+	        sameElse: 'L',
+	        nextDay: '[morgen um] LT [Uhr]',
+	        nextWeek: 'dddd [um] LT [Uhr]',
+	        lastDay: '[gestern um] LT [Uhr]',
+	        lastWeek: '[letzten] dddd [um] LT [Uhr]'
+	    },
+	    relativeTime : {
+	        future : 'in %s',
+	        past : 'vor %s',
+	        s : 'ein paar Sekunden',
+	        ss : '%d Sekunden',
+	        m : processRelativeTime,
+	        mm : '%d Minuten',
+	        h : processRelativeTime,
+	        hh : '%d Stunden',
+	        d : processRelativeTime,
+	        dd : processRelativeTime,
+	        M : processRelativeTime,
+	        MM : processRelativeTime,
+	        y : processRelativeTime,
+	        yy : processRelativeTime
+	    },
+	    dayOfMonthOrdinalParse: /\d{1,2}\./,
+	    ordinal : '%d.',
+	    week : {
+	        dow : 1, // Monday is the first day of the week.
+	        doy : 4  // The week that contains Jan 4th is the first week of the year.
+	    }
+	});
+
+	return deCh;
+
+	})));
+
+
+/***/ }),
+/* 382 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Maldivian [dv]
 	//! author : Jawish Hameed : https://github.com/jawish
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -44920,6 +46914,7 @@
 	        future : 'ތެރޭގައި %s',
 	        past : 'ކުރިން %s',
 	        s : 'ސިކުންތުކޮޅެއް',
+	        ss : 'd% ސިކުންތު',
 	        m : 'މިނިޓެއް',
 	        mm : 'މިނިޓު %d',
 	        h : 'ގަޑިއިރެއް',
@@ -44948,16 +46943,16 @@
 	})));
 
 
-/***/ },
-/* 369 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 383 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Greek [el]
 	//! author : Aggelos Karalias : https://github.com/mehiel
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -44971,7 +46966,9 @@
 	    monthsNominativeEl : 'Ιανουάριος_Φεβρουάριος_Μάρτιος_Απρίλιος_Μάιος_Ιούνιος_Ιούλιος_Αύγουστος_Σεπτέμβριος_Οκτώβριος_Νοέμβριος_Δεκέμβριος'.split('_'),
 	    monthsGenitiveEl : 'Ιανουαρίου_Φεβρουαρίου_Μαρτίου_Απριλίου_Μαΐου_Ιουνίου_Ιουλίου_Αυγούστου_Σεπτεμβρίου_Οκτωβρίου_Νοεμβρίου_Δεκεμβρίου'.split('_'),
 	    months : function (momentToFormat, format) {
-	        if (/D/.test(format.substring(0, format.indexOf('MMMM')))) { // if there is a day number before 'MMMM'
+	        if (!momentToFormat) {
+	            return this._monthsNominativeEl;
+	        } else if (typeof format === 'string' && /D/.test(format.substring(0, format.indexOf('MMMM')))) { // if there is a day number before 'MMMM'
 	            return this._monthsGenitiveEl[momentToFormat.month()];
 	        } else {
 	            return this._monthsNominativeEl[momentToFormat.month()];
@@ -45027,6 +47024,7 @@
 	        future : 'σε %s',
 	        past : '%s πριν',
 	        s : 'λίγα δευτερόλεπτα',
+	        ss : '%d δευτερόλεπτα',
 	        m : 'ένα λεπτό',
 	        mm : '%d λεπτά',
 	        h : 'μία ώρα',
@@ -45038,7 +47036,7 @@
 	        y : 'ένας χρόνος',
 	        yy : '%d χρόνια'
 	    },
-	    ordinalParse: /\d{1,2}η/,
+	    dayOfMonthOrdinalParse: /\d{1,2}η/,
 	    ordinal: '%dη',
 	    week : {
 	        dow : 1, // Monday is the first day of the week.
@@ -45051,16 +47049,16 @@
 	})));
 
 
-/***/ },
-/* 370 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 384 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : English (Australia) [en-au]
 	//! author : Jared Morse : https://github.com/jarcoal
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -45092,6 +47090,7 @@
 	        future : 'in %s',
 	        past : '%s ago',
 	        s : 'a few seconds',
+	        ss : '%d seconds',
 	        m : 'a minute',
 	        mm : '%d minutes',
 	        h : 'an hour',
@@ -45103,7 +47102,7 @@
 	        y : 'a year',
 	        yy : '%d years'
 	    },
-	    ordinalParse: /\d{1,2}(st|nd|rd|th)/,
+	    dayOfMonthOrdinalParse: /\d{1,2}(st|nd|rd|th)/,
 	    ordinal : function (number) {
 	        var b = number % 10,
 	            output = (~~(number % 100 / 10) === 1) ? 'th' :
@@ -45123,16 +47122,16 @@
 	})));
 
 
-/***/ },
-/* 371 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 385 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : English (Canada) [en-ca]
 	//! author : Jonathan Abourbih : https://github.com/jonbca
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -45164,6 +47163,7 @@
 	        future : 'in %s',
 	        past : '%s ago',
 	        s : 'a few seconds',
+	        ss : '%d seconds',
 	        m : 'a minute',
 	        mm : '%d minutes',
 	        h : 'an hour',
@@ -45175,7 +47175,7 @@
 	        y : 'a year',
 	        yy : '%d years'
 	    },
-	    ordinalParse: /\d{1,2}(st|nd|rd|th)/,
+	    dayOfMonthOrdinalParse: /\d{1,2}(st|nd|rd|th)/,
 	    ordinal : function (number) {
 	        var b = number % 10,
 	            output = (~~(number % 100 / 10) === 1) ? 'th' :
@@ -45191,16 +47191,16 @@
 	})));
 
 
-/***/ },
-/* 372 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 386 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : English (United Kingdom) [en-gb]
 	//! author : Chris Gedrim : https://github.com/chrisgedrim
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -45232,6 +47232,7 @@
 	        future : 'in %s',
 	        past : '%s ago',
 	        s : 'a few seconds',
+	        ss : '%d seconds',
 	        m : 'a minute',
 	        mm : '%d minutes',
 	        h : 'an hour',
@@ -45243,7 +47244,7 @@
 	        y : 'a year',
 	        yy : '%d years'
 	    },
-	    ordinalParse: /\d{1,2}(st|nd|rd|th)/,
+	    dayOfMonthOrdinalParse: /\d{1,2}(st|nd|rd|th)/,
 	    ordinal : function (number) {
 	        var b = number % 10,
 	            output = (~~(number % 100 / 10) === 1) ? 'th' :
@@ -45263,16 +47264,16 @@
 	})));
 
 
-/***/ },
-/* 373 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 387 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : English (Ireland) [en-ie]
 	//! author : Chris Cartlidge : https://github.com/chriscartlidge
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -45304,6 +47305,7 @@
 	        future : 'in %s',
 	        past : '%s ago',
 	        s : 'a few seconds',
+	        ss : '%d seconds',
 	        m : 'a minute',
 	        mm : '%d minutes',
 	        h : 'an hour',
@@ -45315,7 +47317,7 @@
 	        y : 'a year',
 	        yy : '%d years'
 	    },
-	    ordinalParse: /\d{1,2}(st|nd|rd|th)/,
+	    dayOfMonthOrdinalParse: /\d{1,2}(st|nd|rd|th)/,
 	    ordinal : function (number) {
 	        var b = number % 10,
 	            output = (~~(number % 100 / 10) === 1) ? 'th' :
@@ -45335,16 +47337,16 @@
 	})));
 
 
-/***/ },
-/* 374 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 388 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : English (New Zealand) [en-nz]
 	//! author : Luke McGregor : https://github.com/lukemcgregor
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -45376,6 +47378,7 @@
 	        future : 'in %s',
 	        past : '%s ago',
 	        s : 'a few seconds',
+	        ss : '%d seconds',
 	        m : 'a minute',
 	        mm : '%d minutes',
 	        h : 'an hour',
@@ -45387,7 +47390,7 @@
 	        y : 'a year',
 	        yy : '%d years'
 	    },
-	    ordinalParse: /\d{1,2}(st|nd|rd|th)/,
+	    dayOfMonthOrdinalParse: /\d{1,2}(st|nd|rd|th)/,
 	    ordinal : function (number) {
 	        var b = number % 10,
 	            output = (~~(number % 100 / 10) === 1) ? 'th' :
@@ -45407,18 +47410,18 @@
 	})));
 
 
-/***/ },
-/* 375 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 389 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Esperanto [eo]
 	//! author : Colin Dean : https://github.com/colindean
-	//! komento: Mi estas malcerta se mi korekte traktis akuzativojn en tiu traduko.
-	//!          Se ne, bonvolu korekti kaj avizi min por ke mi povas lerni!
+	//! author : Mia Nordentoft Imperatori : https://github.com/miestasmia
+	//! comment : miestasmia corrected the translation by colindean
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -45427,16 +47430,16 @@
 	var eo = moment.defineLocale('eo', {
 	    months : 'januaro_februaro_marto_aprilo_majo_junio_julio_aŭgusto_septembro_oktobro_novembro_decembro'.split('_'),
 	    monthsShort : 'jan_feb_mar_apr_maj_jun_jul_aŭg_sep_okt_nov_dec'.split('_'),
-	    weekdays : 'Dimanĉo_Lundo_Mardo_Merkredo_Ĵaŭdo_Vendredo_Sabato'.split('_'),
-	    weekdaysShort : 'Dim_Lun_Mard_Merk_Ĵaŭ_Ven_Sab'.split('_'),
-	    weekdaysMin : 'Di_Lu_Ma_Me_Ĵa_Ve_Sa'.split('_'),
+	    weekdays : 'dimanĉo_lundo_mardo_merkredo_ĵaŭdo_vendredo_sabato'.split('_'),
+	    weekdaysShort : 'dim_lun_mard_merk_ĵaŭ_ven_sab'.split('_'),
+	    weekdaysMin : 'di_lu_ma_me_ĵa_ve_sa'.split('_'),
 	    longDateFormat : {
 	        LT : 'HH:mm',
 	        LTS : 'HH:mm:ss',
 	        L : 'YYYY-MM-DD',
-	        LL : 'D[-an de] MMMM, YYYY',
-	        LLL : 'D[-an de] MMMM, YYYY HH:mm',
-	        LLLL : 'dddd, [la] D[-an de] MMMM, YYYY HH:mm'
+	        LL : 'D[-a de] MMMM, YYYY',
+	        LLL : 'D[-a de] MMMM, YYYY HH:mm',
+	        LLLL : 'dddd, [la] D[-a de] MMMM, YYYY HH:mm'
 	    },
 	    meridiemParse: /[ap]\.t\.m/i,
 	    isPM: function (input) {
@@ -45458,9 +47461,10 @@
 	        sameElse : 'L'
 	    },
 	    relativeTime : {
-	        future : 'je %s',
+	        future : 'post %s',
 	        past : 'antaŭ %s',
 	        s : 'sekundoj',
+	        ss : '%d sekundoj',
 	        m : 'minuto',
 	        mm : '%d minutoj',
 	        h : 'horo',
@@ -45472,7 +47476,7 @@
 	        y : 'jaro',
 	        yy : '%d jaroj'
 	    },
-	    ordinalParse: /\d{1,2}a/,
+	    dayOfMonthOrdinalParse: /\d{1,2}a/,
 	    ordinal : '%da',
 	    week : {
 	        dow : 1, // Monday is the first day of the week.
@@ -45485,16 +47489,16 @@
 	})));
 
 
-/***/ },
-/* 376 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 390 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Spanish [es]
 	//! author : Julio Napurí : https://github.com/julionc
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -45503,16 +47507,27 @@
 	var monthsShortDot = 'ene._feb._mar._abr._may._jun._jul._ago._sep._oct._nov._dic.'.split('_');
 	var monthsShort = 'ene_feb_mar_abr_may_jun_jul_ago_sep_oct_nov_dic'.split('_');
 
+	var monthsParse = [/^ene/i, /^feb/i, /^mar/i, /^abr/i, /^may/i, /^jun/i, /^jul/i, /^ago/i, /^sep/i, /^oct/i, /^nov/i, /^dic/i];
+	var monthsRegex = /^(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre|ene\.?|feb\.?|mar\.?|abr\.?|may\.?|jun\.?|jul\.?|ago\.?|sep\.?|oct\.?|nov\.?|dic\.?)/i;
+
 	var es = moment.defineLocale('es', {
 	    months : 'enero_febrero_marzo_abril_mayo_junio_julio_agosto_septiembre_octubre_noviembre_diciembre'.split('_'),
 	    monthsShort : function (m, format) {
-	        if (/-MMM-/.test(format)) {
+	        if (!m) {
+	            return monthsShortDot;
+	        } else if (/-MMM-/.test(format)) {
 	            return monthsShort[m.month()];
 	        } else {
 	            return monthsShortDot[m.month()];
 	        }
 	    },
-	    monthsParseExact : true,
+	    monthsRegex : monthsRegex,
+	    monthsShortRegex : monthsRegex,
+	    monthsStrictRegex : /^(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre)/i,
+	    monthsShortStrictRegex : /^(ene\.?|feb\.?|mar\.?|abr\.?|may\.?|jun\.?|jul\.?|ago\.?|sep\.?|oct\.?|nov\.?|dic\.?)/i,
+	    monthsParse : monthsParse,
+	    longMonthsParse : monthsParse,
+	    shortMonthsParse : monthsParse,
 	    weekdays : 'domingo_lunes_martes_miércoles_jueves_viernes_sábado'.split('_'),
 	    weekdaysShort : 'dom._lun._mar._mié._jue._vie._sáb.'.split('_'),
 	    weekdaysMin : 'do_lu_ma_mi_ju_vi_sá'.split('_'),
@@ -45547,6 +47562,7 @@
 	        future : 'en %s',
 	        past : 'hace %s',
 	        s : 'unos segundos',
+	        ss : '%d segundos',
 	        m : 'un minuto',
 	        mm : '%d minutos',
 	        h : 'una hora',
@@ -45558,7 +47574,7 @@
 	        y : 'un año',
 	        yy : '%d años'
 	    },
-	    ordinalParse : /\d{1,2}º/,
+	    dayOfMonthOrdinalParse : /\d{1,2}º/,
 	    ordinal : '%dº',
 	    week : {
 	        dow : 1, // Monday is the first day of the week.
@@ -45571,15 +47587,15 @@
 	})));
 
 
-/***/ },
-/* 377 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 391 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Spanish (Dominican Republic) [es-do]
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -45588,16 +47604,27 @@
 	var monthsShortDot = 'ene._feb._mar._abr._may._jun._jul._ago._sep._oct._nov._dic.'.split('_');
 	var monthsShort = 'ene_feb_mar_abr_may_jun_jul_ago_sep_oct_nov_dic'.split('_');
 
+	var monthsParse = [/^ene/i, /^feb/i, /^mar/i, /^abr/i, /^may/i, /^jun/i, /^jul/i, /^ago/i, /^sep/i, /^oct/i, /^nov/i, /^dic/i];
+	var monthsRegex = /^(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre|ene\.?|feb\.?|mar\.?|abr\.?|may\.?|jun\.?|jul\.?|ago\.?|sep\.?|oct\.?|nov\.?|dic\.?)/i;
+
 	var esDo = moment.defineLocale('es-do', {
 	    months : 'enero_febrero_marzo_abril_mayo_junio_julio_agosto_septiembre_octubre_noviembre_diciembre'.split('_'),
 	    monthsShort : function (m, format) {
-	        if (/-MMM-/.test(format)) {
+	        if (!m) {
+	            return monthsShortDot;
+	        } else if (/-MMM-/.test(format)) {
 	            return monthsShort[m.month()];
 	        } else {
 	            return monthsShortDot[m.month()];
 	        }
 	    },
-	    monthsParseExact : true,
+	    monthsRegex: monthsRegex,
+	    monthsShortRegex: monthsRegex,
+	    monthsStrictRegex: /^(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre)/i,
+	    monthsShortStrictRegex: /^(ene\.?|feb\.?|mar\.?|abr\.?|may\.?|jun\.?|jul\.?|ago\.?|sep\.?|oct\.?|nov\.?|dic\.?)/i,
+	    monthsParse: monthsParse,
+	    longMonthsParse: monthsParse,
+	    shortMonthsParse: monthsParse,
 	    weekdays : 'domingo_lunes_martes_miércoles_jueves_viernes_sábado'.split('_'),
 	    weekdaysShort : 'dom._lun._mar._mié._jue._vie._sáb.'.split('_'),
 	    weekdaysMin : 'do_lu_ma_mi_ju_vi_sá'.split('_'),
@@ -45632,6 +47659,7 @@
 	        future : 'en %s',
 	        past : 'hace %s',
 	        s : 'unos segundos',
+	        ss : '%d segundos',
 	        m : 'un minuto',
 	        mm : '%d minutos',
 	        h : 'una hora',
@@ -45643,7 +47671,7 @@
 	        y : 'un año',
 	        yy : '%d años'
 	    },
-	    ordinalParse : /\d{1,2}º/,
+	    dayOfMonthOrdinalParse : /\d{1,2}º/,
 	    ordinal : '%dº',
 	    week : {
 	        dow : 1, // Monday is the first day of the week.
@@ -45656,9 +47684,98 @@
 	})));
 
 
-/***/ },
-/* 378 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 392 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	//! moment.js locale configuration
+	//! locale : Spanish (United States) [es-us]
+	//! author : bustta : https://github.com/bustta
+
+	;(function (global, factory) {
+	    true ? factory(__webpack_require__(355)) :
+	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
+	   factory(global.moment)
+	}(this, (function (moment) { 'use strict';
+
+
+	var monthsShortDot = 'ene._feb._mar._abr._may._jun._jul._ago._sep._oct._nov._dic.'.split('_');
+	var monthsShort = 'ene_feb_mar_abr_may_jun_jul_ago_sep_oct_nov_dic'.split('_');
+
+	var esUs = moment.defineLocale('es-us', {
+	    months : 'enero_febrero_marzo_abril_mayo_junio_julio_agosto_septiembre_octubre_noviembre_diciembre'.split('_'),
+	    monthsShort : function (m, format) {
+	        if (!m) {
+	            return monthsShortDot;
+	        } else if (/-MMM-/.test(format)) {
+	            return monthsShort[m.month()];
+	        } else {
+	            return monthsShortDot[m.month()];
+	        }
+	    },
+	    monthsParseExact : true,
+	    weekdays : 'domingo_lunes_martes_miércoles_jueves_viernes_sábado'.split('_'),
+	    weekdaysShort : 'dom._lun._mar._mié._jue._vie._sáb.'.split('_'),
+	    weekdaysMin : 'do_lu_ma_mi_ju_vi_sá'.split('_'),
+	    weekdaysParseExact : true,
+	    longDateFormat : {
+	        LT : 'h:mm A',
+	        LTS : 'h:mm:ss A',
+	        L : 'MM/DD/YYYY',
+	        LL : 'MMMM [de] D [de] YYYY',
+	        LLL : 'MMMM [de] D [de] YYYY h:mm A',
+	        LLLL : 'dddd, MMMM [de] D [de] YYYY h:mm A'
+	    },
+	    calendar : {
+	        sameDay : function () {
+	            return '[hoy a la' + ((this.hours() !== 1) ? 's' : '') + '] LT';
+	        },
+	        nextDay : function () {
+	            return '[mañana a la' + ((this.hours() !== 1) ? 's' : '') + '] LT';
+	        },
+	        nextWeek : function () {
+	            return 'dddd [a la' + ((this.hours() !== 1) ? 's' : '') + '] LT';
+	        },
+	        lastDay : function () {
+	            return '[ayer a la' + ((this.hours() !== 1) ? 's' : '') + '] LT';
+	        },
+	        lastWeek : function () {
+	            return '[el] dddd [pasado a la' + ((this.hours() !== 1) ? 's' : '') + '] LT';
+	        },
+	        sameElse : 'L'
+	    },
+	    relativeTime : {
+	        future : 'en %s',
+	        past : 'hace %s',
+	        s : 'unos segundos',
+	        ss : '%d segundos',
+	        m : 'un minuto',
+	        mm : '%d minutos',
+	        h : 'una hora',
+	        hh : '%d horas',
+	        d : 'un día',
+	        dd : '%d días',
+	        M : 'un mes',
+	        MM : '%d meses',
+	        y : 'un año',
+	        yy : '%d años'
+	    },
+	    dayOfMonthOrdinalParse : /\d{1,2}º/,
+	    ordinal : '%dº',
+	    week : {
+	        dow : 0, // Sunday is the first day of the week.
+	        doy : 6  // The week that contains Jan 1st is the first week of the year.
+	    }
+	});
+
+	return esUs;
+
+	})));
+
+
+/***/ }),
+/* 393 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Estonian [et]
@@ -45666,7 +47783,7 @@
 	//! improvements : Illimar Tambek : https://github.com/ragulka
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -45675,6 +47792,7 @@
 	function processRelativeTime(number, withoutSuffix, key, isFuture) {
 	    var format = {
 	        's' : ['mõne sekundi', 'mõni sekund', 'paar sekundit'],
+	        'ss': [number + 'sekundi', number + 'sekundit'],
 	        'm' : ['ühe minuti', 'üks minut'],
 	        'mm': [number + ' minuti', number + ' minutit'],
 	        'h' : ['ühe tunni', 'tund aega', 'üks tund'],
@@ -45717,6 +47835,7 @@
 	        future : '%s pärast',
 	        past   : '%s tagasi',
 	        s      : processRelativeTime,
+	        ss     : processRelativeTime,
 	        m      : processRelativeTime,
 	        mm     : processRelativeTime,
 	        h      : processRelativeTime,
@@ -45728,7 +47847,7 @@
 	        y      : processRelativeTime,
 	        yy     : processRelativeTime
 	    },
-	    ordinalParse: /\d{1,2}\./,
+	    dayOfMonthOrdinalParse: /\d{1,2}\./,
 	    ordinal : '%d.',
 	    week : {
 	        dow : 1, // Monday is the first day of the week.
@@ -45741,16 +47860,16 @@
 	})));
 
 
-/***/ },
-/* 379 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 394 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Basque [eu]
 	//! author : Eneko Illarramendi : https://github.com/eillarra
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -45788,6 +47907,7 @@
 	        future : '%s barru',
 	        past : 'duela %s',
 	        s : 'segundo batzuk',
+	        ss : '%d segundo',
 	        m : 'minutu bat',
 	        mm : '%d minutu',
 	        h : 'ordu bat',
@@ -45799,7 +47919,7 @@
 	        y : 'urte bat',
 	        yy : '%d urte'
 	    },
-	    ordinalParse: /\d{1,2}\./,
+	    dayOfMonthOrdinalParse: /\d{1,2}\./,
 	    ordinal : '%d.',
 	    week : {
 	        dow : 1, // Monday is the first day of the week.
@@ -45812,16 +47932,16 @@
 	})));
 
 
-/***/ },
-/* 380 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 395 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Persian [fa]
 	//! author : Ebrahim Byagowi : https://github.com/ebraminio
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -45889,7 +48009,8 @@
 	    relativeTime : {
 	        future : 'در %s',
 	        past : '%s پیش',
-	        s : 'چندین ثانیه',
+	        s : 'چند ثانیه',
+	        ss : 'ثانیه d%',
 	        m : 'یک دقیقه',
 	        mm : '%d دقیقه',
 	        h : 'یک ساعت',
@@ -45911,7 +48032,7 @@
 	            return symbolMap[match];
 	        }).replace(/,/g, '،');
 	    },
-	    ordinalParse: /\d{1,2}م/,
+	    dayOfMonthOrdinalParse: /\d{1,2}م/,
 	    ordinal : '%dم',
 	    week : {
 	        dow : 6, // Saturday is the first day of the week.
@@ -45924,16 +48045,16 @@
 	})));
 
 
-/***/ },
-/* 381 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 396 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Finnish [fi]
 	//! author : Tarmo Aidantausta : https://github.com/bleadof
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -45949,6 +48070,8 @@
 	    switch (key) {
 	        case 's':
 	            return isFuture ? 'muutaman sekunnin' : 'muutama sekunti';
+	        case 'ss':
+	            return isFuture ? 'sekunnin' : 'sekuntia';
 	        case 'm':
 	            return isFuture ? 'minuutin' : 'minuutti';
 	        case 'mm':
@@ -46012,6 +48135,7 @@
 	        future : '%s päästä',
 	        past : '%s sitten',
 	        s : translate,
+	        ss : translate,
 	        m : translate,
 	        mm : translate,
 	        h : translate,
@@ -46023,7 +48147,7 @@
 	        y : translate,
 	        yy : translate
 	    },
-	    ordinalParse: /\d{1,2}\./,
+	    dayOfMonthOrdinalParse: /\d{1,2}\./,
 	    ordinal : '%d.',
 	    week : {
 	        dow : 1, // Monday is the first day of the week.
@@ -46036,16 +48160,16 @@
 	})));
 
 
-/***/ },
-/* 382 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 397 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Faroese [fo]
 	//! author : Ragnar Johannesen : https://github.com/ragnar123
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -46077,6 +48201,7 @@
 	        future : 'um %s',
 	        past : '%s síðani',
 	        s : 'fá sekund',
+	        ss : '%d sekundir',
 	        m : 'ein minutt',
 	        mm : '%d minuttir',
 	        h : 'ein tími',
@@ -46088,7 +48213,7 @@
 	        y : 'eitt ár',
 	        yy : '%d ár'
 	    },
-	    ordinalParse: /\d{1,2}\./,
+	    dayOfMonthOrdinalParse: /\d{1,2}\./,
 	    ordinal : '%d.',
 	    week : {
 	        dow : 1, // Monday is the first day of the week.
@@ -46101,16 +48226,16 @@
 	})));
 
 
-/***/ },
-/* 383 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 398 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : French [fr]
 	//! author : John Fischer : https://github.com/jfroffice
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -46122,7 +48247,7 @@
 	    monthsParseExact : true,
 	    weekdays : 'dimanche_lundi_mardi_mercredi_jeudi_vendredi_samedi'.split('_'),
 	    weekdaysShort : 'dim._lun._mar._mer._jeu._ven._sam.'.split('_'),
-	    weekdaysMin : 'Di_Lu_Ma_Me_Je_Ve_Sa'.split('_'),
+	    weekdaysMin : 'di_lu_ma_me_je_ve_sa'.split('_'),
 	    weekdaysParseExact : true,
 	    longDateFormat : {
 	        LT : 'HH:mm',
@@ -46133,17 +48258,18 @@
 	        LLLL : 'dddd D MMMM YYYY HH:mm'
 	    },
 	    calendar : {
-	        sameDay: '[Aujourd\'hui à] LT',
-	        nextDay: '[Demain à] LT',
-	        nextWeek: 'dddd [à] LT',
-	        lastDay: '[Hier à] LT',
-	        lastWeek: 'dddd [dernier à] LT',
-	        sameElse: 'L'
+	        sameDay : '[Aujourd’hui à] LT',
+	        nextDay : '[Demain à] LT',
+	        nextWeek : 'dddd [à] LT',
+	        lastDay : '[Hier à] LT',
+	        lastWeek : 'dddd [dernier à] LT',
+	        sameElse : 'L'
 	    },
 	    relativeTime : {
 	        future : 'dans %s',
 	        past : 'il y a %s',
 	        s : 'quelques secondes',
+	        ss : '%d secondes',
 	        m : 'une minute',
 	        mm : '%d minutes',
 	        h : 'une heure',
@@ -46155,9 +48281,28 @@
 	        y : 'un an',
 	        yy : '%d ans'
 	    },
-	    ordinalParse: /\d{1,2}(er|)/,
-	    ordinal : function (number) {
-	        return number + (number === 1 ? 'er' : '');
+	    dayOfMonthOrdinalParse: /\d{1,2}(er|)/,
+	    ordinal : function (number, period) {
+	        switch (period) {
+	            // TODO: Return 'e' when day of month > 1. Move this case inside
+	            // block for masculine words below.
+	            // See https://github.com/moment/moment/issues/3375
+	            case 'D':
+	                return number + (number === 1 ? 'er' : '');
+
+	            // Words with masculine grammatical gender: mois, trimestre, jour
+	            default:
+	            case 'M':
+	            case 'Q':
+	            case 'DDD':
+	            case 'd':
+	                return number + (number === 1 ? 'er' : 'e');
+
+	            // Words with feminine grammatical gender: semaine
+	            case 'w':
+	            case 'W':
+	                return number + (number === 1 ? 're' : 'e');
+	        }
 	    },
 	    week : {
 	        dow : 1, // Monday is the first day of the week.
@@ -46170,16 +48315,16 @@
 	})));
 
 
-/***/ },
-/* 384 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 399 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : French (Canada) [fr-ca]
 	//! author : Jonathan Abourbih : https://github.com/jonbca
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -46191,7 +48336,7 @@
 	    monthsParseExact : true,
 	    weekdays : 'dimanche_lundi_mardi_mercredi_jeudi_vendredi_samedi'.split('_'),
 	    weekdaysShort : 'dim._lun._mar._mer._jeu._ven._sam.'.split('_'),
-	    weekdaysMin : 'Di_Lu_Ma_Me_Je_Ve_Sa'.split('_'),
+	    weekdaysMin : 'di_lu_ma_me_je_ve_sa'.split('_'),
 	    weekdaysParseExact : true,
 	    longDateFormat : {
 	        LT : 'HH:mm',
@@ -46202,17 +48347,18 @@
 	        LLLL : 'dddd D MMMM YYYY HH:mm'
 	    },
 	    calendar : {
-	        sameDay: '[Aujourd\'hui à] LT',
-	        nextDay: '[Demain à] LT',
-	        nextWeek: 'dddd [à] LT',
-	        lastDay: '[Hier à] LT',
-	        lastWeek: 'dddd [dernier à] LT',
-	        sameElse: 'L'
+	        sameDay : '[Aujourd’hui à] LT',
+	        nextDay : '[Demain à] LT',
+	        nextWeek : 'dddd [à] LT',
+	        lastDay : '[Hier à] LT',
+	        lastWeek : 'dddd [dernier à] LT',
+	        sameElse : 'L'
 	    },
 	    relativeTime : {
 	        future : 'dans %s',
 	        past : 'il y a %s',
 	        s : 'quelques secondes',
+	        ss : '%d secondes',
 	        m : 'une minute',
 	        mm : '%d minutes',
 	        h : 'une heure',
@@ -46224,9 +48370,23 @@
 	        y : 'un an',
 	        yy : '%d ans'
 	    },
-	    ordinalParse: /\d{1,2}(er|e)/,
-	    ordinal : function (number) {
-	        return number + (number === 1 ? 'er' : 'e');
+	    dayOfMonthOrdinalParse: /\d{1,2}(er|e)/,
+	    ordinal : function (number, period) {
+	        switch (period) {
+	            // Words with masculine grammatical gender: mois, trimestre, jour
+	            default:
+	            case 'M':
+	            case 'Q':
+	            case 'D':
+	            case 'DDD':
+	            case 'd':
+	                return number + (number === 1 ? 'er' : 'e');
+
+	            // Words with feminine grammatical gender: semaine
+	            case 'w':
+	            case 'W':
+	                return number + (number === 1 ? 're' : 'e');
+	        }
 	    }
 	});
 
@@ -46235,16 +48395,16 @@
 	})));
 
 
-/***/ },
-/* 385 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 400 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : French (Switzerland) [fr-ch]
 	//! author : Gaspard Bucher : https://github.com/gaspard
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -46256,7 +48416,7 @@
 	    monthsParseExact : true,
 	    weekdays : 'dimanche_lundi_mardi_mercredi_jeudi_vendredi_samedi'.split('_'),
 	    weekdaysShort : 'dim._lun._mar._mer._jeu._ven._sam.'.split('_'),
-	    weekdaysMin : 'Di_Lu_Ma_Me_Je_Ve_Sa'.split('_'),
+	    weekdaysMin : 'di_lu_ma_me_je_ve_sa'.split('_'),
 	    weekdaysParseExact : true,
 	    longDateFormat : {
 	        LT : 'HH:mm',
@@ -46267,17 +48427,18 @@
 	        LLLL : 'dddd D MMMM YYYY HH:mm'
 	    },
 	    calendar : {
-	        sameDay: '[Aujourd\'hui à] LT',
-	        nextDay: '[Demain à] LT',
-	        nextWeek: 'dddd [à] LT',
-	        lastDay: '[Hier à] LT',
-	        lastWeek: 'dddd [dernier à] LT',
-	        sameElse: 'L'
+	        sameDay : '[Aujourd’hui à] LT',
+	        nextDay : '[Demain à] LT',
+	        nextWeek : 'dddd [à] LT',
+	        lastDay : '[Hier à] LT',
+	        lastWeek : 'dddd [dernier à] LT',
+	        sameElse : 'L'
 	    },
 	    relativeTime : {
 	        future : 'dans %s',
 	        past : 'il y a %s',
 	        s : 'quelques secondes',
+	        ss : '%d secondes',
 	        m : 'une minute',
 	        mm : '%d minutes',
 	        h : 'une heure',
@@ -46289,9 +48450,23 @@
 	        y : 'un an',
 	        yy : '%d ans'
 	    },
-	    ordinalParse: /\d{1,2}(er|e)/,
-	    ordinal : function (number) {
-	        return number + (number === 1 ? 'er' : 'e');
+	    dayOfMonthOrdinalParse: /\d{1,2}(er|e)/,
+	    ordinal : function (number, period) {
+	        switch (period) {
+	            // Words with masculine grammatical gender: mois, trimestre, jour
+	            default:
+	            case 'M':
+	            case 'Q':
+	            case 'D':
+	            case 'DDD':
+	            case 'd':
+	                return number + (number === 1 ? 'er' : 'e');
+
+	            // Words with feminine grammatical gender: semaine
+	            case 'w':
+	            case 'W':
+	                return number + (number === 1 ? 're' : 'e');
+	        }
 	    },
 	    week : {
 	        dow : 1, // Monday is the first day of the week.
@@ -46304,16 +48479,16 @@
 	})));
 
 
-/***/ },
-/* 386 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 401 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Frisian [fy]
 	//! author : Robin van der Vliet : https://github.com/robin0van0der0v
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -46325,7 +48500,9 @@
 	var fy = moment.defineLocale('fy', {
 	    months : 'jannewaris_febrewaris_maart_april_maaie_juny_july_augustus_septimber_oktober_novimber_desimber'.split('_'),
 	    monthsShort : function (m, format) {
-	        if (/-MMM-/.test(format)) {
+	        if (!m) {
+	            return monthsShortWithDots;
+	        } else if (/-MMM-/.test(format)) {
 	            return monthsShortWithoutDots[m.month()];
 	        } else {
 	            return monthsShortWithDots[m.month()];
@@ -46356,6 +48533,7 @@
 	        future : 'oer %s',
 	        past : '%s lyn',
 	        s : 'in pear sekonden',
+	        ss : '%d sekonden',
 	        m : 'ien minút',
 	        mm : '%d minuten',
 	        h : 'ien oere',
@@ -46367,7 +48545,7 @@
 	        y : 'ien jier',
 	        yy : '%d jierren'
 	    },
-	    ordinalParse: /\d{1,2}(ste|de)/,
+	    dayOfMonthOrdinalParse: /\d{1,2}(ste|de)/,
 	    ordinal : function (number) {
 	        return number + ((number === 1 || number === 8 || number >= 20) ? 'ste' : 'de');
 	    },
@@ -46382,16 +48560,16 @@
 	})));
 
 
-/***/ },
-/* 387 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 402 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Scottish Gaelic [gd]
 	//! author : Jon Ashdown : https://github.com/jonashdown
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -46436,6 +48614,7 @@
 	        future : 'ann an %s',
 	        past : 'bho chionn %s',
 	        s : 'beagan diogan',
+	        ss : '%d diogan',
 	        m : 'mionaid',
 	        mm : '%d mionaidean',
 	        h : 'uair',
@@ -46447,7 +48626,7 @@
 	        y : 'bliadhna',
 	        yy : '%d bliadhna'
 	    },
-	    ordinalParse : /\d{1,2}(d|na|mh)/,
+	    dayOfMonthOrdinalParse : /\d{1,2}(d|na|mh)/,
 	    ordinal : function (number) {
 	        var output = number === 1 ? 'd' : number % 10 === 2 ? 'na' : 'mh';
 	        return number + output;
@@ -46463,16 +48642,16 @@
 	})));
 
 
-/***/ },
-/* 388 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 403 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Galician [gl]
 	//! author : Juan G. Hurtado : https://github.com/juanghurtado
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -46521,6 +48700,7 @@
 	        },
 	        past : 'hai %s',
 	        s : 'uns segundos',
+	        ss : '%d segundos',
 	        m : 'un minuto',
 	        mm : '%d minutos',
 	        h : 'unha hora',
@@ -46532,7 +48712,7 @@
 	        y : 'un ano',
 	        yy : '%d anos'
 	    },
-	    ordinalParse : /\d{1,2}º/,
+	    dayOfMonthOrdinalParse : /\d{1,2}º/,
 	    ordinal : '%dº',
 	    week : {
 	        dow : 1, // Monday is the first day of the week.
@@ -46545,9 +48725,268 @@
 	})));
 
 
-/***/ },
-/* 389 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 404 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	//! moment.js locale configuration
+	//! locale : Konkani Latin script [gom-latn]
+	//! author : The Discoverer : https://github.com/WikiDiscoverer
+
+	;(function (global, factory) {
+	    true ? factory(__webpack_require__(355)) :
+	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
+	   factory(global.moment)
+	}(this, (function (moment) { 'use strict';
+
+
+	function processRelativeTime(number, withoutSuffix, key, isFuture) {
+	    var format = {
+	        's': ['thodde secondanim', 'thodde second'],
+	        'ss': [number + ' secondanim', number + ' second'],
+	        'm': ['eka mintan', 'ek minute'],
+	        'mm': [number + ' mintanim', number + ' mintam'],
+	        'h': ['eka horan', 'ek hor'],
+	        'hh': [number + ' horanim', number + ' hor'],
+	        'd': ['eka disan', 'ek dis'],
+	        'dd': [number + ' disanim', number + ' dis'],
+	        'M': ['eka mhoinean', 'ek mhoino'],
+	        'MM': [number + ' mhoineanim', number + ' mhoine'],
+	        'y': ['eka vorsan', 'ek voros'],
+	        'yy': [number + ' vorsanim', number + ' vorsam']
+	    };
+	    return withoutSuffix ? format[key][0] : format[key][1];
+	}
+
+	var gomLatn = moment.defineLocale('gom-latn', {
+	    months : 'Janer_Febrer_Mars_Abril_Mai_Jun_Julai_Agost_Setembr_Otubr_Novembr_Dezembr'.split('_'),
+	    monthsShort : 'Jan._Feb._Mars_Abr._Mai_Jun_Jul._Ago._Set._Otu._Nov._Dez.'.split('_'),
+	    monthsParseExact : true,
+	    weekdays : 'Aitar_Somar_Mongllar_Budvar_Brestar_Sukrar_Son\'var'.split('_'),
+	    weekdaysShort : 'Ait._Som._Mon._Bud._Bre._Suk._Son.'.split('_'),
+	    weekdaysMin : 'Ai_Sm_Mo_Bu_Br_Su_Sn'.split('_'),
+	    weekdaysParseExact : true,
+	    longDateFormat : {
+	        LT : 'A h:mm [vazta]',
+	        LTS : 'A h:mm:ss [vazta]',
+	        L : 'DD-MM-YYYY',
+	        LL : 'D MMMM YYYY',
+	        LLL : 'D MMMM YYYY A h:mm [vazta]',
+	        LLLL : 'dddd, MMMM[achea] Do, YYYY, A h:mm [vazta]',
+	        llll: 'ddd, D MMM YYYY, A h:mm [vazta]'
+	    },
+	    calendar : {
+	        sameDay: '[Aiz] LT',
+	        nextDay: '[Faleam] LT',
+	        nextWeek: '[Ieta to] dddd[,] LT',
+	        lastDay: '[Kal] LT',
+	        lastWeek: '[Fatlo] dddd[,] LT',
+	        sameElse: 'L'
+	    },
+	    relativeTime : {
+	        future : '%s',
+	        past : '%s adim',
+	        s : processRelativeTime,
+	        ss : processRelativeTime,
+	        m : processRelativeTime,
+	        mm : processRelativeTime,
+	        h : processRelativeTime,
+	        hh : processRelativeTime,
+	        d : processRelativeTime,
+	        dd : processRelativeTime,
+	        M : processRelativeTime,
+	        MM : processRelativeTime,
+	        y : processRelativeTime,
+	        yy : processRelativeTime
+	    },
+	    dayOfMonthOrdinalParse : /\d{1,2}(er)/,
+	    ordinal : function (number, period) {
+	        switch (period) {
+	            // the ordinal 'er' only applies to day of the month
+	            case 'D':
+	                return number + 'er';
+	            default:
+	            case 'M':
+	            case 'Q':
+	            case 'DDD':
+	            case 'd':
+	            case 'w':
+	            case 'W':
+	                return number;
+	        }
+	    },
+	    week : {
+	        dow : 1, // Monday is the first day of the week.
+	        doy : 4  // The week that contains Jan 4th is the first week of the year.
+	    },
+	    meridiemParse: /rati|sokalli|donparam|sanje/,
+	    meridiemHour : function (hour, meridiem) {
+	        if (hour === 12) {
+	            hour = 0;
+	        }
+	        if (meridiem === 'rati') {
+	            return hour < 4 ? hour : hour + 12;
+	        } else if (meridiem === 'sokalli') {
+	            return hour;
+	        } else if (meridiem === 'donparam') {
+	            return hour > 12 ? hour : hour + 12;
+	        } else if (meridiem === 'sanje') {
+	            return hour + 12;
+	        }
+	    },
+	    meridiem : function (hour, minute, isLower) {
+	        if (hour < 4) {
+	            return 'rati';
+	        } else if (hour < 12) {
+	            return 'sokalli';
+	        } else if (hour < 16) {
+	            return 'donparam';
+	        } else if (hour < 20) {
+	            return 'sanje';
+	        } else {
+	            return 'rati';
+	        }
+	    }
+	});
+
+	return gomLatn;
+
+	})));
+
+
+/***/ }),
+/* 405 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	//! moment.js locale configuration
+	//! locale : Gujarati [gu]
+	//! author : Kaushik Thanki : https://github.com/Kaushik1987
+
+	;(function (global, factory) {
+	    true ? factory(__webpack_require__(355)) :
+	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
+	   factory(global.moment)
+	}(this, (function (moment) { 'use strict';
+
+
+	var symbolMap = {
+	        '1': '૧',
+	        '2': '૨',
+	        '3': '૩',
+	        '4': '૪',
+	        '5': '૫',
+	        '6': '૬',
+	        '7': '૭',
+	        '8': '૮',
+	        '9': '૯',
+	        '0': '૦'
+	    };
+	var numberMap = {
+	        '૧': '1',
+	        '૨': '2',
+	        '૩': '3',
+	        '૪': '4',
+	        '૫': '5',
+	        '૬': '6',
+	        '૭': '7',
+	        '૮': '8',
+	        '૯': '9',
+	        '૦': '0'
+	    };
+
+	var gu = moment.defineLocale('gu', {
+	    months: 'જાન્યુઆરી_ફેબ્રુઆરી_માર્ચ_એપ્રિલ_મે_જૂન_જુલાઈ_ઑગસ્ટ_સપ્ટેમ્બર_ઑક્ટ્બર_નવેમ્બર_ડિસેમ્બર'.split('_'),
+	    monthsShort: 'જાન્યુ._ફેબ્રુ._માર્ચ_એપ્રિ._મે_જૂન_જુલા._ઑગ._સપ્ટે._ઑક્ટ્._નવે._ડિસે.'.split('_'),
+	    monthsParseExact: true,
+	    weekdays: 'રવિવાર_સોમવાર_મંગળવાર_બુધ્વાર_ગુરુવાર_શુક્રવાર_શનિવાર'.split('_'),
+	    weekdaysShort: 'રવિ_સોમ_મંગળ_બુધ્_ગુરુ_શુક્ર_શનિ'.split('_'),
+	    weekdaysMin: 'ર_સો_મં_બુ_ગુ_શુ_શ'.split('_'),
+	    longDateFormat: {
+	        LT: 'A h:mm વાગ્યે',
+	        LTS: 'A h:mm:ss વાગ્યે',
+	        L: 'DD/MM/YYYY',
+	        LL: 'D MMMM YYYY',
+	        LLL: 'D MMMM YYYY, A h:mm વાગ્યે',
+	        LLLL: 'dddd, D MMMM YYYY, A h:mm વાગ્યે'
+	    },
+	    calendar: {
+	        sameDay: '[આજ] LT',
+	        nextDay: '[કાલે] LT',
+	        nextWeek: 'dddd, LT',
+	        lastDay: '[ગઇકાલે] LT',
+	        lastWeek: '[પાછલા] dddd, LT',
+	        sameElse: 'L'
+	    },
+	    relativeTime: {
+	        future: '%s મા',
+	        past: '%s પેહલા',
+	        s: 'અમુક પળો',
+	        ss: '%d સેકંડ',
+	        m: 'એક મિનિટ',
+	        mm: '%d મિનિટ',
+	        h: 'એક કલાક',
+	        hh: '%d કલાક',
+	        d: 'એક દિવસ',
+	        dd: '%d દિવસ',
+	        M: 'એક મહિનો',
+	        MM: '%d મહિનો',
+	        y: 'એક વર્ષ',
+	        yy: '%d વર્ષ'
+	    },
+	    preparse: function (string) {
+	        return string.replace(/[૧૨૩૪૫૬૭૮૯૦]/g, function (match) {
+	            return numberMap[match];
+	        });
+	    },
+	    postformat: function (string) {
+	        return string.replace(/\d/g, function (match) {
+	            return symbolMap[match];
+	        });
+	    },
+	    // Gujarati notation for meridiems are quite fuzzy in practice. While there exists
+	    // a rigid notion of a 'Pahar' it is not used as rigidly in modern Gujarati.
+	    meridiemParse: /રાત|બપોર|સવાર|સાંજ/,
+	    meridiemHour: function (hour, meridiem) {
+	        if (hour === 12) {
+	            hour = 0;
+	        }
+	        if (meridiem === 'રાત') {
+	            return hour < 4 ? hour : hour + 12;
+	        } else if (meridiem === 'સવાર') {
+	            return hour;
+	        } else if (meridiem === 'બપોર') {
+	            return hour >= 10 ? hour : hour + 12;
+	        } else if (meridiem === 'સાંજ') {
+	            return hour + 12;
+	        }
+	    },
+	    meridiem: function (hour, minute, isLower) {
+	        if (hour < 4) {
+	            return 'રાત';
+	        } else if (hour < 10) {
+	            return 'સવાર';
+	        } else if (hour < 17) {
+	            return 'બપોર';
+	        } else if (hour < 20) {
+	            return 'સાંજ';
+	        } else {
+	            return 'રાત';
+	        }
+	    },
+	    week: {
+	        dow: 0, // Sunday is the first day of the week.
+	        doy: 6 // The week that contains Jan 1st is the first week of the year.
+	    }
+	});
+
+	return gu;
+
+	})));
+
+
+/***/ }),
+/* 406 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Hebrew [he]
@@ -46556,7 +48995,7 @@
 	//! author : Tal Ater : https://github.com/TalAter
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -46592,6 +49031,7 @@
 	        future : 'בעוד %s',
 	        past : 'לפני %s',
 	        s : 'מספר שניות',
+	        ss : '%d שניות',
 	        m : 'דקה',
 	        mm : '%d דקות',
 	        h : 'שעה',
@@ -46649,16 +49089,16 @@
 	})));
 
 
-/***/ },
-/* 390 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 407 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Hindi [hi]
 	//! author : Mayank Singhal : https://github.com/mayanksinghal
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -46716,6 +49156,7 @@
 	        future : '%s में',
 	        past : '%s पहले',
 	        s : 'कुछ ही क्षण',
+	        ss : '%d सेकंड',
 	        m : 'एक मिनट',
 	        mm : '%d मिनट',
 	        h : 'एक घंटा',
@@ -46778,16 +49219,16 @@
 	})));
 
 
-/***/ },
-/* 391 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 408 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Croatian [hr]
 	//! author : Bojan Marković : https://github.com/bmarkovic
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -46796,6 +49237,15 @@
 	function translate(number, withoutSuffix, key) {
 	    var result = number + ' ';
 	    switch (key) {
+	        case 'ss':
+	            if (number === 1) {
+	                result += 'sekunda';
+	            } else if (number === 2 || number === 3 || number === 4) {
+	                result += 'sekunde';
+	            } else {
+	                result += 'sekundi';
+	            }
+	            return result;
 	        case 'm':
 	            return withoutSuffix ? 'jedna minuta' : 'jedne minute';
 	        case 'mm':
@@ -46904,6 +49354,7 @@
 	        future : 'za %s',
 	        past   : 'prije %s',
 	        s      : 'par sekundi',
+	        ss     : translate,
 	        m      : translate,
 	        mm     : translate,
 	        h      : translate,
@@ -46915,7 +49366,7 @@
 	        y      : 'godinu',
 	        yy     : translate
 	    },
-	    ordinalParse: /\d{1,2}\./,
+	    dayOfMonthOrdinalParse: /\d{1,2}\./,
 	    ordinal : '%d.',
 	    week : {
 	        dow : 1, // Monday is the first day of the week.
@@ -46928,16 +49379,16 @@
 	})));
 
 
-/***/ },
-/* 392 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 409 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Hungarian [hu]
 	//! author : Adam Brunner : https://github.com/adambrunner
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -46945,11 +49396,12 @@
 
 	var weekEndings = 'vasárnap hétfőn kedden szerdán csütörtökön pénteken szombaton'.split(' ');
 	function translate(number, withoutSuffix, key, isFuture) {
-	    var num = number,
-	        suffix;
+	    var num = number;
 	    switch (key) {
 	        case 's':
 	            return (isFuture || withoutSuffix) ? 'néhány másodperc' : 'néhány másodperce';
+	        case 'ss':
+	            return num + (isFuture || withoutSuffix) ? ' másodperc' : ' másodperce';
 	        case 'm':
 	            return 'egy' + (isFuture || withoutSuffix ? ' perc' : ' perce');
 	        case 'mm':
@@ -47018,6 +49470,7 @@
 	        future : '%s múlva',
 	        past : '%s',
 	        s : translate,
+	        ss : translate,
 	        m : translate,
 	        mm : translate,
 	        h : translate,
@@ -47029,7 +49482,7 @@
 	        y : translate,
 	        yy : translate
 	    },
-	    ordinalParse: /\d{1,2}\./,
+	    dayOfMonthOrdinalParse: /\d{1,2}\./,
 	    ordinal : '%d.',
 	    week : {
 	        dow : 1, // Monday is the first day of the week.
@@ -47042,16 +49495,16 @@
 	})));
 
 
-/***/ },
-/* 393 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 410 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Armenian [hy-am]
 	//! author : Armendarabyan : https://github.com/armendarabyan
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -47090,6 +49543,7 @@
 	        future : '%s հետո',
 	        past : '%s առաջ',
 	        s : 'մի քանի վայրկյան',
+	        ss : '%d վայրկյան',
 	        m : 'րոպե',
 	        mm : '%d րոպե',
 	        h : 'ժամ',
@@ -47116,7 +49570,7 @@
 	            return 'երեկոյան';
 	        }
 	    },
-	    ordinalParse: /\d{1,2}|\d{1,2}-(ին|րդ)/,
+	    dayOfMonthOrdinalParse: /\d{1,2}|\d{1,2}-(ին|րդ)/,
 	    ordinal: function (number, period) {
 	        switch (period) {
 	            case 'DDD':
@@ -47142,9 +49596,9 @@
 	})));
 
 
-/***/ },
-/* 394 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 411 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Indonesian [id]
@@ -47152,7 +49606,7 @@
 	//! reference: http://id.wikisource.org/wiki/Pedoman_Umum_Ejaan_Bahasa_Indonesia_yang_Disempurnakan
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -47208,6 +49662,7 @@
 	        future : 'dalam %s',
 	        past : '%s yang lalu',
 	        s : 'beberapa detik',
+	        ss : '%d detik',
 	        m : 'semenit',
 	        mm : '%d menit',
 	        h : 'sejam',
@@ -47230,16 +49685,16 @@
 	})));
 
 
-/***/ },
-/* 395 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 412 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Icelandic [is]
 	//! author : Hinrik Örn Sigurðsson : https://github.com/hinrik
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -47258,6 +49713,11 @@
 	    switch (key) {
 	        case 's':
 	            return withoutSuffix || isFuture ? 'nokkrar sekúndur' : 'nokkrum sekúndum';
+	        case 'ss':
+	            if (plural(number)) {
+	                return result + (withoutSuffix || isFuture ? 'sekúndur' : 'sekúndum');
+	            }
+	            return result + 'sekúnda';
 	        case 'm':
 	            return withoutSuffix ? 'mínúta' : 'mínútu';
 	        case 'mm':
@@ -47338,6 +49798,7 @@
 	        future : 'eftir %s',
 	        past : 'fyrir %s síðan',
 	        s : translate,
+	        ss : translate,
 	        m : translate,
 	        mm : translate,
 	        h : 'klukkustund',
@@ -47349,7 +49810,7 @@
 	        y : translate,
 	        yy : translate
 	    },
-	    ordinalParse: /\d{1,2}\./,
+	    dayOfMonthOrdinalParse: /\d{1,2}\./,
 	    ordinal : '%d.',
 	    week : {
 	        dow : 1, // Monday is the first day of the week.
@@ -47362,9 +49823,9 @@
 	})));
 
 
-/***/ },
-/* 396 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 413 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Italian [it]
@@ -47372,7 +49833,7 @@
 	//! author: Mattia Larentis: https://github.com/nostalgiaz
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -47381,16 +49842,16 @@
 	var it = moment.defineLocale('it', {
 	    months : 'gennaio_febbraio_marzo_aprile_maggio_giugno_luglio_agosto_settembre_ottobre_novembre_dicembre'.split('_'),
 	    monthsShort : 'gen_feb_mar_apr_mag_giu_lug_ago_set_ott_nov_dic'.split('_'),
-	    weekdays : 'Domenica_Lunedì_Martedì_Mercoledì_Giovedì_Venerdì_Sabato'.split('_'),
-	    weekdaysShort : 'Dom_Lun_Mar_Mer_Gio_Ven_Sab'.split('_'),
-	    weekdaysMin : 'Do_Lu_Ma_Me_Gi_Ve_Sa'.split('_'),
+	    weekdays : 'domenica_lunedì_martedì_mercoledì_giovedì_venerdì_sabato'.split('_'),
+	    weekdaysShort : 'dom_lun_mar_mer_gio_ven_sab'.split('_'),
+	    weekdaysMin : 'do_lu_ma_me_gi_ve_sa'.split('_'),
 	    longDateFormat : {
 	        LT : 'HH:mm',
 	        LTS : 'HH:mm:ss',
 	        L : 'DD/MM/YYYY',
 	        LL : 'D MMMM YYYY',
 	        LLL : 'D MMMM YYYY HH:mm',
-	        LLLL : 'dddd, D MMMM YYYY HH:mm'
+	        LLLL : 'dddd D MMMM YYYY HH:mm'
 	    },
 	    calendar : {
 	        sameDay: '[Oggi alle] LT',
@@ -47413,6 +49874,7 @@
 	        },
 	        past : '%s fa',
 	        s : 'alcuni secondi',
+	        ss : '%d secondi',
 	        m : 'un minuto',
 	        mm : '%d minuti',
 	        h : 'un\'ora',
@@ -47424,7 +49886,7 @@
 	        y : 'un anno',
 	        yy : '%d anni'
 	    },
-	    ordinalParse : /\d{1,2}º/,
+	    dayOfMonthOrdinalParse : /\d{1,2}º/,
 	    ordinal: '%dº',
 	    week : {
 	        dow : 1, // Monday is the first day of the week.
@@ -47437,16 +49899,16 @@
 	})));
 
 
-/***/ },
-/* 397 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 414 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Japanese [ja]
 	//! author : LI Long : https://github.com/baryon
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -47459,12 +49921,16 @@
 	    weekdaysShort : '日_月_火_水_木_金_土'.split('_'),
 	    weekdaysMin : '日_月_火_水_木_金_土'.split('_'),
 	    longDateFormat : {
-	        LT : 'Ah時m分',
-	        LTS : 'Ah時m分s秒',
+	        LT : 'HH:mm',
+	        LTS : 'HH:mm:ss',
 	        L : 'YYYY/MM/DD',
 	        LL : 'YYYY年M月D日',
-	        LLL : 'YYYY年M月D日Ah時m分',
-	        LLLL : 'YYYY年M月D日Ah時m分 dddd'
+	        LLL : 'YYYY年M月D日 HH:mm',
+	        LLLL : 'YYYY年M月D日 HH:mm dddd',
+	        l : 'YYYY/MM/DD',
+	        ll : 'YYYY年M月D日',
+	        lll : 'YYYY年M月D日 HH:mm',
+	        llll : 'YYYY年M月D日 HH:mm dddd'
 	    },
 	    meridiemParse: /午前|午後/i,
 	    isPM : function (input) {
@@ -47485,7 +49951,7 @@
 	        lastWeek : '[前週]dddd LT',
 	        sameElse : 'L'
 	    },
-	    ordinalParse : /\d{1,2}日/,
+	    dayOfMonthOrdinalParse : /\d{1,2}日/,
 	    ordinal : function (number, period) {
 	        switch (period) {
 	            case 'd':
@@ -47500,6 +49966,7 @@
 	        future : '%s後',
 	        past : '%s前',
 	        s : '数秒',
+	        ss : '%d秒',
 	        m : '1分',
 	        mm : '%d分',
 	        h : '1時間',
@@ -47518,9 +49985,9 @@
 	})));
 
 
-/***/ },
-/* 398 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 415 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Javanese [jv]
@@ -47528,7 +49995,7 @@
 	//! reference: http://jv.wikipedia.org/wiki/Basa_Jawa
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -47584,6 +50051,7 @@
 	        future : 'wonten ing %s',
 	        past : '%s ingkang kepengker',
 	        s : 'sawetawis detik',
+	        ss : '%d detik',
 	        m : 'setunggal menit',
 	        mm : '%d menit',
 	        h : 'setunggal jam',
@@ -47606,16 +50074,16 @@
 	})));
 
 
-/***/ },
-/* 399 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 416 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Georgian [ka]
 	//! author : Irakli Janiashvili : https://github.com/irakli-janiashvili
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -47658,13 +50126,14 @@
 	        },
 	        past : function (s) {
 	            if ((/(წამი|წუთი|საათი|დღე|თვე)/).test(s)) {
-	                return s.replace(/(ი|ე)$/, 'ის წინ');
+	                return s.replace(/(ი|ე)$/, 'ის უკან');
 	            }
 	            if ((/წელი/).test(s)) {
-	                return s.replace(/წელი$/, 'წლის წინ');
+	                return s.replace(/წელი$/, 'წლის უკან');
 	            }
 	        },
 	        s : 'რამდენიმე წამი',
+	        ss : '%d წამი',
 	        m : 'წუთი',
 	        mm : '%d წუთი',
 	        h : 'საათი',
@@ -47676,7 +50145,7 @@
 	        y : 'წელი',
 	        yy : '%d წელი'
 	    },
-	    ordinalParse: /0|1-ლი|მე-\d{1,2}|\d{1,2}-ე/,
+	    dayOfMonthOrdinalParse: /0|1-ლი|მე-\d{1,2}|\d{1,2}-ე/,
 	    ordinal : function (number) {
 	        if (number === 0) {
 	            return number;
@@ -47700,16 +50169,16 @@
 	})));
 
 
-/***/ },
-/* 400 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 417 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Kazakh [kk]
 	//! authors : Nurlan Rakhimzhanov : https://github.com/nurlan
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -47764,6 +50233,7 @@
 	        future : '%s ішінде',
 	        past : '%s бұрын',
 	        s : 'бірнеше секунд',
+	        ss : '%d секунд',
 	        m : 'бір минут',
 	        mm : '%d минут',
 	        h : 'бір сағат',
@@ -47775,7 +50245,7 @@
 	        y : 'бір жыл',
 	        yy : '%d жыл'
 	    },
-	    ordinalParse: /\d{1,2}-(ші|шы)/,
+	    dayOfMonthOrdinalParse: /\d{1,2}-(ші|шы)/,
 	    ordinal : function (number) {
 	        var a = number % 10,
 	            b = number >= 100 ? 100 : null;
@@ -47792,16 +50262,16 @@
 	})));
 
 
-/***/ },
-/* 401 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 418 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Cambodian [km]
 	//! author : Kruy Vanna : https://github.com/kruyvanna
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -47833,6 +50303,7 @@
 	        future: '%sទៀត',
 	        past: '%sមុន',
 	        s: 'ប៉ុន្មានវិនាទី',
+	        ss: '%d វិនាទី',
 	        m: 'មួយនាទី',
 	        mm: '%d នាទី',
 	        h: 'មួយម៉ោង',
@@ -47855,9 +50326,141 @@
 	})));
 
 
-/***/ },
-/* 402 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 419 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	//! moment.js locale configuration
+	//! locale : Kannada [kn]
+	//! author : Rajeev Naik : https://github.com/rajeevnaikte
+
+	;(function (global, factory) {
+	    true ? factory(__webpack_require__(355)) :
+	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
+	   factory(global.moment)
+	}(this, (function (moment) { 'use strict';
+
+
+	var symbolMap = {
+	    '1': '೧',
+	    '2': '೨',
+	    '3': '೩',
+	    '4': '೪',
+	    '5': '೫',
+	    '6': '೬',
+	    '7': '೭',
+	    '8': '೮',
+	    '9': '೯',
+	    '0': '೦'
+	};
+	var numberMap = {
+	    '೧': '1',
+	    '೨': '2',
+	    '೩': '3',
+	    '೪': '4',
+	    '೫': '5',
+	    '೬': '6',
+	    '೭': '7',
+	    '೮': '8',
+	    '೯': '9',
+	    '೦': '0'
+	};
+
+	var kn = moment.defineLocale('kn', {
+	    months : 'ಜನವರಿ_ಫೆಬ್ರವರಿ_ಮಾರ್ಚ್_ಏಪ್ರಿಲ್_ಮೇ_ಜೂನ್_ಜುಲೈ_ಆಗಸ್ಟ್_ಸೆಪ್ಟೆಂಬರ್_ಅಕ್ಟೋಬರ್_ನವೆಂಬರ್_ಡಿಸೆಂಬರ್'.split('_'),
+	    monthsShort : 'ಜನ_ಫೆಬ್ರ_ಮಾರ್ಚ್_ಏಪ್ರಿಲ್_ಮೇ_ಜೂನ್_ಜುಲೈ_ಆಗಸ್ಟ್_ಸೆಪ್ಟೆಂಬ_ಅಕ್ಟೋಬ_ನವೆಂಬ_ಡಿಸೆಂಬ'.split('_'),
+	    monthsParseExact: true,
+	    weekdays : 'ಭಾನುವಾರ_ಸೋಮವಾರ_ಮಂಗಳವಾರ_ಬುಧವಾರ_ಗುರುವಾರ_ಶುಕ್ರವಾರ_ಶನಿವಾರ'.split('_'),
+	    weekdaysShort : 'ಭಾನು_ಸೋಮ_ಮಂಗಳ_ಬುಧ_ಗುರು_ಶುಕ್ರ_ಶನಿ'.split('_'),
+	    weekdaysMin : 'ಭಾ_ಸೋ_ಮಂ_ಬು_ಗು_ಶು_ಶ'.split('_'),
+	    longDateFormat : {
+	        LT : 'A h:mm',
+	        LTS : 'A h:mm:ss',
+	        L : 'DD/MM/YYYY',
+	        LL : 'D MMMM YYYY',
+	        LLL : 'D MMMM YYYY, A h:mm',
+	        LLLL : 'dddd, D MMMM YYYY, A h:mm'
+	    },
+	    calendar : {
+	        sameDay : '[ಇಂದು] LT',
+	        nextDay : '[ನಾಳೆ] LT',
+	        nextWeek : 'dddd, LT',
+	        lastDay : '[ನಿನ್ನೆ] LT',
+	        lastWeek : '[ಕೊನೆಯ] dddd, LT',
+	        sameElse : 'L'
+	    },
+	    relativeTime : {
+	        future : '%s ನಂತರ',
+	        past : '%s ಹಿಂದೆ',
+	        s : 'ಕೆಲವು ಕ್ಷಣಗಳು',
+	        ss : '%d ಸೆಕೆಂಡುಗಳು',
+	        m : 'ಒಂದು ನಿಮಿಷ',
+	        mm : '%d ನಿಮಿಷ',
+	        h : 'ಒಂದು ಗಂಟೆ',
+	        hh : '%d ಗಂಟೆ',
+	        d : 'ಒಂದು ದಿನ',
+	        dd : '%d ದಿನ',
+	        M : 'ಒಂದು ತಿಂಗಳು',
+	        MM : '%d ತಿಂಗಳು',
+	        y : 'ಒಂದು ವರ್ಷ',
+	        yy : '%d ವರ್ಷ'
+	    },
+	    preparse: function (string) {
+	        return string.replace(/[೧೨೩೪೫೬೭೮೯೦]/g, function (match) {
+	            return numberMap[match];
+	        });
+	    },
+	    postformat: function (string) {
+	        return string.replace(/\d/g, function (match) {
+	            return symbolMap[match];
+	        });
+	    },
+	    meridiemParse: /ರಾತ್ರಿ|ಬೆಳಿಗ್ಗೆ|ಮಧ್ಯಾಹ್ನ|ಸಂಜೆ/,
+	    meridiemHour : function (hour, meridiem) {
+	        if (hour === 12) {
+	            hour = 0;
+	        }
+	        if (meridiem === 'ರಾತ್ರಿ') {
+	            return hour < 4 ? hour : hour + 12;
+	        } else if (meridiem === 'ಬೆಳಿಗ್ಗೆ') {
+	            return hour;
+	        } else if (meridiem === 'ಮಧ್ಯಾಹ್ನ') {
+	            return hour >= 10 ? hour : hour + 12;
+	        } else if (meridiem === 'ಸಂಜೆ') {
+	            return hour + 12;
+	        }
+	    },
+	    meridiem : function (hour, minute, isLower) {
+	        if (hour < 4) {
+	            return 'ರಾತ್ರಿ';
+	        } else if (hour < 10) {
+	            return 'ಬೆಳಿಗ್ಗೆ';
+	        } else if (hour < 17) {
+	            return 'ಮಧ್ಯಾಹ್ನ';
+	        } else if (hour < 20) {
+	            return 'ಸಂಜೆ';
+	        } else {
+	            return 'ರಾತ್ರಿ';
+	        }
+	    },
+	    dayOfMonthOrdinalParse: /\d{1,2}(ನೇ)/,
+	    ordinal : function (number) {
+	        return number + 'ನೇ';
+	    },
+	    week : {
+	        dow : 0, // Sunday is the first day of the week.
+	        doy : 6  // The week that contains Jan 1st is the first week of the year.
+	    }
+	});
+
+	return kn;
+
+	})));
+
+
+/***/ }),
+/* 420 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Korean [ko]
@@ -47865,7 +50468,7 @@
 	//! author : Jeeeyul Lee <jeeeyul@gmail.com>
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -47878,12 +50481,16 @@
 	    weekdaysShort : '일_월_화_수_목_금_토'.split('_'),
 	    weekdaysMin : '일_월_화_수_목_금_토'.split('_'),
 	    longDateFormat : {
-	        LT : 'A h시 m분',
-	        LTS : 'A h시 m분 s초',
+	        LT : 'A h:mm',
+	        LTS : 'A h:mm:ss',
 	        L : 'YYYY.MM.DD',
 	        LL : 'YYYY년 MMMM D일',
-	        LLL : 'YYYY년 MMMM D일 A h시 m분',
-	        LLLL : 'YYYY년 MMMM D일 dddd A h시 m분'
+	        LLL : 'YYYY년 MMMM D일 A h:mm',
+	        LLLL : 'YYYY년 MMMM D일 dddd A h:mm',
+	        l : 'YYYY.MM.DD',
+	        ll : 'YYYY년 MMMM D일',
+	        lll : 'YYYY년 MMMM D일 A h:mm',
+	        llll : 'YYYY년 MMMM D일 dddd A h:mm'
 	    },
 	    calendar : {
 	        sameDay : '오늘 LT',
@@ -47898,7 +50505,7 @@
 	        past : '%s 전',
 	        s : '몇 초',
 	        ss : '%d초',
-	        m : '일분',
+	        m : '1분',
 	        mm : '%d분',
 	        h : '한 시간',
 	        hh : '%d시간',
@@ -47909,8 +50516,22 @@
 	        y : '일 년',
 	        yy : '%d년'
 	    },
-	    ordinalParse : /\d{1,2}일/,
-	    ordinal : '%d일',
+	    dayOfMonthOrdinalParse : /\d{1,2}(일|월|주)/,
+	    ordinal : function (number, period) {
+	        switch (period) {
+	            case 'd':
+	            case 'D':
+	            case 'DDD':
+	                return number + '일';
+	            case 'M':
+	                return number + '월';
+	            case 'w':
+	            case 'W':
+	                return number + '주';
+	            default:
+	                return number;
+	        }
+	    },
 	    meridiemParse : /오전|오후/,
 	    isPM : function (token) {
 	        return token === '오후';
@@ -47925,16 +50546,16 @@
 	})));
 
 
-/***/ },
-/* 403 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 421 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Kyrgyz [ky]
 	//! author : Chyngyz Arystan uulu : https://github.com/chyngyz
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -47990,6 +50611,7 @@
 	        future : '%s ичинде',
 	        past : '%s мурун',
 	        s : 'бирнече секунд',
+	        ss : '%d секунд',
 	        m : 'бир мүнөт',
 	        mm : '%d мүнөт',
 	        h : 'бир саат',
@@ -48001,7 +50623,7 @@
 	        y : 'бир жыл',
 	        yy : '%d жыл'
 	    },
-	    ordinalParse: /\d{1,2}-(чи|чы|чү|чу)/,
+	    dayOfMonthOrdinalParse: /\d{1,2}-(чи|чы|чү|чу)/,
 	    ordinal : function (number) {
 	        var a = number % 10,
 	            b = number >= 100 ? 100 : null;
@@ -48018,9 +50640,9 @@
 	})));
 
 
-/***/ },
-/* 404 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 422 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Luxembourgish [lb]
@@ -48028,7 +50650,7 @@
 	//! author : David Raison : https://github.com/kwisatz
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -48136,6 +50758,7 @@
 	        future : processFutureTime,
 	        past : processPastTime,
 	        s : 'e puer Sekonnen',
+	        ss : '%d Sekonnen',
 	        m : processRelativeTime,
 	        mm : '%d Minutten',
 	        h : processRelativeTime,
@@ -48147,7 +50770,7 @@
 	        y : processRelativeTime,
 	        yy : '%d Joer'
 	    },
-	    ordinalParse: /\d{1,2}\./,
+	    dayOfMonthOrdinalParse: /\d{1,2}\./,
 	    ordinal: '%d.',
 	    week: {
 	        dow: 1, // Monday is the first day of the week.
@@ -48160,16 +50783,16 @@
 	})));
 
 
-/***/ },
-/* 405 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 423 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Lao [lo]
 	//! author : Ryan Hart : https://github.com/ryanhart2
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -48213,6 +50836,7 @@
 	        future : 'ອີກ %s',
 	        past : '%sຜ່ານມາ',
 	        s : 'ບໍ່ເທົ່າໃດວິນາທີ',
+	        ss : '%d ວິນາທີ' ,
 	        m : '1 ນາທີ',
 	        mm : '%d ນາທີ',
 	        h : '1 ຊົ່ວໂມງ',
@@ -48224,7 +50848,7 @@
 	        y : '1 ປີ',
 	        yy : '%d ປີ'
 	    },
-	    ordinalParse: /(ທີ່)\d{1,2}/,
+	    dayOfMonthOrdinalParse: /(ທີ່)\d{1,2}/,
 	    ordinal : function (number) {
 	        return 'ທີ່' + number;
 	    }
@@ -48235,22 +50859,23 @@
 	})));
 
 
-/***/ },
-/* 406 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 424 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Lithuanian [lt]
 	//! author : Mindaugas Mozūras : https://github.com/mmozuras
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
 
 
 	var units = {
+	    'ss' : 'sekundė_sekundžių_sekundes',
 	    'm' : 'minutė_minutės_minutę',
 	    'mm': 'minutės_minučių_minutes',
 	    'h' : 'valanda_valandos_valandą',
@@ -48331,6 +50956,7 @@
 	        future : 'po %s',
 	        past : 'prieš %s',
 	        s : translateSeconds,
+	        ss : translate,
 	        m : translateSingular,
 	        mm : translate,
 	        h : translateSingular,
@@ -48342,7 +50968,7 @@
 	        y : translateSingular,
 	        yy : translate
 	    },
-	    ordinalParse: /\d{1,2}-oji/,
+	    dayOfMonthOrdinalParse: /\d{1,2}-oji/,
 	    ordinal : function (number) {
 	        return number + '-oji';
 	    },
@@ -48357,9 +50983,9 @@
 	})));
 
 
-/***/ },
-/* 407 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 425 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Latvian [lv]
@@ -48367,13 +50993,14 @@
 	//! author : Jānis Elmeris : https://github.com/JanisE
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
 
 
 	var units = {
+	    'ss': 'sekundes_sekundēm_sekunde_sekundes'.split('_'),
 	    'm': 'minūtes_minūtēm_minūte_minūtes'.split('_'),
 	    'mm': 'minūtes_minūtēm_minūte_minūtes'.split('_'),
 	    'h': 'stundas_stundām_stunda_stundas'.split('_'),
@@ -48435,6 +51062,7 @@
 	        future : 'pēc %s',
 	        past : 'pirms %s',
 	        s : relativeSeconds,
+	        ss : relativeTimeWithPlural,
 	        m : relativeTimeWithSingular,
 	        mm : relativeTimeWithPlural,
 	        h : relativeTimeWithSingular,
@@ -48446,7 +51074,7 @@
 	        y : relativeTimeWithSingular,
 	        yy : relativeTimeWithPlural
 	    },
-	    ordinalParse: /\d{1,2}\./,
+	    dayOfMonthOrdinalParse: /\d{1,2}\./,
 	    ordinal : '%d.',
 	    week : {
 	        dow : 1, // Monday is the first day of the week.
@@ -48459,16 +51087,16 @@
 	})));
 
 
-/***/ },
-/* 408 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 426 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Montenegrin [me]
 	//! author : Miodrag Nikač <miodrag@restartit.me> : https://github.com/miodragnikac
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -48476,6 +51104,7 @@
 
 	var translator = {
 	    words: { //Different grammatical cases
+	        ss: ['sekund', 'sekunda', 'sekundi'],
 	        m: ['jedan minut', 'jednog minuta'],
 	        mm: ['minut', 'minuta', 'minuta'],
 	        h: ['jedan sat', 'jednog sata'],
@@ -48551,6 +51180,7 @@
 	        future : 'za %s',
 	        past   : 'prije %s',
 	        s      : 'nekoliko sekundi',
+	        ss     : translator.translate,
 	        m      : translator.translate,
 	        mm     : translator.translate,
 	        h      : translator.translate,
@@ -48562,7 +51192,7 @@
 	        y      : 'godinu',
 	        yy     : translator.translate
 	    },
-	    ordinalParse: /\d{1,2}\./,
+	    dayOfMonthOrdinalParse: /\d{1,2}\./,
 	    ordinal : '%d.',
 	    week : {
 	        dow : 1, // Monday is the first day of the week.
@@ -48575,16 +51205,16 @@
 	})));
 
 
-/***/ },
-/* 409 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 427 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Maori [mi]
 	//! author : John Corrigan <robbiecloset@gmail.com> : https://github.com/johnideal
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -48620,6 +51250,7 @@
 	        future: 'i roto i %s',
 	        past: '%s i mua',
 	        s: 'te hēkona ruarua',
+	        ss: '%d hēkona',
 	        m: 'he meneti',
 	        mm: '%d meneti',
 	        h: 'te haora',
@@ -48631,7 +51262,7 @@
 	        y: 'he tau',
 	        yy: '%d tau'
 	    },
-	    ordinalParse: /\d{1,2}º/,
+	    dayOfMonthOrdinalParse: /\d{1,2}º/,
 	    ordinal: '%dº',
 	    week : {
 	        dow : 1, // Monday is the first day of the week.
@@ -48644,16 +51275,16 @@
 	})));
 
 
-/***/ },
-/* 410 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 428 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Macedonian [mk]
 	//! author : Borislav Mickov : https://github.com/B0k0
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -48697,6 +51328,7 @@
 	        future : 'после %s',
 	        past : 'пред %s',
 	        s : 'неколку секунди',
+	        ss : '%d секунди',
 	        m : 'минута',
 	        mm : '%d минути',
 	        h : 'час',
@@ -48708,7 +51340,7 @@
 	        y : 'година',
 	        yy : '%d години'
 	    },
-	    ordinalParse: /\d{1,2}-(ев|ен|ти|ви|ри|ми)/,
+	    dayOfMonthOrdinalParse: /\d{1,2}-(ев|ен|ти|ви|ри|ми)/,
 	    ordinal : function (number) {
 	        var lastDigit = number % 10,
 	            last2Digits = number % 100;
@@ -48739,16 +51371,16 @@
 	})));
 
 
-/***/ },
-/* 411 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 429 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Malayalam [ml]
 	//! author : Floyd Pink : https://github.com/floydpink
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -48781,6 +51413,7 @@
 	        future : '%s കഴിഞ്ഞ്',
 	        past : '%s മുൻപ്',
 	        s : 'അൽപ നിമിഷങ്ങൾ',
+	        ss : '%d സെക്കൻഡ്',
 	        m : 'ഒരു മിനിറ്റ്',
 	        mm : '%d മിനിറ്റ്',
 	        h : 'ഒരു മണിക്കൂർ',
@@ -48825,9 +51458,9 @@
 	})));
 
 
-/***/ },
-/* 412 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 430 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Marathi [mr]
@@ -48835,7 +51468,7 @@
 	//! author : Vivek Athalye : https://github.com/vnathalye
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -48872,6 +51505,7 @@
 	    if (withoutSuffix) {
 	        switch (string) {
 	            case 's': output = 'काही सेकंद'; break;
+	            case 'ss': output = '%d सेकंद'; break;
 	            case 'm': output = 'एक मिनिट'; break;
 	            case 'mm': output = '%d मिनिटे'; break;
 	            case 'h': output = 'एक तास'; break;
@@ -48887,6 +51521,7 @@
 	    else {
 	        switch (string) {
 	            case 's': output = 'काही सेकंदां'; break;
+	            case 'ss': output = '%d सेकंदां'; break;
 	            case 'm': output = 'एका मिनिटा'; break;
 	            case 'mm': output = '%d मिनिटां'; break;
 	            case 'h': output = 'एका तासा'; break;
@@ -48929,6 +51564,7 @@
 	        future: '%sमध्ये',
 	        past: '%sपूर्वी',
 	        s: relativeTimeMr,
+	        ss: relativeTimeMr,
 	        m: relativeTimeMr,
 	        mm: relativeTimeMr,
 	        h: relativeTimeMr,
@@ -48989,16 +51625,16 @@
 	})));
 
 
-/***/ },
-/* 413 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 431 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Malay [ms]
 	//! author : Weldan Jamili : https://github.com/weldan
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -49054,6 +51690,7 @@
 	        future : 'dalam %s',
 	        past : '%s yang lepas',
 	        s : 'beberapa saat',
+	        ss : '%d saat',
 	        m : 'seminit',
 	        mm : '%d minit',
 	        h : 'sejam',
@@ -49076,9 +51713,9 @@
 	})));
 
 
-/***/ },
-/* 414 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 432 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Malay [ms-my]
@@ -49086,7 +51723,7 @@
 	//! author : Weldan Jamili : https://github.com/weldan
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -49142,6 +51779,7 @@
 	        future : 'dalam %s',
 	        past : '%s yang lepas',
 	        s : 'beberapa saat',
+	        ss : '%d saat',
 	        m : 'seminit',
 	        mm : '%d minit',
 	        h : 'sejam',
@@ -49164,9 +51802,75 @@
 	})));
 
 
-/***/ },
-/* 415 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 433 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	//! moment.js locale configuration
+	//! locale : Maltese (Malta) [mt]
+	//! author : Alessandro Maruccia : https://github.com/alesma
+
+	;(function (global, factory) {
+	    true ? factory(__webpack_require__(355)) :
+	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
+	   factory(global.moment)
+	}(this, (function (moment) { 'use strict';
+
+
+	var mt = moment.defineLocale('mt', {
+	    months : 'Jannar_Frar_Marzu_April_Mejju_Ġunju_Lulju_Awwissu_Settembru_Ottubru_Novembru_Diċembru'.split('_'),
+	    monthsShort : 'Jan_Fra_Mar_Apr_Mej_Ġun_Lul_Aww_Set_Ott_Nov_Diċ'.split('_'),
+	    weekdays : 'Il-Ħadd_It-Tnejn_It-Tlieta_L-Erbgħa_Il-Ħamis_Il-Ġimgħa_Is-Sibt'.split('_'),
+	    weekdaysShort : 'Ħad_Tne_Tli_Erb_Ħam_Ġim_Sib'.split('_'),
+	    weekdaysMin : 'Ħa_Tn_Tl_Er_Ħa_Ġi_Si'.split('_'),
+	    longDateFormat : {
+	        LT : 'HH:mm',
+	        LTS : 'HH:mm:ss',
+	        L : 'DD/MM/YYYY',
+	        LL : 'D MMMM YYYY',
+	        LLL : 'D MMMM YYYY HH:mm',
+	        LLLL : 'dddd, D MMMM YYYY HH:mm'
+	    },
+	    calendar : {
+	        sameDay : '[Illum fil-]LT',
+	        nextDay : '[Għada fil-]LT',
+	        nextWeek : 'dddd [fil-]LT',
+	        lastDay : '[Il-bieraħ fil-]LT',
+	        lastWeek : 'dddd [li għadda] [fil-]LT',
+	        sameElse : 'L'
+	    },
+	    relativeTime : {
+	        future : 'f’ %s',
+	        past : '%s ilu',
+	        s : 'ftit sekondi',
+	        ss : '%d sekondi',
+	        m : 'minuta',
+	        mm : '%d minuti',
+	        h : 'siegħa',
+	        hh : '%d siegħat',
+	        d : 'ġurnata',
+	        dd : '%d ġranet',
+	        M : 'xahar',
+	        MM : '%d xhur',
+	        y : 'sena',
+	        yy : '%d sni'
+	    },
+	    dayOfMonthOrdinalParse : /\d{1,2}º/,
+	    ordinal: '%dº',
+	    week : {
+	        dow : 1, // Monday is the first day of the week.
+	        doy : 4  // The week that contains Jan 4th is the first week of the year.
+	    }
+	});
+
+	return mt;
+
+	})));
+
+
+/***/ }),
+/* 434 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Burmese [my]
@@ -49175,7 +51879,7 @@
 	//! author : Tin Aung Lin : https://github.com/thanyawzinmin
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -49233,6 +51937,7 @@
 	        future: 'လာမည့် %s မှာ',
 	        past: 'လွန်ခဲ့သော %s က',
 	        s: 'စက္ကန်.အနည်းငယ်',
+	        ss : '%d စက္ကန့်',
 	        m: 'တစ်မိနစ်',
 	        mm: '%d မိနစ်',
 	        h: 'တစ်နာရီ',
@@ -49265,9 +51970,9 @@
 	})));
 
 
-/***/ },
-/* 416 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 435 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Norwegian Bokmål [nb]
@@ -49275,7 +51980,7 @@
 	//!           Sigurd Gartmann : https://github.com/sigurdga
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -49309,6 +52014,7 @@
 	        future : 'om %s',
 	        past : '%s siden',
 	        s : 'noen sekunder',
+	        ss : '%d sekunder',
 	        m : 'ett minutt',
 	        mm : '%d minutter',
 	        h : 'en time',
@@ -49320,7 +52026,7 @@
 	        y : 'ett år',
 	        yy : '%d år'
 	    },
-	    ordinalParse: /\d{1,2}\./,
+	    dayOfMonthOrdinalParse: /\d{1,2}\./,
 	    ordinal : '%d.',
 	    week : {
 	        dow : 1, // Monday is the first day of the week.
@@ -49333,16 +52039,16 @@
 	})));
 
 
-/***/ },
-/* 417 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 436 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Nepalese [ne]
 	//! author : suvash : https://github.com/suvash
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -49439,6 +52145,7 @@
 	        future : '%sमा',
 	        past : '%s अगाडि',
 	        s : 'केही क्षण',
+	        ss : '%d सेकेण्ड',
 	        m : 'एक मिनेट',
 	        mm : '%d मिनेट',
 	        h : 'एक घण्टा',
@@ -49461,9 +52168,9 @@
 	})));
 
 
-/***/ },
-/* 418 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 437 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Dutch [nl]
@@ -49471,7 +52178,7 @@
 	//! author : Jacob Middag : https://github.com/middagj
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -49486,7 +52193,9 @@
 	var nl = moment.defineLocale('nl', {
 	    months : 'januari_februari_maart_april_mei_juni_juli_augustus_september_oktober_november_december'.split('_'),
 	    monthsShort : function (m, format) {
-	        if (/-MMM-/.test(format)) {
+	        if (!m) {
+	            return monthsShortWithDots;
+	        } else if (/-MMM-/.test(format)) {
 	            return monthsShortWithoutDots[m.month()];
 	        } else {
 	            return monthsShortWithDots[m.month()];
@@ -49504,7 +52213,7 @@
 
 	    weekdays : 'zondag_maandag_dinsdag_woensdag_donderdag_vrijdag_zaterdag'.split('_'),
 	    weekdaysShort : 'zo._ma._di._wo._do._vr._za.'.split('_'),
-	    weekdaysMin : 'Zo_Ma_Di_Wo_Do_Vr_Za'.split('_'),
+	    weekdaysMin : 'zo_ma_di_wo_do_vr_za'.split('_'),
 	    weekdaysParseExact : true,
 	    longDateFormat : {
 	        LT : 'HH:mm',
@@ -49526,6 +52235,7 @@
 	        future : 'over %s',
 	        past : '%s geleden',
 	        s : 'een paar seconden',
+	        ss : '%d seconden',
 	        m : 'één minuut',
 	        mm : '%d minuten',
 	        h : 'één uur',
@@ -49537,7 +52247,7 @@
 	        y : 'één jaar',
 	        yy : '%d jaar'
 	    },
-	    ordinalParse: /\d{1,2}(ste|de)/,
+	    dayOfMonthOrdinalParse: /\d{1,2}(ste|de)/,
 	    ordinal : function (number) {
 	        return number + ((number === 1 || number === 8 || number >= 20) ? 'ste' : 'de');
 	    },
@@ -49552,9 +52262,9 @@
 	})));
 
 
-/***/ },
-/* 419 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 438 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Dutch (Belgium) [nl-be]
@@ -49562,7 +52272,7 @@
 	//! author : Jacob Middag : https://github.com/middagj
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -49577,7 +52287,9 @@
 	var nlBe = moment.defineLocale('nl-be', {
 	    months : 'januari_februari_maart_april_mei_juni_juli_augustus_september_oktober_november_december'.split('_'),
 	    monthsShort : function (m, format) {
-	        if (/-MMM-/.test(format)) {
+	        if (!m) {
+	            return monthsShortWithDots;
+	        } else if (/-MMM-/.test(format)) {
 	            return monthsShortWithoutDots[m.month()];
 	        } else {
 	            return monthsShortWithDots[m.month()];
@@ -49595,7 +52307,7 @@
 
 	    weekdays : 'zondag_maandag_dinsdag_woensdag_donderdag_vrijdag_zaterdag'.split('_'),
 	    weekdaysShort : 'zo._ma._di._wo._do._vr._za.'.split('_'),
-	    weekdaysMin : 'Zo_Ma_Di_Wo_Do_Vr_Za'.split('_'),
+	    weekdaysMin : 'zo_ma_di_wo_do_vr_za'.split('_'),
 	    weekdaysParseExact : true,
 	    longDateFormat : {
 	        LT : 'HH:mm',
@@ -49617,6 +52329,7 @@
 	        future : 'over %s',
 	        past : '%s geleden',
 	        s : 'een paar seconden',
+	        ss : '%d seconden',
 	        m : 'één minuut',
 	        mm : '%d minuten',
 	        h : 'één uur',
@@ -49628,7 +52341,7 @@
 	        y : 'één jaar',
 	        yy : '%d jaar'
 	    },
-	    ordinalParse: /\d{1,2}(ste|de)/,
+	    dayOfMonthOrdinalParse: /\d{1,2}(ste|de)/,
 	    ordinal : function (number) {
 	        return number + ((number === 1 || number === 8 || number >= 20) ? 'ste' : 'de');
 	    },
@@ -49643,16 +52356,16 @@
 	})));
 
 
-/***/ },
-/* 420 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 439 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Nynorsk [nn]
 	//! author : https://github.com/mechuwind
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -49684,6 +52397,7 @@
 	        future : 'om %s',
 	        past : '%s sidan',
 	        s : 'nokre sekund',
+	        ss : '%d sekund',
 	        m : 'eit minutt',
 	        mm : '%d minutt',
 	        h : 'ein time',
@@ -49695,7 +52409,7 @@
 	        y : 'eit år',
 	        yy : '%d år'
 	    },
-	    ordinalParse: /\d{1,2}\./,
+	    dayOfMonthOrdinalParse: /\d{1,2}\./,
 	    ordinal : '%d.',
 	    week : {
 	        dow : 1, // Monday is the first day of the week.
@@ -49708,16 +52422,16 @@
 	})));
 
 
-/***/ },
-/* 421 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 440 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Punjabi (India) [pa-in]
 	//! author : Harpreet Singh : https://github.com/harpreetkhalsagtbit
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -49775,6 +52489,7 @@
 	        future : '%s ਵਿੱਚ',
 	        past : '%s ਪਿਛਲੇ',
 	        s : 'ਕੁਝ ਸਕਿੰਟ',
+	        ss : '%d ਸਕਿੰਟ',
 	        m : 'ਇਕ ਮਿੰਟ',
 	        mm : '%d ਮਿੰਟ',
 	        h : 'ਇੱਕ ਘੰਟਾ',
@@ -49837,16 +52552,16 @@
 	})));
 
 
-/***/ },
-/* 422 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 441 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Polish [pl]
 	//! author : Rafal Hirsz : https://github.com/evoL
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -49860,6 +52575,8 @@
 	function translate(number, withoutSuffix, key) {
 	    var result = number + ' ';
 	    switch (key) {
+	        case 'ss':
+	            return result + (plural(number) ? 'sekundy' : 'sekund');
 	        case 'm':
 	            return withoutSuffix ? 'minuta' : 'minutę';
 	        case 'mm':
@@ -49877,7 +52594,9 @@
 
 	var pl = moment.defineLocale('pl', {
 	    months : function (momentToFormat, format) {
-	        if (format === '') {
+	        if (!momentToFormat) {
+	            return monthsNominative;
+	        } else if (format === '') {
 	            // Hack: if format empty we know this is used to generate
 	            // RegExp by moment. Give then back both valid forms of months
 	            // in RegExp ready format.
@@ -49903,7 +52622,24 @@
 	    calendar : {
 	        sameDay: '[Dziś o] LT',
 	        nextDay: '[Jutro o] LT',
-	        nextWeek: '[W] dddd [o] LT',
+	        nextWeek: function () {
+	            switch (this.day()) {
+	                case 0:
+	                    return '[W niedzielę o] LT';
+
+	                case 2:
+	                    return '[We wtorek o] LT';
+
+	                case 3:
+	                    return '[W środę o] LT';
+
+	                case 6:
+	                    return '[W sobotę o] LT';
+
+	                default:
+	                    return '[W] dddd [o] LT';
+	            }
+	        },
 	        lastDay: '[Wczoraj o] LT',
 	        lastWeek: function () {
 	            switch (this.day()) {
@@ -49923,6 +52659,7 @@
 	        future : 'za %s',
 	        past : '%s temu',
 	        s : 'kilka sekund',
+	        ss : translate,
 	        m : translate,
 	        mm : translate,
 	        h : translate,
@@ -49934,7 +52671,7 @@
 	        y : 'rok',
 	        yy : translate
 	    },
-	    ordinalParse: /\d{1,2}\./,
+	    dayOfMonthOrdinalParse: /\d{1,2}\./,
 	    ordinal : '%d.',
 	    week : {
 	        dow : 1, // Monday is the first day of the week.
@@ -49947,27 +52684,27 @@
 	})));
 
 
-/***/ },
-/* 423 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 442 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Portuguese [pt]
 	//! author : Jefferson : https://github.com/jalex79
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
 
 
 	var pt = moment.defineLocale('pt', {
-	    months : 'Janeiro_Fevereiro_Março_Abril_Maio_Junho_Julho_Agosto_Setembro_Outubro_Novembro_Dezembro'.split('_'),
-	    monthsShort : 'Jan_Fev_Mar_Abr_Mai_Jun_Jul_Ago_Set_Out_Nov_Dez'.split('_'),
-	    weekdays : 'Domingo_Segunda-Feira_Terça-Feira_Quarta-Feira_Quinta-Feira_Sexta-Feira_Sábado'.split('_'),
+	    months : 'janeiro_fevereiro_março_abril_maio_junho_julho_agosto_setembro_outubro_novembro_dezembro'.split('_'),
+	    monthsShort : 'jan_fev_mar_abr_mai_jun_jul_ago_set_out_nov_dez'.split('_'),
+	    weekdays : 'Domingo_Segunda-feira_Terça-feira_Quarta-feira_Quinta-feira_Sexta-feira_Sábado'.split('_'),
 	    weekdaysShort : 'Dom_Seg_Ter_Qua_Qui_Sex_Sáb'.split('_'),
-	    weekdaysMin : 'Dom_2ª_3ª_4ª_5ª_6ª_Sáb'.split('_'),
+	    weekdaysMin : 'Do_2ª_3ª_4ª_5ª_6ª_Sá'.split('_'),
 	    weekdaysParseExact : true,
 	    longDateFormat : {
 	        LT : 'HH:mm',
@@ -49993,6 +52730,7 @@
 	        future : 'em %s',
 	        past : 'há %s',
 	        s : 'segundos',
+	        ss : '%d segundos',
 	        m : 'um minuto',
 	        mm : '%d minutos',
 	        h : 'uma hora',
@@ -50004,7 +52742,7 @@
 	        y : 'um ano',
 	        yy : '%d anos'
 	    },
-	    ordinalParse: /\d{1,2}º/,
+	    dayOfMonthOrdinalParse: /\d{1,2}º/,
 	    ordinal : '%dº',
 	    week : {
 	        dow : 1, // Monday is the first day of the week.
@@ -50017,27 +52755,27 @@
 	})));
 
 
-/***/ },
-/* 424 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 443 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Portuguese (Brazil) [pt-br]
 	//! author : Caio Ribeiro Pereira : https://github.com/caio-ribeiro-pereira
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
 
 
 	var ptBr = moment.defineLocale('pt-br', {
-	    months : 'Janeiro_Fevereiro_Março_Abril_Maio_Junho_Julho_Agosto_Setembro_Outubro_Novembro_Dezembro'.split('_'),
-	    monthsShort : 'Jan_Fev_Mar_Abr_Mai_Jun_Jul_Ago_Set_Out_Nov_Dez'.split('_'),
+	    months : 'janeiro_fevereiro_março_abril_maio_junho_julho_agosto_setembro_outubro_novembro_dezembro'.split('_'),
+	    monthsShort : 'jan_fev_mar_abr_mai_jun_jul_ago_set_out_nov_dez'.split('_'),
 	    weekdays : 'Domingo_Segunda-feira_Terça-feira_Quarta-feira_Quinta-feira_Sexta-feira_Sábado'.split('_'),
 	    weekdaysShort : 'Dom_Seg_Ter_Qua_Qui_Sex_Sáb'.split('_'),
-	    weekdaysMin : 'Dom_2ª_3ª_4ª_5ª_6ª_Sáb'.split('_'),
+	    weekdaysMin : 'Do_2ª_3ª_4ª_5ª_6ª_Sá'.split('_'),
 	    weekdaysParseExact : true,
 	    longDateFormat : {
 	        LT : 'HH:mm',
@@ -50063,6 +52801,7 @@
 	        future : 'em %s',
 	        past : '%s atrás',
 	        s : 'poucos segundos',
+	        ss : '%d segundos',
 	        m : 'um minuto',
 	        mm : '%d minutos',
 	        h : 'uma hora',
@@ -50074,7 +52813,7 @@
 	        y : 'um ano',
 	        yy : '%d anos'
 	    },
-	    ordinalParse: /\d{1,2}º/,
+	    dayOfMonthOrdinalParse: /\d{1,2}º/,
 	    ordinal : '%dº'
 	});
 
@@ -50083,9 +52822,9 @@
 	})));
 
 
-/***/ },
-/* 425 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 444 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Romanian [ro]
@@ -50093,7 +52832,7 @@
 	//! author : Valentin Agachi : https://github.com/avaly
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -50101,6 +52840,7 @@
 
 	function relativeTimeWithPlural(number, withoutSuffix, key) {
 	    var format = {
+	            'ss': 'secunde',
 	            'mm': 'minute',
 	            'hh': 'ore',
 	            'dd': 'zile',
@@ -50141,6 +52881,7 @@
 	        future : 'peste %s',
 	        past : '%s în urmă',
 	        s : 'câteva secunde',
+	        ss : relativeTimeWithPlural,
 	        m : 'un minut',
 	        mm : relativeTimeWithPlural,
 	        h : 'o oră',
@@ -50163,9 +52904,9 @@
 	})));
 
 
-/***/ },
-/* 426 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 445 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Russian [ru]
@@ -50174,7 +52915,7 @@
 	//! author : Коренберг Марк : https://github.com/socketpair
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -50186,6 +52927,7 @@
 	}
 	function relativeTimeWithPlural(number, withoutSuffix, key) {
 	    var format = {
+	        'ss': withoutSuffix ? 'секунда_секунды_секунд' : 'секунду_секунды_секунд',
 	        'mm': withoutSuffix ? 'минута_минуты_минут' : 'минуту_минуты_минут',
 	        'hh': 'час_часа_часов',
 	        'dd': 'день_дня_дней',
@@ -50237,12 +52979,12 @@
 	    // Выражение, которое соотвествует только сокращённым формам
 	    monthsShortStrictRegex: /^(янв\.|февр?\.|мар[т.]|апр\.|ма[яй]|июн[ья.]|июл[ья.]|авг\.|сент?\.|окт\.|нояб?\.|дек\.)/i,
 	    longDateFormat : {
-	        LT : 'HH:mm',
-	        LTS : 'HH:mm:ss',
+	        LT : 'H:mm',
+	        LTS : 'H:mm:ss',
 	        L : 'DD.MM.YYYY',
 	        LL : 'D MMMM YYYY г.',
-	        LLL : 'D MMMM YYYY г., HH:mm',
-	        LLLL : 'dddd, D MMMM YYYY г., HH:mm'
+	        LLL : 'D MMMM YYYY г., H:mm',
+	        LLLL : 'dddd, D MMMM YYYY г., H:mm'
 	    },
 	    calendar : {
 	        sameDay: '[Сегодня в] LT',
@@ -50298,6 +53040,7 @@
 	        future : 'через %s',
 	        past : '%s назад',
 	        s : 'несколько секунд',
+	        ss : relativeTimeWithPlural,
 	        m : relativeTimeWithPlural,
 	        mm : relativeTimeWithPlural,
 	        h : 'час',
@@ -50324,7 +53067,7 @@
 	            return 'вечера';
 	        }
 	    },
-	    ordinalParse: /\d{1,2}-(й|го|я)/,
+	    dayOfMonthOrdinalParse: /\d{1,2}-(й|го|я)/,
 	    ordinal: function (number, period) {
 	        switch (period) {
 	            case 'M':
@@ -50342,7 +53085,7 @@
 	    },
 	    week : {
 	        dow : 1, // Monday is the first day of the week.
-	        doy : 7  // The week that contains Jan 1st is the first week of the year.
+	        doy : 4  // The week that contains Jan 4th is the first week of the year.
 	    }
 	});
 
@@ -50351,16 +53094,120 @@
 	})));
 
 
-/***/ },
-/* 427 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 446 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	//! moment.js locale configuration
+	//! locale : Sindhi [sd]
+	//! author : Narain Sagar : https://github.com/narainsagar
+
+	;(function (global, factory) {
+	    true ? factory(__webpack_require__(355)) :
+	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
+	   factory(global.moment)
+	}(this, (function (moment) { 'use strict';
+
+
+	var months = [
+	    'جنوري',
+	    'فيبروري',
+	    'مارچ',
+	    'اپريل',
+	    'مئي',
+	    'جون',
+	    'جولاءِ',
+	    'آگسٽ',
+	    'سيپٽمبر',
+	    'آڪٽوبر',
+	    'نومبر',
+	    'ڊسمبر'
+	];
+	var days = [
+	    'آچر',
+	    'سومر',
+	    'اڱارو',
+	    'اربع',
+	    'خميس',
+	    'جمع',
+	    'ڇنڇر'
+	];
+
+	var sd = moment.defineLocale('sd', {
+	    months : months,
+	    monthsShort : months,
+	    weekdays : days,
+	    weekdaysShort : days,
+	    weekdaysMin : days,
+	    longDateFormat : {
+	        LT : 'HH:mm',
+	        LTS : 'HH:mm:ss',
+	        L : 'DD/MM/YYYY',
+	        LL : 'D MMMM YYYY',
+	        LLL : 'D MMMM YYYY HH:mm',
+	        LLLL : 'dddd، D MMMM YYYY HH:mm'
+	    },
+	    meridiemParse: /صبح|شام/,
+	    isPM : function (input) {
+	        return 'شام' === input;
+	    },
+	    meridiem : function (hour, minute, isLower) {
+	        if (hour < 12) {
+	            return 'صبح';
+	        }
+	        return 'شام';
+	    },
+	    calendar : {
+	        sameDay : '[اڄ] LT',
+	        nextDay : '[سڀاڻي] LT',
+	        nextWeek : 'dddd [اڳين هفتي تي] LT',
+	        lastDay : '[ڪالهه] LT',
+	        lastWeek : '[گزريل هفتي] dddd [تي] LT',
+	        sameElse : 'L'
+	    },
+	    relativeTime : {
+	        future : '%s پوء',
+	        past : '%s اڳ',
+	        s : 'چند سيڪنڊ',
+	        ss : '%d سيڪنڊ',
+	        m : 'هڪ منٽ',
+	        mm : '%d منٽ',
+	        h : 'هڪ ڪلاڪ',
+	        hh : '%d ڪلاڪ',
+	        d : 'هڪ ڏينهن',
+	        dd : '%d ڏينهن',
+	        M : 'هڪ مهينو',
+	        MM : '%d مهينا',
+	        y : 'هڪ سال',
+	        yy : '%d سال'
+	    },
+	    preparse: function (string) {
+	        return string.replace(/،/g, ',');
+	    },
+	    postformat: function (string) {
+	        return string.replace(/,/g, '،');
+	    },
+	    week : {
+	        dow : 1, // Monday is the first day of the week.
+	        doy : 4  // The week that contains Jan 4th is the first week of the year.
+	    }
+	});
+
+	return sd;
+
+	})));
+
+
+/***/ }),
+/* 447 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Northern Sami [se]
 	//! authors : Bård Rolstad Henriksen : https://github.com/karamell
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -50393,6 +53240,7 @@
 	        future : '%s geažes',
 	        past : 'maŋit %s',
 	        s : 'moadde sekunddat',
+	        ss: '%d sekunddat',
 	        m : 'okta minuhta',
 	        mm : '%d minuhtat',
 	        h : 'okta diimmu',
@@ -50404,7 +53252,7 @@
 	        y : 'okta jahki',
 	        yy : '%d jagit'
 	    },
-	    ordinalParse: /\d{1,2}\./,
+	    dayOfMonthOrdinalParse: /\d{1,2}\./,
 	    ordinal : '%d.',
 	    week : {
 	        dow : 1, // Monday is the first day of the week.
@@ -50417,16 +53265,16 @@
 	})));
 
 
-/***/ },
-/* 428 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 448 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Sinhalese [si]
 	//! author : Sampath Sitinamaluwa : https://github.com/sampathsris
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -50460,6 +53308,7 @@
 	        future : '%sකින්',
 	        past : '%sකට පෙර',
 	        s : 'තත්පර කිහිපය',
+	        ss : 'තත්පර %d',
 	        m : 'මිනිත්තුව',
 	        mm : 'මිනිත්තු %d',
 	        h : 'පැය',
@@ -50471,7 +53320,7 @@
 	        y : 'වසර',
 	        yy : 'වසර %d'
 	    },
-	    ordinalParse: /\d{1,2} වැනි/,
+	    dayOfMonthOrdinalParse: /\d{1,2} වැනි/,
 	    ordinal : function (number) {
 	        return number + ' වැනි';
 	    },
@@ -50493,9 +53342,9 @@
 	})));
 
 
-/***/ },
-/* 429 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 449 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Slovak [sk]
@@ -50503,7 +53352,7 @@
 	//! based on work of petrbela : https://github.com/petrbela
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -50519,6 +53368,13 @@
 	    switch (key) {
 	        case 's':  // a few seconds / in a few seconds / a few seconds ago
 	            return (withoutSuffix || isFuture) ? 'pár sekúnd' : 'pár sekundami';
+	        case 'ss': // 9 seconds / in 9 seconds / 9 seconds ago
+	            if (withoutSuffix || isFuture) {
+	                return result + (plural(number) ? 'sekundy' : 'sekúnd');
+	            } else {
+	                return result + 'sekundami';
+	            }
+	            break;
 	        case 'm':  // a minute / in a minute / a minute ago
 	            return withoutSuffix ? 'minúta' : (isFuture ? 'minútu' : 'minútou');
 	        case 'mm': // 9 minutes / in 9 minutes / 9 minutes ago
@@ -50624,6 +53480,7 @@
 	        future : 'za %s',
 	        past : 'pred %s',
 	        s : translate,
+	        ss : translate,
 	        m : translate,
 	        mm : translate,
 	        h : translate,
@@ -50635,7 +53492,7 @@
 	        y : translate,
 	        yy : translate
 	    },
-	    ordinalParse: /\d{1,2}\./,
+	    dayOfMonthOrdinalParse: /\d{1,2}\./,
 	    ordinal : '%d.',
 	    week : {
 	        dow : 1, // Monday is the first day of the week.
@@ -50648,16 +53505,16 @@
 	})));
 
 
-/***/ },
-/* 430 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 450 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Slovenian [sl]
 	//! author : Robert Sedovšek : https://github.com/sedovsek
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -50668,6 +53525,17 @@
 	    switch (key) {
 	        case 's':
 	            return withoutSuffix || isFuture ? 'nekaj sekund' : 'nekaj sekundami';
+	        case 'ss':
+	            if (number === 1) {
+	                result += withoutSuffix ? 'sekundo' : 'sekundi';
+	            } else if (number === 2) {
+	                result += withoutSuffix || isFuture ? 'sekundi' : 'sekundah';
+	            } else if (number < 5) {
+	                result += withoutSuffix || isFuture ? 'sekunde' : 'sekundah';
+	            } else {
+	                result += withoutSuffix || isFuture ? 'sekund' : 'sekund';
+	            }
+	            return result;
 	        case 'm':
 	            return withoutSuffix ? 'ena minuta' : 'eno minuto';
 	        case 'mm':
@@ -50791,6 +53659,7 @@
 	        future : 'čez %s',
 	        past   : 'pred %s',
 	        s      : processRelativeTime,
+	        ss     : processRelativeTime,
 	        m      : processRelativeTime,
 	        mm     : processRelativeTime,
 	        h      : processRelativeTime,
@@ -50802,7 +53671,7 @@
 	        y      : processRelativeTime,
 	        yy     : processRelativeTime
 	    },
-	    ordinalParse: /\d{1,2}\./,
+	    dayOfMonthOrdinalParse: /\d{1,2}\./,
 	    ordinal : '%d.',
 	    week : {
 	        dow : 1, // Monday is the first day of the week.
@@ -50815,9 +53684,9 @@
 	})));
 
 
-/***/ },
-/* 431 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 451 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Albanian [sq]
@@ -50826,7 +53695,7 @@
 	//! author : Oerd Cukalla : https://github.com/oerd
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -50866,6 +53735,7 @@
 	        future : 'në %s',
 	        past : '%s më parë',
 	        s : 'disa sekonda',
+	        ss : '%d sekonda',
 	        m : 'një minutë',
 	        mm : '%d minuta',
 	        h : 'një orë',
@@ -50877,7 +53747,7 @@
 	        y : 'një vit',
 	        yy : '%d vite'
 	    },
-	    ordinalParse: /\d{1,2}\./,
+	    dayOfMonthOrdinalParse: /\d{1,2}\./,
 	    ordinal : '%d.',
 	    week : {
 	        dow : 1, // Monday is the first day of the week.
@@ -50890,16 +53760,16 @@
 	})));
 
 
-/***/ },
-/* 432 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 452 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Serbian [sr]
 	//! author : Milan Janačković<milanjanackovic@gmail.com> : https://github.com/milan-j
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -50907,6 +53777,7 @@
 
 	var translator = {
 	    words: { //Different grammatical cases
+	        ss: ['sekunda', 'sekunde', 'sekundi'],
 	        m: ['jedan minut', 'jedne minute'],
 	        mm: ['minut', 'minute', 'minuta'],
 	        h: ['jedan sat', 'jednog sata'],
@@ -50981,6 +53852,7 @@
 	        future : 'za %s',
 	        past   : 'pre %s',
 	        s      : 'nekoliko sekundi',
+	        ss     : translator.translate,
 	        m      : translator.translate,
 	        mm     : translator.translate,
 	        h      : translator.translate,
@@ -50992,7 +53864,7 @@
 	        y      : 'godinu',
 	        yy     : translator.translate
 	    },
-	    ordinalParse: /\d{1,2}\./,
+	    dayOfMonthOrdinalParse: /\d{1,2}\./,
 	    ordinal : '%d.',
 	    week : {
 	        dow : 1, // Monday is the first day of the week.
@@ -51005,16 +53877,16 @@
 	})));
 
 
-/***/ },
-/* 433 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 453 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Serbian Cyrillic [sr-cyrl]
 	//! author : Milan Janačković<milanjanackovic@gmail.com> : https://github.com/milan-j
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -51022,6 +53894,7 @@
 
 	var translator = {
 	    words: { //Different grammatical cases
+	        ss: ['секунда', 'секунде', 'секунди'],
 	        m: ['један минут', 'једне минуте'],
 	        mm: ['минут', 'минуте', 'минута'],
 	        h: ['један сат', 'једног сата'],
@@ -51096,6 +53969,7 @@
 	        future : 'за %s',
 	        past   : 'пре %s',
 	        s      : 'неколико секунди',
+	        ss     : translator.translate,
 	        m      : translator.translate,
 	        mm     : translator.translate,
 	        h      : translator.translate,
@@ -51107,7 +53981,7 @@
 	        y      : 'годину',
 	        yy     : translator.translate
 	    },
-	    ordinalParse: /\d{1,2}\./,
+	    dayOfMonthOrdinalParse: /\d{1,2}\./,
 	    ordinal : '%d.',
 	    week : {
 	        dow : 1, // Monday is the first day of the week.
@@ -51120,16 +53994,16 @@
 	})));
 
 
-/***/ },
-/* 434 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 454 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : siSwati [ss]
 	//! author : Nicolai Davies<mail@nicolai.io> : https://github.com/nicolaidavies
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -51163,6 +54037,7 @@
 	        future : 'nga %s',
 	        past : 'wenteka nga %s',
 	        s : 'emizuzwana lomcane',
+	        ss : '%d mzuzwana',
 	        m : 'umzuzu',
 	        mm : '%d emizuzu',
 	        h : 'lihora',
@@ -51201,7 +54076,7 @@
 	            return hour + 12;
 	        }
 	    },
-	    ordinalParse: /\d{1,2}/,
+	    dayOfMonthOrdinalParse: /\d{1,2}/,
 	    ordinal : '%d',
 	    week : {
 	        dow : 1, // Monday is the first day of the week.
@@ -51214,16 +54089,16 @@
 	})));
 
 
-/***/ },
-/* 435 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 455 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Swedish [sv]
 	//! author : Jens Alm : https://github.com/ulmus
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -51257,6 +54132,7 @@
 	        future : 'om %s',
 	        past : 'för %s sedan',
 	        s : 'några sekunder',
+	        ss : '%d sekunder',
 	        m : 'en minut',
 	        mm : '%d minuter',
 	        h : 'en timme',
@@ -51268,7 +54144,7 @@
 	        y : 'ett år',
 	        yy : '%d år'
 	    },
-	    ordinalParse: /\d{1,2}(e|a)/,
+	    dayOfMonthOrdinalParse: /\d{1,2}(e|a)/,
 	    ordinal : function (number) {
 	        var b = number % 10,
 	            output = (~~(number % 100 / 10) === 1) ? 'e' :
@@ -51288,16 +54164,16 @@
 	})));
 
 
-/***/ },
-/* 436 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 456 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Swahili [sw]
 	//! author : Fahad Kassim : https://github.com/fadsel
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -51330,6 +54206,7 @@
 	        future : '%s baadaye',
 	        past : 'tokea %s',
 	        s : 'hivi punde',
+	        ss : 'sekunde %d',
 	        m : 'dakika moja',
 	        mm : 'dakika %d',
 	        h : 'saa limoja',
@@ -51352,16 +54229,16 @@
 	})));
 
 
-/***/ },
-/* 437 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 457 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Tamil [ta]
 	//! author : Arjunkumar Krishnamoorthy : https://github.com/tk120404
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -51418,6 +54295,7 @@
 	        future : '%s இல்',
 	        past : '%s முன்',
 	        s : 'ஒரு சில விநாடிகள்',
+	        ss : '%d விநாடிகள்',
 	        m : 'ஒரு நிமிடம்',
 	        mm : '%d நிமிடங்கள்',
 	        h : 'ஒரு மணி நேரம்',
@@ -51429,7 +54307,7 @@
 	        y : 'ஒரு வருடம்',
 	        yy : '%d ஆண்டுகள்'
 	    },
-	    ordinalParse: /\d{1,2}வது/,
+	    dayOfMonthOrdinalParse: /\d{1,2}வது/,
 	    ordinal : function (number) {
 	        return number + 'வது';
 	    },
@@ -51487,16 +54365,16 @@
 	})));
 
 
-/***/ },
-/* 438 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 458 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Telugu [te]
 	//! author : Krishna Chaitanya Thota : https://github.com/kcthota
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -51529,6 +54407,7 @@
 	        future : '%s లో',
 	        past : '%s క్రితం',
 	        s : 'కొన్ని క్షణాలు',
+	        ss : '%d సెకన్లు',
 	        m : 'ఒక నిమిషం',
 	        mm : '%d నిమిషాలు',
 	        h : 'ఒక గంట',
@@ -51540,7 +54419,7 @@
 	        y : 'ఒక సంవత్సరం',
 	        yy : '%d సంవత్సరాలు'
 	    },
-	    ordinalParse : /\d{1,2}వ/,
+	    dayOfMonthOrdinalParse : /\d{1,2}వ/,
 	    ordinal : '%dవ',
 	    meridiemParse: /రాత్రి|ఉదయం|మధ్యాహ్నం|సాయంత్రం/,
 	    meridiemHour : function (hour, meridiem) {
@@ -51581,9 +54460,9 @@
 	})));
 
 
-/***/ },
-/* 439 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 459 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Tetun Dili (East Timor) [tet]
@@ -51591,7 +54470,7 @@
 	//! author : Onorio De J. Afonso : https://github.com/marobo
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -51623,6 +54502,7 @@
 	        future : 'iha %s',
 	        past : '%s liuba',
 	        s : 'minutu balun',
+	        ss : 'minutu %d',
 	        m : 'minutu ida',
 	        mm : 'minutus %d',
 	        h : 'horas ida',
@@ -51634,7 +54514,7 @@
 	        y : 'tinan ida',
 	        yy : 'tinan %d'
 	    },
-	    ordinalParse: /\d{1,2}(st|nd|rd|th)/,
+	    dayOfMonthOrdinalParse: /\d{1,2}(st|nd|rd|th)/,
 	    ordinal : function (number) {
 	        var b = number % 10,
 	            output = (~~(number % 100 / 10) === 1) ? 'th' :
@@ -51654,16 +54534,16 @@
 	})));
 
 
-/***/ },
-/* 440 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 460 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Thai [th]
 	//! author : Kridsada Thanabulpong : https://github.com/sirn
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -51680,7 +54560,7 @@
 	    longDateFormat : {
 	        LT : 'H:mm',
 	        LTS : 'H:mm:ss',
-	        L : 'YYYY/MM/DD',
+	        L : 'DD/MM/YYYY',
 	        LL : 'D MMMM YYYY',
 	        LLL : 'D MMMM YYYY เวลา H:mm',
 	        LLLL : 'วันddddที่ D MMMM YYYY เวลา H:mm'
@@ -51708,6 +54588,7 @@
 	        future : 'อีก %s',
 	        past : '%sที่แล้ว',
 	        s : 'ไม่กี่วินาที',
+	        ss : '%d วินาที',
 	        m : '1 นาที',
 	        mm : '%d นาที',
 	        h : '1 ชั่วโมง',
@@ -51726,16 +54607,16 @@
 	})));
 
 
-/***/ },
-/* 441 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 461 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Tagalog (Philippines) [tl-ph]
 	//! author : Dan Hagman : https://github.com/hagmandan
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -51767,6 +54648,7 @@
 	        future : 'sa loob ng %s',
 	        past : '%s ang nakalipas',
 	        s : 'ilang segundo',
+	        ss : '%d segundo',
 	        m : 'isang minuto',
 	        mm : '%d minuto',
 	        h : 'isang oras',
@@ -51778,7 +54660,7 @@
 	        y : 'isang taon',
 	        yy : '%d taon'
 	    },
-	    ordinalParse: /\d{1,2}/,
+	    dayOfMonthOrdinalParse: /\d{1,2}/,
 	    ordinal : function (number) {
 	        return number;
 	    },
@@ -51793,16 +54675,16 @@
 	})));
 
 
-/***/ },
-/* 442 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 462 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Klingon [tlh]
 	//! author : Dominika Kruk : https://github.com/amaranthrose
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -51837,6 +54719,8 @@
 	function translate(number, withoutSuffix, string, isFuture) {
 	    var numberNoun = numberAsNoun(number);
 	    switch (string) {
+	        case 'ss':
+	            return numberNoun + ' lup';
 	        case 'mm':
 	            return numberNoun + ' tup';
 	        case 'hh':
@@ -51894,6 +54778,7 @@
 	        future : translateFuture,
 	        past : translatePast,
 	        s : 'puS lup',
+	        ss : translate,
 	        m : 'wa’ tup',
 	        mm : translate,
 	        h : 'wa’ rep',
@@ -51905,7 +54790,7 @@
 	        y : 'wa’ DIS',
 	        yy : translate
 	    },
-	    ordinalParse: /\d{1,2}\./,
+	    dayOfMonthOrdinalParse: /\d{1,2}\./,
 	    ordinal : '%d.',
 	    week : {
 	        dow : 1, // Monday is the first day of the week.
@@ -51918,9 +54803,9 @@
 	})));
 
 
-/***/ },
-/* 443 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 463 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Turkish [tr]
@@ -51928,7 +54813,7 @@
 	//!           Burak Yiğit Kaya: https://github.com/BYK
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -51972,15 +54857,16 @@
 	    calendar : {
 	        sameDay : '[bugün saat] LT',
 	        nextDay : '[yarın saat] LT',
-	        nextWeek : '[haftaya] dddd [saat] LT',
+	        nextWeek : '[gelecek] dddd [saat] LT',
 	        lastDay : '[dün] LT',
-	        lastWeek : '[geçen hafta] dddd [saat] LT',
+	        lastWeek : '[geçen] dddd [saat] LT',
 	        sameElse : 'L'
 	    },
 	    relativeTime : {
 	        future : '%s sonra',
 	        past : '%s önce',
 	        s : 'birkaç saniye',
+	        ss : '%d saniye',
 	        m : 'bir dakika',
 	        mm : '%d dakika',
 	        h : 'bir saat',
@@ -51992,7 +54878,7 @@
 	        y : 'bir yıl',
 	        yy : '%d yıl'
 	    },
-	    ordinalParse: /\d{1,2}'(inci|nci|üncü|ncı|uncu|ıncı)/,
+	    dayOfMonthOrdinalParse: /\d{1,2}'(inci|nci|üncü|ncı|uncu|ıncı)/,
 	    ordinal : function (number) {
 	        if (number === 0) {  // special case for zero
 	            return number + '\'ıncı';
@@ -52013,9 +54899,9 @@
 	})));
 
 
-/***/ },
-/* 444 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 464 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Talossan [tzl]
@@ -52023,7 +54909,7 @@
 	//! author : Iustì Canun
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -52068,6 +54954,7 @@
 	        future : 'osprei %s',
 	        past : 'ja%s',
 	        s : processRelativeTime,
+	        ss : processRelativeTime,
 	        m : processRelativeTime,
 	        mm : processRelativeTime,
 	        h : processRelativeTime,
@@ -52079,7 +54966,7 @@
 	        y : processRelativeTime,
 	        yy : processRelativeTime
 	    },
-	    ordinalParse: /\d{1,2}\./,
+	    dayOfMonthOrdinalParse: /\d{1,2}\./,
 	    ordinal : '%d.',
 	    week : {
 	        dow : 1, // Monday is the first day of the week.
@@ -52090,6 +54977,7 @@
 	function processRelativeTime(number, withoutSuffix, key, isFuture) {
 	    var format = {
 	        's': ['viensas secunds', '\'iensas secunds'],
+	        'ss': [number + ' secunds', '' + number + ' secunds'],
 	        'm': ['\'n míut', '\'iens míut'],
 	        'mm': [number + ' míuts', '' + number + ' míuts'],
 	        'h': ['\'n þora', '\'iensa þora'],
@@ -52109,16 +54997,16 @@
 	})));
 
 
-/***/ },
-/* 445 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 465 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Central Atlas Tamazight [tzm]
 	//! author : Abdel Said : https://github.com/abdelsaid
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -52150,6 +55038,7 @@
 	        future : 'ⴷⴰⴷⵅ ⵙ ⵢⴰⵏ %s',
 	        past : 'ⵢⴰⵏ %s',
 	        s : 'ⵉⵎⵉⴽ',
+	        ss : '%d ⵉⵎⵉⴽ',
 	        m : 'ⵎⵉⵏⵓⴺ',
 	        mm : '%d ⵎⵉⵏⵓⴺ',
 	        h : 'ⵙⴰⵄⴰ',
@@ -52172,16 +55061,16 @@
 	})));
 
 
-/***/ },
-/* 446 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 466 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Central Atlas Tamazight Latin [tzm-latn]
 	//! author : Abdel Said : https://github.com/abdelsaid
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -52213,6 +55102,7 @@
 	        future : 'dadkh s yan %s',
 	        past : 'yan %s',
 	        s : 'imik',
+	        ss : '%d imik',
 	        m : 'minuḍ',
 	        mm : '%d minuḍ',
 	        h : 'saɛa',
@@ -52235,9 +55125,9 @@
 	})));
 
 
-/***/ },
-/* 447 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 467 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Ukrainian [uk]
@@ -52245,7 +55135,7 @@
 	//! Author : Menelion Elensúle : https://github.com/Oire
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -52257,6 +55147,7 @@
 	}
 	function relativeTimeWithPlural(number, withoutSuffix, key) {
 	    var format = {
+	        'ss': withoutSuffix ? 'секунда_секунди_секунд' : 'секунду_секунди_секунд',
 	        'mm': withoutSuffix ? 'хвилина_хвилини_хвилин' : 'хвилину_хвилини_хвилин',
 	        'hh': withoutSuffix ? 'година_години_годин' : 'годину_години_годин',
 	        'dd': 'день_дні_днів',
@@ -52278,8 +55169,13 @@
 	        'nominative': 'неділя_понеділок_вівторок_середа_четвер_п’ятниця_субота'.split('_'),
 	        'accusative': 'неділю_понеділок_вівторок_середу_четвер_п’ятницю_суботу'.split('_'),
 	        'genitive': 'неділі_понеділка_вівторка_середи_четверга_п’ятниці_суботи'.split('_')
-	    },
-	    nounCase = (/(\[[ВвУу]\]) ?dddd/).test(format) ?
+	    };
+
+	    if (!m) {
+	        return weekdays['nominative'];
+	    }
+
+	    var nounCase = (/(\[[ВвУу]\]) ?dddd/).test(format) ?
 	        'accusative' :
 	        ((/\[?(?:минулої|наступної)? ?\] ?dddd/).test(format) ?
 	            'genitive' :
@@ -52333,6 +55229,7 @@
 	        future : 'за %s',
 	        past : '%s тому',
 	        s : 'декілька секунд',
+	        ss : relativeTimeWithPlural,
 	        m : relativeTimeWithPlural,
 	        mm : relativeTimeWithPlural,
 	        h : 'годину',
@@ -52360,7 +55257,7 @@
 	            return 'вечора';
 	        }
 	    },
-	    ordinalParse: /\d{1,2}-(й|го)/,
+	    dayOfMonthOrdinalParse: /\d{1,2}-(й|го)/,
 	    ordinal: function (number, period) {
 	        switch (period) {
 	            case 'M':
@@ -52386,16 +55283,121 @@
 	})));
 
 
-/***/ },
-/* 448 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 468 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	//! moment.js locale configuration
+	//! locale : Urdu [ur]
+	//! author : Sawood Alam : https://github.com/ibnesayeed
+	//! author : Zack : https://github.com/ZackVision
+
+	;(function (global, factory) {
+	    true ? factory(__webpack_require__(355)) :
+	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
+	   factory(global.moment)
+	}(this, (function (moment) { 'use strict';
+
+
+	var months = [
+	    'جنوری',
+	    'فروری',
+	    'مارچ',
+	    'اپریل',
+	    'مئی',
+	    'جون',
+	    'جولائی',
+	    'اگست',
+	    'ستمبر',
+	    'اکتوبر',
+	    'نومبر',
+	    'دسمبر'
+	];
+	var days = [
+	    'اتوار',
+	    'پیر',
+	    'منگل',
+	    'بدھ',
+	    'جمعرات',
+	    'جمعہ',
+	    'ہفتہ'
+	];
+
+	var ur = moment.defineLocale('ur', {
+	    months : months,
+	    monthsShort : months,
+	    weekdays : days,
+	    weekdaysShort : days,
+	    weekdaysMin : days,
+	    longDateFormat : {
+	        LT : 'HH:mm',
+	        LTS : 'HH:mm:ss',
+	        L : 'DD/MM/YYYY',
+	        LL : 'D MMMM YYYY',
+	        LLL : 'D MMMM YYYY HH:mm',
+	        LLLL : 'dddd، D MMMM YYYY HH:mm'
+	    },
+	    meridiemParse: /صبح|شام/,
+	    isPM : function (input) {
+	        return 'شام' === input;
+	    },
+	    meridiem : function (hour, minute, isLower) {
+	        if (hour < 12) {
+	            return 'صبح';
+	        }
+	        return 'شام';
+	    },
+	    calendar : {
+	        sameDay : '[آج بوقت] LT',
+	        nextDay : '[کل بوقت] LT',
+	        nextWeek : 'dddd [بوقت] LT',
+	        lastDay : '[گذشتہ روز بوقت] LT',
+	        lastWeek : '[گذشتہ] dddd [بوقت] LT',
+	        sameElse : 'L'
+	    },
+	    relativeTime : {
+	        future : '%s بعد',
+	        past : '%s قبل',
+	        s : 'چند سیکنڈ',
+	        ss : '%d سیکنڈ',
+	        m : 'ایک منٹ',
+	        mm : '%d منٹ',
+	        h : 'ایک گھنٹہ',
+	        hh : '%d گھنٹے',
+	        d : 'ایک دن',
+	        dd : '%d دن',
+	        M : 'ایک ماہ',
+	        MM : '%d ماہ',
+	        y : 'ایک سال',
+	        yy : '%d سال'
+	    },
+	    preparse: function (string) {
+	        return string.replace(/،/g, ',');
+	    },
+	    postformat: function (string) {
+	        return string.replace(/,/g, '،');
+	    },
+	    week : {
+	        dow : 1, // Monday is the first day of the week.
+	        doy : 4  // The week that contains Jan 4th is the first week of the year.
+	    }
+	});
+
+	return ur;
+
+	})));
+
+
+/***/ }),
+/* 469 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Uzbek [uz]
 	//! author : Sardor Muminov : https://github.com/muminoff
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -52427,6 +55429,7 @@
 	        future : 'Якин %s ичида',
 	        past : 'Бир неча %s олдин',
 	        s : 'фурсат',
+	        ss : '%d фурсат',
 	        m : 'бир дакика',
 	        mm : '%d дакика',
 	        h : 'бир соат',
@@ -52449,16 +55452,80 @@
 	})));
 
 
-/***/ },
-/* 449 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 470 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	//! moment.js locale configuration
+	//! locale : Uzbek Latin [uz-latn]
+	//! author : Rasulbek Mirzayev : github.com/Rasulbeeek
+
+	;(function (global, factory) {
+	    true ? factory(__webpack_require__(355)) :
+	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
+	   factory(global.moment)
+	}(this, (function (moment) { 'use strict';
+
+
+	var uzLatn = moment.defineLocale('uz-latn', {
+	    months : 'Yanvar_Fevral_Mart_Aprel_May_Iyun_Iyul_Avgust_Sentabr_Oktabr_Noyabr_Dekabr'.split('_'),
+	    monthsShort : 'Yan_Fev_Mar_Apr_May_Iyun_Iyul_Avg_Sen_Okt_Noy_Dek'.split('_'),
+	    weekdays : 'Yakshanba_Dushanba_Seshanba_Chorshanba_Payshanba_Juma_Shanba'.split('_'),
+	    weekdaysShort : 'Yak_Dush_Sesh_Chor_Pay_Jum_Shan'.split('_'),
+	    weekdaysMin : 'Ya_Du_Se_Cho_Pa_Ju_Sha'.split('_'),
+	    longDateFormat : {
+	        LT : 'HH:mm',
+	        LTS : 'HH:mm:ss',
+	        L : 'DD/MM/YYYY',
+	        LL : 'D MMMM YYYY',
+	        LLL : 'D MMMM YYYY HH:mm',
+	        LLLL : 'D MMMM YYYY, dddd HH:mm'
+	    },
+	    calendar : {
+	        sameDay : '[Bugun soat] LT [da]',
+	        nextDay : '[Ertaga] LT [da]',
+	        nextWeek : 'dddd [kuni soat] LT [da]',
+	        lastDay : '[Kecha soat] LT [da]',
+	        lastWeek : '[O\'tgan] dddd [kuni soat] LT [da]',
+	        sameElse : 'L'
+	    },
+	    relativeTime : {
+	        future : 'Yaqin %s ichida',
+	        past : 'Bir necha %s oldin',
+	        s : 'soniya',
+	        ss : '%d soniya',
+	        m : 'bir daqiqa',
+	        mm : '%d daqiqa',
+	        h : 'bir soat',
+	        hh : '%d soat',
+	        d : 'bir kun',
+	        dd : '%d kun',
+	        M : 'bir oy',
+	        MM : '%d oy',
+	        y : 'bir yil',
+	        yy : '%d yil'
+	    },
+	    week : {
+	        dow : 1, // Monday is the first day of the week.
+	        doy : 7  // The week that contains Jan 1st is the first week of the year.
+	    }
+	});
+
+	return uzLatn;
+
+	})));
+
+
+/***/ }),
+/* 471 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Vietnamese [vi]
 	//! author : Bang Nguyen : https://github.com/bangnk
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -52507,6 +55574,7 @@
 	        future : '%s tới',
 	        past : '%s trước',
 	        s : 'vài giây',
+	        ss : '%d giây' ,
 	        m : 'một phút',
 	        mm : '%d phút',
 	        h : 'một giờ',
@@ -52518,7 +55586,7 @@
 	        y : 'một năm',
 	        yy : '%d năm'
 	    },
-	    ordinalParse: /\d{1,2}/,
+	    dayOfMonthOrdinalParse: /\d{1,2}/,
 	    ordinal : function (number) {
 	        return number;
 	    },
@@ -52533,16 +55601,16 @@
 	})));
 
 
-/***/ },
-/* 450 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 472 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Pseudo [x-pseudo]
 	//! author : Andrew Hood : https://github.com/andrewhood125
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -52575,6 +55643,7 @@
 	        future : 'í~ñ %s',
 	        past : '%s á~gó',
 	        s : 'á ~féw ~sécó~ñds',
+	        ss : '%d s~écóñ~ds',
 	        m : 'á ~míñ~úté',
 	        mm : '%d m~íñú~tés',
 	        h : 'á~ñ hó~úr',
@@ -52586,7 +55655,7 @@
 	        y : 'á ~ýéár',
 	        yy : '%d ý~éárs'
 	    },
-	    ordinalParse: /\d{1,2}(th|st|nd|rd)/,
+	    dayOfMonthOrdinalParse: /\d{1,2}(th|st|nd|rd)/,
 	    ordinal : function (number) {
 	        var b = number % 10,
 	            output = (~~(number % 100 / 10) === 1) ? 'th' :
@@ -52606,16 +55675,16 @@
 	})));
 
 
-/***/ },
-/* 451 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 473 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
-	//! locale : Yoruba Nigeria (yo)
+	//! locale : Yoruba Nigeria [yo]
 	//! author : Atolagbe Abisoye : https://github.com/andela-batolagbe
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -52647,6 +55716,7 @@
 	        future : 'ní %s',
 	        past : '%s kọjá',
 	        s : 'ìsẹjú aayá die',
+	        ss :'aayá %d',
 	        m : 'ìsẹjú kan',
 	        mm : 'ìsẹjú %d',
 	        h : 'wákati kan',
@@ -52658,7 +55728,7 @@
 	        y : 'ọdún kan',
 	        yy : 'ọdún %d'
 	    },
-	    ordinalParse : /ọjọ́\s\d{1,2}/,
+	    dayOfMonthOrdinalParse : /ọjọ́\s\d{1,2}/,
 	    ordinal : 'ọjọ́ %d',
 	    week : {
 	        dow : 1, // Monday is the first day of the week.
@@ -52671,9 +55741,9 @@
 	})));
 
 
-/***/ },
-/* 452 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 474 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Chinese (China) [zh-cn]
@@ -52681,7 +55751,7 @@
 	//! author : Zeno Zeng : https://github.com/zenozeng
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -52694,16 +55764,16 @@
 	    weekdaysShort : '周日_周一_周二_周三_周四_周五_周六'.split('_'),
 	    weekdaysMin : '日_一_二_三_四_五_六'.split('_'),
 	    longDateFormat : {
-	        LT : 'Ah点mm分',
-	        LTS : 'Ah点m分s秒',
-	        L : 'YYYY-MM-DD',
-	        LL : 'YYYY年MMMD日',
-	        LLL : 'YYYY年MMMD日Ah点mm分',
-	        LLLL : 'YYYY年MMMD日ddddAh点mm分',
-	        l : 'YYYY-MM-DD',
-	        ll : 'YYYY年MMMD日',
-	        lll : 'YYYY年MMMD日Ah点mm分',
-	        llll : 'YYYY年MMMD日ddddAh点mm分'
+	        LT : 'HH:mm',
+	        LTS : 'HH:mm:ss',
+	        L : 'YYYY/MM/DD',
+	        LL : 'YYYY年M月D日',
+	        LLL : 'YYYY年M月D日Ah点mm分',
+	        LLLL : 'YYYY年M月D日ddddAh点mm分',
+	        l : 'YYYY/M/D',
+	        ll : 'YYYY年M月D日',
+	        lll : 'YYYY年M月D日 HH:mm',
+	        llll : 'YYYY年M月D日dddd HH:mm'
 	    },
 	    meridiemParse: /凌晨|早上|上午|中午|下午|晚上/,
 	    meridiemHour: function (hour, meridiem) {
@@ -52737,30 +55807,14 @@
 	        }
 	    },
 	    calendar : {
-	        sameDay : function () {
-	            return this.minutes() === 0 ? '[今天]Ah[点整]' : '[今天]LT';
-	        },
-	        nextDay : function () {
-	            return this.minutes() === 0 ? '[明天]Ah[点整]' : '[明天]LT';
-	        },
-	        lastDay : function () {
-	            return this.minutes() === 0 ? '[昨天]Ah[点整]' : '[昨天]LT';
-	        },
-	        nextWeek : function () {
-	            var startOfWeek, prefix;
-	            startOfWeek = moment().startOf('week');
-	            prefix = this.diff(startOfWeek, 'days') >= 7 ? '[下]' : '[本]';
-	            return this.minutes() === 0 ? prefix + 'dddAh点整' : prefix + 'dddAh点mm';
-	        },
-	        lastWeek : function () {
-	            var startOfWeek, prefix;
-	            startOfWeek = moment().startOf('week');
-	            prefix = this.unix() < startOfWeek.unix()  ? '[上]' : '[本]';
-	            return this.minutes() === 0 ? prefix + 'dddAh点整' : prefix + 'dddAh点mm';
-	        },
-	        sameElse : 'LL'
+	        sameDay : '[今天]LT',
+	        nextDay : '[明天]LT',
+	        nextWeek : '[下]ddddLT',
+	        lastDay : '[昨天]LT',
+	        lastWeek : '[上]ddddLT',
+	        sameElse : 'L'
 	    },
-	    ordinalParse: /\d{1,2}(日|月|周)/,
+	    dayOfMonthOrdinalParse: /\d{1,2}(日|月|周)/,
 	    ordinal : function (number, period) {
 	        switch (period) {
 	            case 'd':
@@ -52780,6 +55834,7 @@
 	        future : '%s内',
 	        past : '%s前',
 	        s : '几秒',
+	        ss : '%d 秒',
 	        m : '1 分钟',
 	        mm : '%d 分钟',
 	        h : '1 小时',
@@ -52803,9 +55858,9 @@
 	})));
 
 
-/***/ },
-/* 453 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 475 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Chinese (Hong Kong) [zh-hk]
@@ -52814,7 +55869,7 @@
 	//! author : Konstantin : https://github.com/skfd
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -52827,16 +55882,16 @@
 	    weekdaysShort : '週日_週一_週二_週三_週四_週五_週六'.split('_'),
 	    weekdaysMin : '日_一_二_三_四_五_六'.split('_'),
 	    longDateFormat : {
-	        LT : 'Ah點mm分',
-	        LTS : 'Ah點m分s秒',
-	        L : 'YYYY年MMMD日',
-	        LL : 'YYYY年MMMD日',
-	        LLL : 'YYYY年MMMD日Ah點mm分',
-	        LLLL : 'YYYY年MMMD日ddddAh點mm分',
-	        l : 'YYYY年MMMD日',
-	        ll : 'YYYY年MMMD日',
-	        lll : 'YYYY年MMMD日Ah點mm分',
-	        llll : 'YYYY年MMMD日ddddAh點mm分'
+	        LT : 'HH:mm',
+	        LTS : 'HH:mm:ss',
+	        L : 'YYYY/MM/DD',
+	        LL : 'YYYY年M月D日',
+	        LLL : 'YYYY年M月D日 HH:mm',
+	        LLLL : 'YYYY年M月D日dddd HH:mm',
+	        l : 'YYYY/M/D',
+	        ll : 'YYYY年M月D日',
+	        lll : 'YYYY年M月D日 HH:mm',
+	        llll : 'YYYY年M月D日dddd HH:mm'
 	    },
 	    meridiemParse: /凌晨|早上|上午|中午|下午|晚上/,
 	    meridiemHour : function (hour, meridiem) {
@@ -52875,7 +55930,7 @@
 	        lastWeek : '[上]ddddLT',
 	        sameElse : 'L'
 	    },
-	    ordinalParse: /\d{1,2}(日|月|週)/,
+	    dayOfMonthOrdinalParse: /\d{1,2}(日|月|週)/,
 	    ordinal : function (number, period) {
 	        switch (period) {
 	            case 'd' :
@@ -52895,6 +55950,7 @@
 	        future : '%s內',
 	        past : '%s前',
 	        s : '幾秒',
+	        ss : '%d 秒',
 	        m : '1 分鐘',
 	        mm : '%d 分鐘',
 	        h : '1 小時',
@@ -52913,9 +55969,9 @@
 	})));
 
 
-/***/ },
-/* 454 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 476 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : Chinese (Taiwan) [zh-tw]
@@ -52923,7 +55979,7 @@
 	//! author : Chris Lam : https://github.com/hehachris
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(343)) :
+	    true ? factory(__webpack_require__(355)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -52936,16 +55992,16 @@
 	    weekdaysShort : '週日_週一_週二_週三_週四_週五_週六'.split('_'),
 	    weekdaysMin : '日_一_二_三_四_五_六'.split('_'),
 	    longDateFormat : {
-	        LT : 'Ah點mm分',
-	        LTS : 'Ah點m分s秒',
-	        L : 'YYYY年MMMD日',
-	        LL : 'YYYY年MMMD日',
-	        LLL : 'YYYY年MMMD日Ah點mm分',
-	        LLLL : 'YYYY年MMMD日ddddAh點mm分',
-	        l : 'YYYY年MMMD日',
-	        ll : 'YYYY年MMMD日',
-	        lll : 'YYYY年MMMD日Ah點mm分',
-	        llll : 'YYYY年MMMD日ddddAh點mm分'
+	        LT : 'HH:mm',
+	        LTS : 'HH:mm:ss',
+	        L : 'YYYY/MM/DD',
+	        LL : 'YYYY年M月D日',
+	        LLL : 'YYYY年M月D日 HH:mm',
+	        LLLL : 'YYYY年M月D日dddd HH:mm',
+	        l : 'YYYY/M/D',
+	        ll : 'YYYY年M月D日',
+	        lll : 'YYYY年M月D日 HH:mm',
+	        llll : 'YYYY年M月D日dddd HH:mm'
 	    },
 	    meridiemParse: /凌晨|早上|上午|中午|下午|晚上/,
 	    meridiemHour : function (hour, meridiem) {
@@ -52984,7 +56040,7 @@
 	        lastWeek : '[上]ddddLT',
 	        sameElse : 'L'
 	    },
-	    ordinalParse: /\d{1,2}(日|月|週)/,
+	    dayOfMonthOrdinalParse: /\d{1,2}(日|月|週)/,
 	    ordinal : function (number, period) {
 	        switch (period) {
 	            case 'd' :
@@ -53004,6 +56060,7 @@
 	        future : '%s內',
 	        past : '%s前',
 	        s : '幾秒',
+	        ss : '%d 秒',
 	        m : '1 分鐘',
 	        mm : '%d 分鐘',
 	        h : '1 小時',
@@ -53022,9 +56079,9 @@
 	})));
 
 
-/***/ },
-/* 455 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 477 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -53043,7 +56100,7 @@
 	exports.maxYearByCalendar = maxYearByCalendar;
 	exports.formatByCalendar = formatByCalendar;
 
-	var _momentHijri = __webpack_require__(342);
+	var _momentHijri = __webpack_require__(354);
 
 	var _momentHijri2 = _interopRequireDefault(_momentHijri);
 
@@ -53176,29 +56233,33 @@
 	  }
 	}
 
-/***/ },
-/* 456 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 478 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _momentHijri = __webpack_require__(342);
+	var _momentHijri = __webpack_require__(354);
 
 	var _momentHijri2 = _interopRequireDefault(_momentHijri);
 
-	var _find = __webpack_require__(457);
+	var _moment = __webpack_require__(355);
+
+	var _moment2 = _interopRequireDefault(_moment);
+
+	var _find = __webpack_require__(479);
 
 	var _find2 = _interopRequireDefault(_find);
 
-	var _year_dropdown = __webpack_require__(572);
+	var _year_dropdown = __webpack_require__(600);
 
 	var _year_dropdown2 = _interopRequireDefault(_year_dropdown);
 
-	var _month_dropdown = __webpack_require__(576);
+	var _month_dropdown = __webpack_require__(604);
 
 	var _month_dropdown2 = _interopRequireDefault(_month_dropdown);
 
-	var _month = __webpack_require__(581);
+	var _month = __webpack_require__(609);
 
 	var _month2 = _interopRequireDefault(_month);
 
@@ -53206,7 +56267,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _date_utils = __webpack_require__(455);
+	var _date_utils = __webpack_require__(477);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -53255,7 +56316,7 @@
 	    calendar: _react2.default.PropTypes.string
 	  },
 
-	  mixins: [__webpack_require__(575)],
+	  mixins: [__webpack_require__(603)],
 
 	  defaultProps: {
 	    onDropdownFocus: function onDropdownFocus() {}
@@ -53343,8 +56404,9 @@
 	    this.setState({ selectingDate: null });
 	  },
 	  changeYear: function changeYear(year) {
+	    var newYear = (0, _momentHijri2.default)(year + '/3/10', 'iYYYY/iM/iD');
 	    this.setState({
-	      date: this.state.date.clone().set('year', year)
+	      date: this.state.date.clone().set('year', newYear.locale('en').format('YYYY'))
 	    });
 	  },
 	  changeMonth: function changeMonth(month) {
@@ -53408,7 +56470,6 @@
 	    if (!this.props.showYearDropdown || overrideHide) {
 	      return;
 	    }
-
 	    return _react2.default.createElement(_year_dropdown2.default, {
 	      dropdownMode: this.props.dropdownMode,
 	      onChange: this.changeYear,
@@ -53509,12 +56570,12 @@
 
 	module.exports = Calendar;
 
-/***/ },
-/* 457 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 479 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var createFind = __webpack_require__(458),
-	    findIndex = __webpack_require__(567);
+	var createFind = __webpack_require__(480),
+	    findIndex = __webpack_require__(595);
 
 	/**
 	 * Iterates over elements of `collection`, returning the first element
@@ -53557,13 +56618,13 @@
 	module.exports = find;
 
 
-/***/ },
-/* 458 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 480 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var baseIteratee = __webpack_require__(459),
-	    isArrayLike = __webpack_require__(538),
-	    keys = __webpack_require__(519);
+	var baseIteratee = __webpack_require__(481),
+	    isArrayLike = __webpack_require__(566),
+	    keys = __webpack_require__(548);
 
 	/**
 	 * Creates a `_.find` or `_.findLast` function.
@@ -53588,15 +56649,15 @@
 	module.exports = createFind;
 
 
-/***/ },
-/* 459 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 481 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var baseMatches = __webpack_require__(460),
-	    baseMatchesProperty = __webpack_require__(547),
-	    identity = __webpack_require__(563),
-	    isArray = __webpack_require__(525),
-	    property = __webpack_require__(564);
+	var baseMatches = __webpack_require__(482),
+	    baseMatchesProperty = __webpack_require__(575),
+	    identity = __webpack_require__(591),
+	    isArray = __webpack_require__(544),
+	    property = __webpack_require__(592);
 
 	/**
 	 * The base implementation of `_.iteratee`.
@@ -53625,13 +56686,13 @@
 	module.exports = baseIteratee;
 
 
-/***/ },
-/* 460 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 482 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var baseIsMatch = __webpack_require__(461),
-	    getMatchData = __webpack_require__(544),
-	    matchesStrictComparable = __webpack_require__(546);
+	var baseIsMatch = __webpack_require__(483),
+	    getMatchData = __webpack_require__(572),
+	    matchesStrictComparable = __webpack_require__(574);
 
 	/**
 	 * The base implementation of `_.matches` which doesn't clone `source`.
@@ -53653,12 +56714,12 @@
 	module.exports = baseMatches;
 
 
-/***/ },
-/* 461 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 483 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var Stack = __webpack_require__(462),
-	    baseIsEqual = __webpack_require__(506);
+	var Stack = __webpack_require__(484),
+	    baseIsEqual = __webpack_require__(528);
 
 	/** Used to compose bitmasks for value comparisons. */
 	var COMPARE_PARTIAL_FLAG = 1,
@@ -53721,16 +56782,16 @@
 	module.exports = baseIsMatch;
 
 
-/***/ },
-/* 462 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 484 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var ListCache = __webpack_require__(463),
-	    stackClear = __webpack_require__(471),
-	    stackDelete = __webpack_require__(472),
-	    stackGet = __webpack_require__(473),
-	    stackHas = __webpack_require__(474),
-	    stackSet = __webpack_require__(475);
+	var ListCache = __webpack_require__(485),
+	    stackClear = __webpack_require__(493),
+	    stackDelete = __webpack_require__(494),
+	    stackGet = __webpack_require__(495),
+	    stackHas = __webpack_require__(496),
+	    stackSet = __webpack_require__(497);
 
 	/**
 	 * Creates a stack cache object to store key-value pairs.
@@ -53754,15 +56815,15 @@
 	module.exports = Stack;
 
 
-/***/ },
-/* 463 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 485 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var listCacheClear = __webpack_require__(464),
-	    listCacheDelete = __webpack_require__(465),
-	    listCacheGet = __webpack_require__(468),
-	    listCacheHas = __webpack_require__(469),
-	    listCacheSet = __webpack_require__(470);
+	var listCacheClear = __webpack_require__(486),
+	    listCacheDelete = __webpack_require__(487),
+	    listCacheGet = __webpack_require__(490),
+	    listCacheHas = __webpack_require__(491),
+	    listCacheSet = __webpack_require__(492);
 
 	/**
 	 * Creates an list cache object.
@@ -53792,9 +56853,9 @@
 	module.exports = ListCache;
 
 
-/***/ },
-/* 464 */
-/***/ function(module, exports) {
+/***/ }),
+/* 486 */
+/***/ (function(module, exports) {
 
 	/**
 	 * Removes all key-value entries from the list cache.
@@ -53811,11 +56872,11 @@
 	module.exports = listCacheClear;
 
 
-/***/ },
-/* 465 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 487 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var assocIndexOf = __webpack_require__(466);
+	var assocIndexOf = __webpack_require__(488);
 
 	/** Used for built-in method references. */
 	var arrayProto = Array.prototype;
@@ -53852,11 +56913,11 @@
 	module.exports = listCacheDelete;
 
 
-/***/ },
-/* 466 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 488 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var eq = __webpack_require__(467);
+	var eq = __webpack_require__(489);
 
 	/**
 	 * Gets the index at which the `key` is found in `array` of key-value pairs.
@@ -53879,9 +56940,9 @@
 	module.exports = assocIndexOf;
 
 
-/***/ },
-/* 467 */
-/***/ function(module, exports) {
+/***/ }),
+/* 489 */
+/***/ (function(module, exports) {
 
 	/**
 	 * Performs a
@@ -53922,11 +56983,11 @@
 	module.exports = eq;
 
 
-/***/ },
-/* 468 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 490 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var assocIndexOf = __webpack_require__(466);
+	var assocIndexOf = __webpack_require__(488);
 
 	/**
 	 * Gets the list cache value for `key`.
@@ -53947,11 +57008,11 @@
 	module.exports = listCacheGet;
 
 
-/***/ },
-/* 469 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 491 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var assocIndexOf = __webpack_require__(466);
+	var assocIndexOf = __webpack_require__(488);
 
 	/**
 	 * Checks if a list cache value for `key` exists.
@@ -53969,11 +57030,11 @@
 	module.exports = listCacheHas;
 
 
-/***/ },
-/* 470 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 492 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var assocIndexOf = __webpack_require__(466);
+	var assocIndexOf = __webpack_require__(488);
 
 	/**
 	 * Sets the list cache `key` to `value`.
@@ -54001,11 +57062,11 @@
 	module.exports = listCacheSet;
 
 
-/***/ },
-/* 471 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 493 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var ListCache = __webpack_require__(463);
+	var ListCache = __webpack_require__(485);
 
 	/**
 	 * Removes all key-value entries from the stack.
@@ -54022,9 +57083,9 @@
 	module.exports = stackClear;
 
 
-/***/ },
-/* 472 */
-/***/ function(module, exports) {
+/***/ }),
+/* 494 */
+/***/ (function(module, exports) {
 
 	/**
 	 * Removes `key` and its value from the stack.
@@ -54046,9 +57107,9 @@
 	module.exports = stackDelete;
 
 
-/***/ },
-/* 473 */
-/***/ function(module, exports) {
+/***/ }),
+/* 495 */
+/***/ (function(module, exports) {
 
 	/**
 	 * Gets the stack value for `key`.
@@ -54066,9 +57127,9 @@
 	module.exports = stackGet;
 
 
-/***/ },
-/* 474 */
-/***/ function(module, exports) {
+/***/ }),
+/* 496 */
+/***/ (function(module, exports) {
 
 	/**
 	 * Checks if a stack value for `key` exists.
@@ -54086,13 +57147,13 @@
 	module.exports = stackHas;
 
 
-/***/ },
-/* 475 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 497 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var ListCache = __webpack_require__(463),
-	    Map = __webpack_require__(476),
-	    MapCache = __webpack_require__(491);
+	var ListCache = __webpack_require__(485),
+	    Map = __webpack_require__(498),
+	    MapCache = __webpack_require__(513);
 
 	/** Used as the size to enable large array optimizations. */
 	var LARGE_ARRAY_SIZE = 200;
@@ -54126,12 +57187,12 @@
 	module.exports = stackSet;
 
 
-/***/ },
-/* 476 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 498 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(477),
-	    root = __webpack_require__(482);
+	var getNative = __webpack_require__(499),
+	    root = __webpack_require__(504);
 
 	/* Built-in method references that are verified to be native. */
 	var Map = getNative(root, 'Map');
@@ -54139,12 +57200,12 @@
 	module.exports = Map;
 
 
-/***/ },
-/* 477 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 499 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var baseIsNative = __webpack_require__(478),
-	    getValue = __webpack_require__(490);
+	var baseIsNative = __webpack_require__(500),
+	    getValue = __webpack_require__(512);
 
 	/**
 	 * Gets the native function at `key` of `object`.
@@ -54162,14 +57223,14 @@
 	module.exports = getNative;
 
 
-/***/ },
-/* 478 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 500 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var isFunction = __webpack_require__(479),
-	    isMasked = __webpack_require__(487),
-	    isObject = __webpack_require__(486),
-	    toSource = __webpack_require__(489);
+	var isFunction = __webpack_require__(501),
+	    isMasked = __webpack_require__(509),
+	    isObject = __webpack_require__(508),
+	    toSource = __webpack_require__(511);
 
 	/**
 	 * Used to match `RegExp`
@@ -54215,12 +57276,12 @@
 	module.exports = baseIsNative;
 
 
-/***/ },
-/* 479 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 501 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var baseGetTag = __webpack_require__(480),
-	    isObject = __webpack_require__(486);
+	var baseGetTag = __webpack_require__(502),
+	    isObject = __webpack_require__(508);
 
 	/** `Object#toString` result references. */
 	var asyncTag = '[object AsyncFunction]',
@@ -54258,13 +57319,13 @@
 	module.exports = isFunction;
 
 
-/***/ },
-/* 480 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 502 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var Symbol = __webpack_require__(481),
-	    getRawTag = __webpack_require__(484),
-	    objectToString = __webpack_require__(485);
+	var Symbol = __webpack_require__(503),
+	    getRawTag = __webpack_require__(506),
+	    objectToString = __webpack_require__(507);
 
 	/** `Object#toString` result references. */
 	var nullTag = '[object Null]',
@@ -54284,8 +57345,7 @@
 	  if (value == null) {
 	    return value === undefined ? undefinedTag : nullTag;
 	  }
-	  value = Object(value);
-	  return (symToStringTag && symToStringTag in value)
+	  return (symToStringTag && symToStringTag in Object(value))
 	    ? getRawTag(value)
 	    : objectToString(value);
 	}
@@ -54293,11 +57353,11 @@
 	module.exports = baseGetTag;
 
 
-/***/ },
-/* 481 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 503 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var root = __webpack_require__(482);
+	var root = __webpack_require__(504);
 
 	/** Built-in value references. */
 	var Symbol = root.Symbol;
@@ -54305,11 +57365,11 @@
 	module.exports = Symbol;
 
 
-/***/ },
-/* 482 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 504 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var freeGlobal = __webpack_require__(483);
+	var freeGlobal = __webpack_require__(505);
 
 	/** Detect free variable `self`. */
 	var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
@@ -54320,9 +57380,9 @@
 	module.exports = root;
 
 
-/***/ },
-/* 483 */
-/***/ function(module, exports) {
+/***/ }),
+/* 505 */
+/***/ (function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** Detect free variable `global` from Node.js. */
 	var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
@@ -54331,11 +57391,11 @@
 
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
-/***/ },
-/* 484 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 506 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var Symbol = __webpack_require__(481);
+	var Symbol = __webpack_require__(503);
 
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -54383,9 +57443,9 @@
 	module.exports = getRawTag;
 
 
-/***/ },
-/* 485 */
-/***/ function(module, exports) {
+/***/ }),
+/* 507 */
+/***/ (function(module, exports) {
 
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -54411,9 +57471,9 @@
 	module.exports = objectToString;
 
 
-/***/ },
-/* 486 */
-/***/ function(module, exports) {
+/***/ }),
+/* 508 */
+/***/ (function(module, exports) {
 
 	/**
 	 * Checks if `value` is the
@@ -54448,11 +57508,11 @@
 	module.exports = isObject;
 
 
-/***/ },
-/* 487 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 509 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var coreJsData = __webpack_require__(488);
+	var coreJsData = __webpack_require__(510);
 
 	/** Used to detect methods masquerading as native. */
 	var maskSrcKey = (function() {
@@ -54474,11 +57534,11 @@
 	module.exports = isMasked;
 
 
-/***/ },
-/* 488 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 510 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var root = __webpack_require__(482);
+	var root = __webpack_require__(504);
 
 	/** Used to detect overreaching core-js shims. */
 	var coreJsData = root['__core-js_shared__'];
@@ -54486,9 +57546,9 @@
 	module.exports = coreJsData;
 
 
-/***/ },
-/* 489 */
-/***/ function(module, exports) {
+/***/ }),
+/* 511 */
+/***/ (function(module, exports) {
 
 	/** Used for built-in method references. */
 	var funcProto = Function.prototype;
@@ -54518,9 +57578,9 @@
 	module.exports = toSource;
 
 
-/***/ },
-/* 490 */
-/***/ function(module, exports) {
+/***/ }),
+/* 512 */
+/***/ (function(module, exports) {
 
 	/**
 	 * Gets the value at `key` of `object`.
@@ -54537,15 +57597,15 @@
 	module.exports = getValue;
 
 
-/***/ },
-/* 491 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 513 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var mapCacheClear = __webpack_require__(492),
-	    mapCacheDelete = __webpack_require__(500),
-	    mapCacheGet = __webpack_require__(503),
-	    mapCacheHas = __webpack_require__(504),
-	    mapCacheSet = __webpack_require__(505);
+	var mapCacheClear = __webpack_require__(514),
+	    mapCacheDelete = __webpack_require__(522),
+	    mapCacheGet = __webpack_require__(525),
+	    mapCacheHas = __webpack_require__(526),
+	    mapCacheSet = __webpack_require__(527);
 
 	/**
 	 * Creates a map cache object to store key-value pairs.
@@ -54575,13 +57635,13 @@
 	module.exports = MapCache;
 
 
-/***/ },
-/* 492 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 514 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var Hash = __webpack_require__(493),
-	    ListCache = __webpack_require__(463),
-	    Map = __webpack_require__(476);
+	var Hash = __webpack_require__(515),
+	    ListCache = __webpack_require__(485),
+	    Map = __webpack_require__(498);
 
 	/**
 	 * Removes all key-value entries from the map.
@@ -54602,15 +57662,15 @@
 	module.exports = mapCacheClear;
 
 
-/***/ },
-/* 493 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 515 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var hashClear = __webpack_require__(494),
-	    hashDelete = __webpack_require__(496),
-	    hashGet = __webpack_require__(497),
-	    hashHas = __webpack_require__(498),
-	    hashSet = __webpack_require__(499);
+	var hashClear = __webpack_require__(516),
+	    hashDelete = __webpack_require__(518),
+	    hashGet = __webpack_require__(519),
+	    hashHas = __webpack_require__(520),
+	    hashSet = __webpack_require__(521);
 
 	/**
 	 * Creates a hash object.
@@ -54640,11 +57700,11 @@
 	module.exports = Hash;
 
 
-/***/ },
-/* 494 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 516 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var nativeCreate = __webpack_require__(495);
+	var nativeCreate = __webpack_require__(517);
 
 	/**
 	 * Removes all key-value entries from the hash.
@@ -54661,11 +57721,11 @@
 	module.exports = hashClear;
 
 
-/***/ },
-/* 495 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 517 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(477);
+	var getNative = __webpack_require__(499);
 
 	/* Built-in method references that are verified to be native. */
 	var nativeCreate = getNative(Object, 'create');
@@ -54673,9 +57733,9 @@
 	module.exports = nativeCreate;
 
 
-/***/ },
-/* 496 */
-/***/ function(module, exports) {
+/***/ }),
+/* 518 */
+/***/ (function(module, exports) {
 
 	/**
 	 * Removes `key` and its value from the hash.
@@ -54696,11 +57756,11 @@
 	module.exports = hashDelete;
 
 
-/***/ },
-/* 497 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 519 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var nativeCreate = __webpack_require__(495);
+	var nativeCreate = __webpack_require__(517);
 
 	/** Used to stand-in for `undefined` hash values. */
 	var HASH_UNDEFINED = '__lodash_hash_undefined__';
@@ -54732,11 +57792,11 @@
 	module.exports = hashGet;
 
 
-/***/ },
-/* 498 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 520 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var nativeCreate = __webpack_require__(495);
+	var nativeCreate = __webpack_require__(517);
 
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -54755,17 +57815,17 @@
 	 */
 	function hashHas(key) {
 	  var data = this.__data__;
-	  return nativeCreate ? data[key] !== undefined : hasOwnProperty.call(data, key);
+	  return nativeCreate ? (data[key] !== undefined) : hasOwnProperty.call(data, key);
 	}
 
 	module.exports = hashHas;
 
 
-/***/ },
-/* 499 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 521 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var nativeCreate = __webpack_require__(495);
+	var nativeCreate = __webpack_require__(517);
 
 	/** Used to stand-in for `undefined` hash values. */
 	var HASH_UNDEFINED = '__lodash_hash_undefined__';
@@ -54790,11 +57850,11 @@
 	module.exports = hashSet;
 
 
-/***/ },
-/* 500 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 522 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var getMapData = __webpack_require__(501);
+	var getMapData = __webpack_require__(523);
 
 	/**
 	 * Removes `key` and its value from the map.
@@ -54814,11 +57874,11 @@
 	module.exports = mapCacheDelete;
 
 
-/***/ },
-/* 501 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 523 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var isKeyable = __webpack_require__(502);
+	var isKeyable = __webpack_require__(524);
 
 	/**
 	 * Gets the data for `map`.
@@ -54838,9 +57898,9 @@
 	module.exports = getMapData;
 
 
-/***/ },
-/* 502 */
-/***/ function(module, exports) {
+/***/ }),
+/* 524 */
+/***/ (function(module, exports) {
 
 	/**
 	 * Checks if `value` is suitable for use as unique object key.
@@ -54859,11 +57919,11 @@
 	module.exports = isKeyable;
 
 
-/***/ },
-/* 503 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 525 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var getMapData = __webpack_require__(501);
+	var getMapData = __webpack_require__(523);
 
 	/**
 	 * Gets the map value for `key`.
@@ -54881,11 +57941,11 @@
 	module.exports = mapCacheGet;
 
 
-/***/ },
-/* 504 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 526 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var getMapData = __webpack_require__(501);
+	var getMapData = __webpack_require__(523);
 
 	/**
 	 * Checks if a map value for `key` exists.
@@ -54903,11 +57963,11 @@
 	module.exports = mapCacheHas;
 
 
-/***/ },
-/* 505 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 527 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var getMapData = __webpack_require__(501);
+	var getMapData = __webpack_require__(523);
 
 	/**
 	 * Sets the map `key` to `value`.
@@ -54931,13 +57991,12 @@
 	module.exports = mapCacheSet;
 
 
-/***/ },
-/* 506 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 528 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var baseIsEqualDeep = __webpack_require__(507),
-	    isObject = __webpack_require__(486),
-	    isObjectLike = __webpack_require__(524);
+	var baseIsEqualDeep = __webpack_require__(529),
+	    isObjectLike = __webpack_require__(553);
 
 	/**
 	 * The base implementation of `_.isEqual` which supports partial comparisons
@@ -54957,7 +58016,7 @@
 	  if (value === other) {
 	    return true;
 	  }
-	  if (value == null || other == null || (!isObject(value) && !isObjectLike(other))) {
+	  if (value == null || other == null || (!isObjectLike(value) && !isObjectLike(other))) {
 	    return value !== value && other !== other;
 	  }
 	  return baseIsEqualDeep(value, other, bitmask, customizer, baseIsEqual, stack);
@@ -54966,18 +58025,18 @@
 	module.exports = baseIsEqual;
 
 
-/***/ },
-/* 507 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 529 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var Stack = __webpack_require__(462),
-	    equalArrays = __webpack_require__(508),
-	    equalByTag = __webpack_require__(514),
-	    equalObjects = __webpack_require__(518),
-	    getTag = __webpack_require__(539),
-	    isArray = __webpack_require__(525),
-	    isBuffer = __webpack_require__(526),
-	    isTypedArray = __webpack_require__(529);
+	var Stack = __webpack_require__(484),
+	    equalArrays = __webpack_require__(530),
+	    equalByTag = __webpack_require__(536),
+	    equalObjects = __webpack_require__(540),
+	    getTag = __webpack_require__(567),
+	    isArray = __webpack_require__(544),
+	    isBuffer = __webpack_require__(554),
+	    isTypedArray = __webpack_require__(557);
 
 	/** Used to compose bitmasks for value comparisons. */
 	var COMPARE_PARTIAL_FLAG = 1;
@@ -55010,17 +58069,12 @@
 	function baseIsEqualDeep(object, other, bitmask, customizer, equalFunc, stack) {
 	  var objIsArr = isArray(object),
 	      othIsArr = isArray(other),
-	      objTag = arrayTag,
-	      othTag = arrayTag;
+	      objTag = objIsArr ? arrayTag : getTag(object),
+	      othTag = othIsArr ? arrayTag : getTag(other);
 
-	  if (!objIsArr) {
-	    objTag = getTag(object);
-	    objTag = objTag == argsTag ? objectTag : objTag;
-	  }
-	  if (!othIsArr) {
-	    othTag = getTag(other);
-	    othTag = othTag == argsTag ? objectTag : othTag;
-	  }
+	  objTag = objTag == argsTag ? objectTag : objTag;
+	  othTag = othTag == argsTag ? objectTag : othTag;
+
 	  var objIsObj = objTag == objectTag,
 	      othIsObj = othTag == objectTag,
 	      isSameTag = objTag == othTag;
@@ -55060,13 +58114,13 @@
 	module.exports = baseIsEqualDeep;
 
 
-/***/ },
-/* 508 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 530 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var SetCache = __webpack_require__(509),
-	    arraySome = __webpack_require__(512),
-	    cacheHas = __webpack_require__(513);
+	var SetCache = __webpack_require__(531),
+	    arraySome = __webpack_require__(534),
+	    cacheHas = __webpack_require__(535);
 
 	/** Used to compose bitmasks for value comparisons. */
 	var COMPARE_PARTIAL_FLAG = 1,
@@ -55149,13 +58203,13 @@
 	module.exports = equalArrays;
 
 
-/***/ },
-/* 509 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 531 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var MapCache = __webpack_require__(491),
-	    setCacheAdd = __webpack_require__(510),
-	    setCacheHas = __webpack_require__(511);
+	var MapCache = __webpack_require__(513),
+	    setCacheAdd = __webpack_require__(532),
+	    setCacheHas = __webpack_require__(533);
 
 	/**
 	 *
@@ -55182,9 +58236,9 @@
 	module.exports = SetCache;
 
 
-/***/ },
-/* 510 */
-/***/ function(module, exports) {
+/***/ }),
+/* 532 */
+/***/ (function(module, exports) {
 
 	/** Used to stand-in for `undefined` hash values. */
 	var HASH_UNDEFINED = '__lodash_hash_undefined__';
@@ -55207,9 +58261,9 @@
 	module.exports = setCacheAdd;
 
 
-/***/ },
-/* 511 */
-/***/ function(module, exports) {
+/***/ }),
+/* 533 */
+/***/ (function(module, exports) {
 
 	/**
 	 * Checks if `value` is in the array cache.
@@ -55227,9 +58281,9 @@
 	module.exports = setCacheHas;
 
 
-/***/ },
-/* 512 */
-/***/ function(module, exports) {
+/***/ }),
+/* 534 */
+/***/ (function(module, exports) {
 
 	/**
 	 * A specialized version of `_.some` for arrays without support for iteratee
@@ -55256,9 +58310,9 @@
 	module.exports = arraySome;
 
 
-/***/ },
-/* 513 */
-/***/ function(module, exports) {
+/***/ }),
+/* 535 */
+/***/ (function(module, exports) {
 
 	/**
 	 * Checks if a `cache` value for `key` exists.
@@ -55275,16 +58329,16 @@
 	module.exports = cacheHas;
 
 
-/***/ },
-/* 514 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 536 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var Symbol = __webpack_require__(481),
-	    Uint8Array = __webpack_require__(515),
-	    eq = __webpack_require__(467),
-	    equalArrays = __webpack_require__(508),
-	    mapToArray = __webpack_require__(516),
-	    setToArray = __webpack_require__(517);
+	var Symbol = __webpack_require__(503),
+	    Uint8Array = __webpack_require__(537),
+	    eq = __webpack_require__(489),
+	    equalArrays = __webpack_require__(530),
+	    mapToArray = __webpack_require__(538),
+	    setToArray = __webpack_require__(539);
 
 	/** Used to compose bitmasks for value comparisons. */
 	var COMPARE_PARTIAL_FLAG = 1,
@@ -55393,11 +58447,11 @@
 	module.exports = equalByTag;
 
 
-/***/ },
-/* 515 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 537 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var root = __webpack_require__(482);
+	var root = __webpack_require__(504);
 
 	/** Built-in value references. */
 	var Uint8Array = root.Uint8Array;
@@ -55405,9 +58459,9 @@
 	module.exports = Uint8Array;
 
 
-/***/ },
-/* 516 */
-/***/ function(module, exports) {
+/***/ }),
+/* 538 */
+/***/ (function(module, exports) {
 
 	/**
 	 * Converts `map` to its key-value pairs.
@@ -55429,9 +58483,9 @@
 	module.exports = mapToArray;
 
 
-/***/ },
-/* 517 */
-/***/ function(module, exports) {
+/***/ }),
+/* 539 */
+/***/ (function(module, exports) {
 
 	/**
 	 * Converts `set` to an array of its values.
@@ -55453,11 +58507,11 @@
 	module.exports = setToArray;
 
 
-/***/ },
-/* 518 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 540 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var keys = __webpack_require__(519);
+	var getAllKeys = __webpack_require__(541);
 
 	/** Used to compose bitmasks for value comparisons. */
 	var COMPARE_PARTIAL_FLAG = 1;
@@ -55483,9 +58537,9 @@
 	 */
 	function equalObjects(object, other, bitmask, customizer, equalFunc, stack) {
 	  var isPartial = bitmask & COMPARE_PARTIAL_FLAG,
-	      objProps = keys(object),
+	      objProps = getAllKeys(object),
 	      objLength = objProps.length,
-	      othProps = keys(other),
+	      othProps = getAllKeys(other),
 	      othLength = othProps.length;
 
 	  if (objLength != othLength && !isPartial) {
@@ -55548,13 +58602,215 @@
 	module.exports = equalObjects;
 
 
-/***/ },
-/* 519 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 541 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var arrayLikeKeys = __webpack_require__(520),
-	    baseKeys = __webpack_require__(534),
-	    isArrayLike = __webpack_require__(538);
+	var baseGetAllKeys = __webpack_require__(542),
+	    getSymbols = __webpack_require__(545),
+	    keys = __webpack_require__(548);
+
+	/**
+	 * Creates an array of own enumerable property names and symbols of `object`.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @returns {Array} Returns the array of property names and symbols.
+	 */
+	function getAllKeys(object) {
+	  return baseGetAllKeys(object, keys, getSymbols);
+	}
+
+	module.exports = getAllKeys;
+
+
+/***/ }),
+/* 542 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	var arrayPush = __webpack_require__(543),
+	    isArray = __webpack_require__(544);
+
+	/**
+	 * The base implementation of `getAllKeys` and `getAllKeysIn` which uses
+	 * `keysFunc` and `symbolsFunc` to get the enumerable property names and
+	 * symbols of `object`.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @param {Function} keysFunc The function to get the keys of `object`.
+	 * @param {Function} symbolsFunc The function to get the symbols of `object`.
+	 * @returns {Array} Returns the array of property names and symbols.
+	 */
+	function baseGetAllKeys(object, keysFunc, symbolsFunc) {
+	  var result = keysFunc(object);
+	  return isArray(object) ? result : arrayPush(result, symbolsFunc(object));
+	}
+
+	module.exports = baseGetAllKeys;
+
+
+/***/ }),
+/* 543 */
+/***/ (function(module, exports) {
+
+	/**
+	 * Appends the elements of `values` to `array`.
+	 *
+	 * @private
+	 * @param {Array} array The array to modify.
+	 * @param {Array} values The values to append.
+	 * @returns {Array} Returns `array`.
+	 */
+	function arrayPush(array, values) {
+	  var index = -1,
+	      length = values.length,
+	      offset = array.length;
+
+	  while (++index < length) {
+	    array[offset + index] = values[index];
+	  }
+	  return array;
+	}
+
+	module.exports = arrayPush;
+
+
+/***/ }),
+/* 544 */
+/***/ (function(module, exports) {
+
+	/**
+	 * Checks if `value` is classified as an `Array` object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 0.1.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is an array, else `false`.
+	 * @example
+	 *
+	 * _.isArray([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isArray(document.body.children);
+	 * // => false
+	 *
+	 * _.isArray('abc');
+	 * // => false
+	 *
+	 * _.isArray(_.noop);
+	 * // => false
+	 */
+	var isArray = Array.isArray;
+
+	module.exports = isArray;
+
+
+/***/ }),
+/* 545 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	var arrayFilter = __webpack_require__(546),
+	    stubArray = __webpack_require__(547);
+
+	/** Used for built-in method references. */
+	var objectProto = Object.prototype;
+
+	/** Built-in value references. */
+	var propertyIsEnumerable = objectProto.propertyIsEnumerable;
+
+	/* Built-in method references for those with the same name as other `lodash` methods. */
+	var nativeGetSymbols = Object.getOwnPropertySymbols;
+
+	/**
+	 * Creates an array of the own enumerable symbols of `object`.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @returns {Array} Returns the array of symbols.
+	 */
+	var getSymbols = !nativeGetSymbols ? stubArray : function(object) {
+	  if (object == null) {
+	    return [];
+	  }
+	  object = Object(object);
+	  return arrayFilter(nativeGetSymbols(object), function(symbol) {
+	    return propertyIsEnumerable.call(object, symbol);
+	  });
+	};
+
+	module.exports = getSymbols;
+
+
+/***/ }),
+/* 546 */
+/***/ (function(module, exports) {
+
+	/**
+	 * A specialized version of `_.filter` for arrays without support for
+	 * iteratee shorthands.
+	 *
+	 * @private
+	 * @param {Array} [array] The array to iterate over.
+	 * @param {Function} predicate The function invoked per iteration.
+	 * @returns {Array} Returns the new filtered array.
+	 */
+	function arrayFilter(array, predicate) {
+	  var index = -1,
+	      length = array == null ? 0 : array.length,
+	      resIndex = 0,
+	      result = [];
+
+	  while (++index < length) {
+	    var value = array[index];
+	    if (predicate(value, index, array)) {
+	      result[resIndex++] = value;
+	    }
+	  }
+	  return result;
+	}
+
+	module.exports = arrayFilter;
+
+
+/***/ }),
+/* 547 */
+/***/ (function(module, exports) {
+
+	/**
+	 * This method returns a new empty array.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.13.0
+	 * @category Util
+	 * @returns {Array} Returns the new empty array.
+	 * @example
+	 *
+	 * var arrays = _.times(2, _.stubArray);
+	 *
+	 * console.log(arrays);
+	 * // => [[], []]
+	 *
+	 * console.log(arrays[0] === arrays[1]);
+	 * // => false
+	 */
+	function stubArray() {
+	  return [];
+	}
+
+	module.exports = stubArray;
+
+
+/***/ }),
+/* 548 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	var arrayLikeKeys = __webpack_require__(549),
+	    baseKeys = __webpack_require__(562),
+	    isArrayLike = __webpack_require__(566);
 
 	/**
 	 * Creates an array of the own enumerable property names of `object`.
@@ -55591,16 +58847,16 @@
 	module.exports = keys;
 
 
-/***/ },
-/* 520 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 549 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var baseTimes = __webpack_require__(521),
-	    isArguments = __webpack_require__(522),
-	    isArray = __webpack_require__(525),
-	    isBuffer = __webpack_require__(526),
-	    isIndex = __webpack_require__(528),
-	    isTypedArray = __webpack_require__(529);
+	var baseTimes = __webpack_require__(550),
+	    isArguments = __webpack_require__(551),
+	    isArray = __webpack_require__(544),
+	    isBuffer = __webpack_require__(554),
+	    isIndex = __webpack_require__(556),
+	    isTypedArray = __webpack_require__(557);
 
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -55646,9 +58902,9 @@
 	module.exports = arrayLikeKeys;
 
 
-/***/ },
-/* 521 */
-/***/ function(module, exports) {
+/***/ }),
+/* 550 */
+/***/ (function(module, exports) {
 
 	/**
 	 * The base implementation of `_.times` without support for iteratee shorthands
@@ -55672,12 +58928,12 @@
 	module.exports = baseTimes;
 
 
-/***/ },
-/* 522 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 551 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var baseIsArguments = __webpack_require__(523),
-	    isObjectLike = __webpack_require__(524);
+	var baseIsArguments = __webpack_require__(552),
+	    isObjectLike = __webpack_require__(553);
 
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -55714,12 +58970,12 @@
 	module.exports = isArguments;
 
 
-/***/ },
-/* 523 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 552 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var baseGetTag = __webpack_require__(480),
-	    isObjectLike = __webpack_require__(524);
+	var baseGetTag = __webpack_require__(502),
+	    isObjectLike = __webpack_require__(553);
 
 	/** `Object#toString` result references. */
 	var argsTag = '[object Arguments]';
@@ -55738,9 +58994,9 @@
 	module.exports = baseIsArguments;
 
 
-/***/ },
-/* 524 */
-/***/ function(module, exports) {
+/***/ }),
+/* 553 */
+/***/ (function(module, exports) {
 
 	/**
 	 * Checks if `value` is object-like. A value is object-like if it's not `null`
@@ -55773,44 +59029,12 @@
 	module.exports = isObjectLike;
 
 
-/***/ },
-/* 525 */
-/***/ function(module, exports) {
+/***/ }),
+/* 554 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	/**
-	 * Checks if `value` is classified as an `Array` object.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 0.1.0
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is an array, else `false`.
-	 * @example
-	 *
-	 * _.isArray([1, 2, 3]);
-	 * // => true
-	 *
-	 * _.isArray(document.body.children);
-	 * // => false
-	 *
-	 * _.isArray('abc');
-	 * // => false
-	 *
-	 * _.isArray(_.noop);
-	 * // => false
-	 */
-	var isArray = Array.isArray;
-
-	module.exports = isArray;
-
-
-/***/ },
-/* 526 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(module) {var root = __webpack_require__(482),
-	    stubFalse = __webpack_require__(527);
+	/* WEBPACK VAR INJECTION */(function(module) {var root = __webpack_require__(504),
+	    stubFalse = __webpack_require__(555);
 
 	/** Detect free variable `exports`. */
 	var freeExports = typeof exports == 'object' && exports && !exports.nodeType && exports;
@@ -55848,11 +59072,11 @@
 
 	module.exports = isBuffer;
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(344)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(356)(module)))
 
-/***/ },
-/* 527 */
-/***/ function(module, exports) {
+/***/ }),
+/* 555 */
+/***/ (function(module, exports) {
 
 	/**
 	 * This method returns `false`.
@@ -55874,9 +59098,9 @@
 	module.exports = stubFalse;
 
 
-/***/ },
-/* 528 */
-/***/ function(module, exports) {
+/***/ }),
+/* 556 */
+/***/ (function(module, exports) {
 
 	/** Used as references for various `Number` constants. */
 	var MAX_SAFE_INTEGER = 9007199254740991;
@@ -55902,13 +59126,13 @@
 	module.exports = isIndex;
 
 
-/***/ },
-/* 529 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 557 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var baseIsTypedArray = __webpack_require__(530),
-	    baseUnary = __webpack_require__(532),
-	    nodeUtil = __webpack_require__(533);
+	var baseIsTypedArray = __webpack_require__(558),
+	    baseUnary = __webpack_require__(560),
+	    nodeUtil = __webpack_require__(561);
 
 	/* Node.js helper references. */
 	var nodeIsTypedArray = nodeUtil && nodeUtil.isTypedArray;
@@ -55935,13 +59159,13 @@
 	module.exports = isTypedArray;
 
 
-/***/ },
-/* 530 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 558 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var baseGetTag = __webpack_require__(480),
-	    isLength = __webpack_require__(531),
-	    isObjectLike = __webpack_require__(524);
+	var baseGetTag = __webpack_require__(502),
+	    isLength = __webpack_require__(559),
+	    isObjectLike = __webpack_require__(553);
 
 	/** `Object#toString` result references. */
 	var argsTag = '[object Arguments]',
@@ -56001,9 +59225,9 @@
 	module.exports = baseIsTypedArray;
 
 
-/***/ },
-/* 531 */
-/***/ function(module, exports) {
+/***/ }),
+/* 559 */
+/***/ (function(module, exports) {
 
 	/** Used as references for various `Number` constants. */
 	var MAX_SAFE_INTEGER = 9007199254740991;
@@ -56042,9 +59266,9 @@
 	module.exports = isLength;
 
 
-/***/ },
-/* 532 */
-/***/ function(module, exports) {
+/***/ }),
+/* 560 */
+/***/ (function(module, exports) {
 
 	/**
 	 * The base implementation of `_.unary` without support for storing metadata.
@@ -56062,11 +59286,11 @@
 	module.exports = baseUnary;
 
 
-/***/ },
-/* 533 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 561 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(module) {var freeGlobal = __webpack_require__(483);
+	/* WEBPACK VAR INJECTION */(function(module) {var freeGlobal = __webpack_require__(505);
 
 	/** Detect free variable `exports`. */
 	var freeExports = typeof exports == 'object' && exports && !exports.nodeType && exports;
@@ -56089,14 +59313,14 @@
 
 	module.exports = nodeUtil;
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(344)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(356)(module)))
 
-/***/ },
-/* 534 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 562 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var isPrototype = __webpack_require__(535),
-	    nativeKeys = __webpack_require__(536);
+	var isPrototype = __webpack_require__(563),
+	    nativeKeys = __webpack_require__(564);
 
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -56127,9 +59351,9 @@
 	module.exports = baseKeys;
 
 
-/***/ },
-/* 535 */
-/***/ function(module, exports) {
+/***/ }),
+/* 563 */
+/***/ (function(module, exports) {
 
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -56151,11 +59375,11 @@
 	module.exports = isPrototype;
 
 
-/***/ },
-/* 536 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 564 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var overArg = __webpack_require__(537);
+	var overArg = __webpack_require__(565);
 
 	/* Built-in method references for those with the same name as other `lodash` methods. */
 	var nativeKeys = overArg(Object.keys, Object);
@@ -56163,9 +59387,9 @@
 	module.exports = nativeKeys;
 
 
-/***/ },
-/* 537 */
-/***/ function(module, exports) {
+/***/ }),
+/* 565 */
+/***/ (function(module, exports) {
 
 	/**
 	 * Creates a unary function that invokes `func` with its argument transformed.
@@ -56184,12 +59408,12 @@
 	module.exports = overArg;
 
 
-/***/ },
-/* 538 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 566 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var isFunction = __webpack_require__(479),
-	    isLength = __webpack_require__(531);
+	var isFunction = __webpack_require__(501),
+	    isLength = __webpack_require__(559);
 
 	/**
 	 * Checks if `value` is array-like. A value is considered array-like if it's
@@ -56223,17 +59447,17 @@
 	module.exports = isArrayLike;
 
 
-/***/ },
-/* 539 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 567 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var DataView = __webpack_require__(540),
-	    Map = __webpack_require__(476),
-	    Promise = __webpack_require__(541),
-	    Set = __webpack_require__(542),
-	    WeakMap = __webpack_require__(543),
-	    baseGetTag = __webpack_require__(480),
-	    toSource = __webpack_require__(489);
+	var DataView = __webpack_require__(568),
+	    Map = __webpack_require__(498),
+	    Promise = __webpack_require__(569),
+	    Set = __webpack_require__(570),
+	    WeakMap = __webpack_require__(571),
+	    baseGetTag = __webpack_require__(502),
+	    toSource = __webpack_require__(511);
 
 	/** `Object#toString` result references. */
 	var mapTag = '[object Map]',
@@ -56287,12 +59511,12 @@
 	module.exports = getTag;
 
 
-/***/ },
-/* 540 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 568 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(477),
-	    root = __webpack_require__(482);
+	var getNative = __webpack_require__(499),
+	    root = __webpack_require__(504);
 
 	/* Built-in method references that are verified to be native. */
 	var DataView = getNative(root, 'DataView');
@@ -56300,12 +59524,12 @@
 	module.exports = DataView;
 
 
-/***/ },
-/* 541 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 569 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(477),
-	    root = __webpack_require__(482);
+	var getNative = __webpack_require__(499),
+	    root = __webpack_require__(504);
 
 	/* Built-in method references that are verified to be native. */
 	var Promise = getNative(root, 'Promise');
@@ -56313,12 +59537,12 @@
 	module.exports = Promise;
 
 
-/***/ },
-/* 542 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 570 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(477),
-	    root = __webpack_require__(482);
+	var getNative = __webpack_require__(499),
+	    root = __webpack_require__(504);
 
 	/* Built-in method references that are verified to be native. */
 	var Set = getNative(root, 'Set');
@@ -56326,12 +59550,12 @@
 	module.exports = Set;
 
 
-/***/ },
-/* 543 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 571 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(477),
-	    root = __webpack_require__(482);
+	var getNative = __webpack_require__(499),
+	    root = __webpack_require__(504);
 
 	/* Built-in method references that are verified to be native. */
 	var WeakMap = getNative(root, 'WeakMap');
@@ -56339,12 +59563,12 @@
 	module.exports = WeakMap;
 
 
-/***/ },
-/* 544 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 572 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var isStrictComparable = __webpack_require__(545),
-	    keys = __webpack_require__(519);
+	var isStrictComparable = __webpack_require__(573),
+	    keys = __webpack_require__(548);
 
 	/**
 	 * Gets the property names, values, and compare flags of `object`.
@@ -56369,11 +59593,11 @@
 	module.exports = getMatchData;
 
 
-/***/ },
-/* 545 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 573 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var isObject = __webpack_require__(486);
+	var isObject = __webpack_require__(508);
 
 	/**
 	 * Checks if `value` is suitable for strict equality comparisons, i.e. `===`.
@@ -56390,9 +59614,9 @@
 	module.exports = isStrictComparable;
 
 
-/***/ },
-/* 546 */
-/***/ function(module, exports) {
+/***/ }),
+/* 574 */
+/***/ (function(module, exports) {
 
 	/**
 	 * A specialized version of `matchesProperty` for source values suitable
@@ -56416,17 +59640,17 @@
 	module.exports = matchesStrictComparable;
 
 
-/***/ },
-/* 547 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 575 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var baseIsEqual = __webpack_require__(506),
-	    get = __webpack_require__(548),
-	    hasIn = __webpack_require__(560),
-	    isKey = __webpack_require__(551),
-	    isStrictComparable = __webpack_require__(545),
-	    matchesStrictComparable = __webpack_require__(546),
-	    toKey = __webpack_require__(559);
+	var baseIsEqual = __webpack_require__(528),
+	    get = __webpack_require__(576),
+	    hasIn = __webpack_require__(588),
+	    isKey = __webpack_require__(579),
+	    isStrictComparable = __webpack_require__(573),
+	    matchesStrictComparable = __webpack_require__(574),
+	    toKey = __webpack_require__(587);
 
 	/** Used to compose bitmasks for value comparisons. */
 	var COMPARE_PARTIAL_FLAG = 1,
@@ -56455,11 +59679,11 @@
 	module.exports = baseMatchesProperty;
 
 
-/***/ },
-/* 548 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 576 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var baseGet = __webpack_require__(549);
+	var baseGet = __webpack_require__(577);
 
 	/**
 	 * Gets the value at `path` of `object`. If the resolved value is
@@ -56494,12 +59718,12 @@
 	module.exports = get;
 
 
-/***/ },
-/* 549 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 577 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var castPath = __webpack_require__(550),
-	    toKey = __webpack_require__(559);
+	var castPath = __webpack_require__(578),
+	    toKey = __webpack_require__(587);
 
 	/**
 	 * The base implementation of `_.get` without support for default values.
@@ -56524,14 +59748,14 @@
 	module.exports = baseGet;
 
 
-/***/ },
-/* 550 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 578 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var isArray = __webpack_require__(525),
-	    isKey = __webpack_require__(551),
-	    stringToPath = __webpack_require__(553),
-	    toString = __webpack_require__(556);
+	var isArray = __webpack_require__(544),
+	    isKey = __webpack_require__(579),
+	    stringToPath = __webpack_require__(581),
+	    toString = __webpack_require__(584);
 
 	/**
 	 * Casts `value` to a path array if it's not one.
@@ -56551,12 +59775,12 @@
 	module.exports = castPath;
 
 
-/***/ },
-/* 551 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 579 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var isArray = __webpack_require__(525),
-	    isSymbol = __webpack_require__(552);
+	var isArray = __webpack_require__(544),
+	    isSymbol = __webpack_require__(580);
 
 	/** Used to match property names within property paths. */
 	var reIsDeepProp = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/,
@@ -56586,12 +59810,12 @@
 	module.exports = isKey;
 
 
-/***/ },
-/* 552 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 580 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var baseGetTag = __webpack_require__(480),
-	    isObjectLike = __webpack_require__(524);
+	var baseGetTag = __webpack_require__(502),
+	    isObjectLike = __webpack_require__(553);
 
 	/** `Object#toString` result references. */
 	var symbolTag = '[object Symbol]';
@@ -56621,11 +59845,11 @@
 	module.exports = isSymbol;
 
 
-/***/ },
-/* 553 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 581 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var memoizeCapped = __webpack_require__(554);
+	var memoizeCapped = __webpack_require__(582);
 
 	/** Used to match property names within property paths. */
 	var reLeadingDot = /^\./,
@@ -56655,11 +59879,11 @@
 	module.exports = stringToPath;
 
 
-/***/ },
-/* 554 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 582 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var memoize = __webpack_require__(555);
+	var memoize = __webpack_require__(583);
 
 	/** Used as the maximum memoize cache size. */
 	var MAX_MEMOIZE_SIZE = 500;
@@ -56687,11 +59911,11 @@
 	module.exports = memoizeCapped;
 
 
-/***/ },
-/* 555 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 583 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var MapCache = __webpack_require__(491);
+	var MapCache = __webpack_require__(513);
 
 	/** Error message constants. */
 	var FUNC_ERROR_TEXT = 'Expected a function';
@@ -56766,11 +59990,11 @@
 	module.exports = memoize;
 
 
-/***/ },
-/* 556 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 584 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var baseToString = __webpack_require__(557);
+	var baseToString = __webpack_require__(585);
 
 	/**
 	 * Converts `value` to a string. An empty string is returned for `null`
@@ -56800,14 +60024,14 @@
 	module.exports = toString;
 
 
-/***/ },
-/* 557 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 585 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var Symbol = __webpack_require__(481),
-	    arrayMap = __webpack_require__(558),
-	    isArray = __webpack_require__(525),
-	    isSymbol = __webpack_require__(552);
+	var Symbol = __webpack_require__(503),
+	    arrayMap = __webpack_require__(586),
+	    isArray = __webpack_require__(544),
+	    isSymbol = __webpack_require__(580);
 
 	/** Used as references for various `Number` constants. */
 	var INFINITY = 1 / 0;
@@ -56843,9 +60067,9 @@
 	module.exports = baseToString;
 
 
-/***/ },
-/* 558 */
-/***/ function(module, exports) {
+/***/ }),
+/* 586 */
+/***/ (function(module, exports) {
 
 	/**
 	 * A specialized version of `_.map` for arrays without support for iteratee
@@ -56870,11 +60094,11 @@
 	module.exports = arrayMap;
 
 
-/***/ },
-/* 559 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 587 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var isSymbol = __webpack_require__(552);
+	var isSymbol = __webpack_require__(580);
 
 	/** Used as references for various `Number` constants. */
 	var INFINITY = 1 / 0;
@@ -56897,12 +60121,12 @@
 	module.exports = toKey;
 
 
-/***/ },
-/* 560 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 588 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var baseHasIn = __webpack_require__(561),
-	    hasPath = __webpack_require__(562);
+	var baseHasIn = __webpack_require__(589),
+	    hasPath = __webpack_require__(590);
 
 	/**
 	 * Checks if `path` is a direct or inherited property of `object`.
@@ -56937,9 +60161,9 @@
 	module.exports = hasIn;
 
 
-/***/ },
-/* 561 */
-/***/ function(module, exports) {
+/***/ }),
+/* 589 */
+/***/ (function(module, exports) {
 
 	/**
 	 * The base implementation of `_.hasIn` without support for deep paths.
@@ -56956,16 +60180,16 @@
 	module.exports = baseHasIn;
 
 
-/***/ },
-/* 562 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 590 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var castPath = __webpack_require__(550),
-	    isArguments = __webpack_require__(522),
-	    isArray = __webpack_require__(525),
-	    isIndex = __webpack_require__(528),
-	    isLength = __webpack_require__(531),
-	    toKey = __webpack_require__(559);
+	var castPath = __webpack_require__(578),
+	    isArguments = __webpack_require__(551),
+	    isArray = __webpack_require__(544),
+	    isIndex = __webpack_require__(556),
+	    isLength = __webpack_require__(559),
+	    toKey = __webpack_require__(587);
 
 	/**
 	 * Checks if `path` exists on `object`.
@@ -57001,9 +60225,9 @@
 	module.exports = hasPath;
 
 
-/***/ },
-/* 563 */
-/***/ function(module, exports) {
+/***/ }),
+/* 591 */
+/***/ (function(module, exports) {
 
 	/**
 	 * This method returns the first argument it receives.
@@ -57028,14 +60252,14 @@
 	module.exports = identity;
 
 
-/***/ },
-/* 564 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 592 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var baseProperty = __webpack_require__(565),
-	    basePropertyDeep = __webpack_require__(566),
-	    isKey = __webpack_require__(551),
-	    toKey = __webpack_require__(559);
+	var baseProperty = __webpack_require__(593),
+	    basePropertyDeep = __webpack_require__(594),
+	    isKey = __webpack_require__(579),
+	    toKey = __webpack_require__(587);
 
 	/**
 	 * Creates a function that returns the value at `path` of a given object.
@@ -57066,9 +60290,9 @@
 	module.exports = property;
 
 
-/***/ },
-/* 565 */
-/***/ function(module, exports) {
+/***/ }),
+/* 593 */
+/***/ (function(module, exports) {
 
 	/**
 	 * The base implementation of `_.property` without support for deep paths.
@@ -57086,11 +60310,11 @@
 	module.exports = baseProperty;
 
 
-/***/ },
-/* 566 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 594 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var baseGet = __webpack_require__(549);
+	var baseGet = __webpack_require__(577);
 
 	/**
 	 * A specialized version of `baseProperty` which supports deep paths.
@@ -57108,13 +60332,13 @@
 	module.exports = basePropertyDeep;
 
 
-/***/ },
-/* 567 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 595 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var baseFindIndex = __webpack_require__(568),
-	    baseIteratee = __webpack_require__(459),
-	    toInteger = __webpack_require__(569);
+	var baseFindIndex = __webpack_require__(596),
+	    baseIteratee = __webpack_require__(481),
+	    toInteger = __webpack_require__(597);
 
 	/* Built-in method references for those with the same name as other `lodash` methods. */
 	var nativeMax = Math.max;
@@ -57169,9 +60393,9 @@
 	module.exports = findIndex;
 
 
-/***/ },
-/* 568 */
-/***/ function(module, exports) {
+/***/ }),
+/* 596 */
+/***/ (function(module, exports) {
 
 	/**
 	 * The base implementation of `_.findIndex` and `_.findLastIndex` without
@@ -57199,11 +60423,11 @@
 	module.exports = baseFindIndex;
 
 
-/***/ },
-/* 569 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 597 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var toFinite = __webpack_require__(570);
+	var toFinite = __webpack_require__(598);
 
 	/**
 	 * Converts `value` to an integer.
@@ -57241,11 +60465,11 @@
 	module.exports = toInteger;
 
 
-/***/ },
-/* 570 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 598 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var toNumber = __webpack_require__(571);
+	var toNumber = __webpack_require__(599);
 
 	/** Used as references for various `Number` constants. */
 	var INFINITY = 1 / 0,
@@ -57289,12 +60513,12 @@
 	module.exports = toFinite;
 
 
-/***/ },
-/* 571 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 599 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var isObject = __webpack_require__(486),
-	    isSymbol = __webpack_require__(552);
+	var isObject = __webpack_require__(508),
+	    isSymbol = __webpack_require__(580);
 
 	/** Used as references for various `Number` constants. */
 	var NAN = 0 / 0;
@@ -57361,9 +60585,9 @@
 	module.exports = toNumber;
 
 
-/***/ },
-/* 572 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 600 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -57371,11 +60595,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _year_dropdown_options = __webpack_require__(573);
+	var _year_dropdown_options = __webpack_require__(601);
 
 	var _year_dropdown_options2 = _interopRequireDefault(_year_dropdown_options);
 
-	var _date_utils = __webpack_require__(455);
+	var _date_utils = __webpack_require__(477);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -57479,9 +60703,9 @@
 
 	module.exports = YearDropdown;
 
-/***/ },
-/* 573 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 601 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -57489,7 +60713,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _classnames = __webpack_require__(574);
+	var _classnames = __webpack_require__(602);
 
 	var _classnames2 = _interopRequireDefault(_classnames);
 
@@ -57513,7 +60737,7 @@
 	    year: _react2.default.PropTypes.number.isRequired
 	  },
 
-	  mixins: [__webpack_require__(575)],
+	  mixins: [__webpack_require__(603)],
 
 	  getInitialState: function getInitialState() {
 	    return {
@@ -57595,9 +60819,9 @@
 
 	module.exports = YearDropdownOptions;
 
-/***/ },
-/* 574 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 602 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
 	  Copyright (c) 2016 Jed Watson.
@@ -57649,9 +60873,9 @@
 	}());
 
 
-/***/ },
-/* 575 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 603 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
 	 * A mixin for handling (effectively) onClickOutside for React components.
@@ -57670,7 +60894,7 @@
 	(function (root, factory) {
 	  if (true) {
 	    // AMD. Register as an anonymous module.
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(29)], __WEBPACK_AMD_DEFINE_RESULT__ = function(reactDom) {
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(32)], __WEBPACK_AMD_DEFINE_RESULT__ = function(reactDom) {
 	      return factory(root, reactDom);
 	    }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports === 'object') {
@@ -57787,9 +61011,9 @@
 	}));
 
 
-/***/ },
-/* 576 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 604 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -57797,11 +61021,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _momentHijri = __webpack_require__(342);
+	var _momentHijri = __webpack_require__(354);
 
 	var _momentHijri2 = _interopRequireDefault(_momentHijri);
 
-	var _range = __webpack_require__(577);
+	var _range = __webpack_require__(605);
 
 	var _range2 = _interopRequireDefault(_range);
 
@@ -57871,11 +61095,11 @@
 
 	module.exports = MonthDropdown;
 
-/***/ },
-/* 577 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 605 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var createRange = __webpack_require__(578);
+	var createRange = __webpack_require__(606);
 
 	/**
 	 * Creates an array of numbers (positive and/or negative) progressing from
@@ -57923,13 +61147,13 @@
 	module.exports = range;
 
 
-/***/ },
-/* 578 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 606 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var baseRange = __webpack_require__(579),
-	    isIterateeCall = __webpack_require__(580),
-	    toFinite = __webpack_require__(570);
+	var baseRange = __webpack_require__(607),
+	    isIterateeCall = __webpack_require__(608),
+	    toFinite = __webpack_require__(598);
 
 	/**
 	 * Creates a `_.range` or `_.rangeRight` function.
@@ -57959,9 +61183,9 @@
 	module.exports = createRange;
 
 
-/***/ },
-/* 579 */
-/***/ function(module, exports) {
+/***/ }),
+/* 607 */
+/***/ (function(module, exports) {
 
 	/* Built-in method references for those with the same name as other `lodash` methods. */
 	var nativeCeil = Math.ceil,
@@ -57993,14 +61217,14 @@
 	module.exports = baseRange;
 
 
-/***/ },
-/* 580 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 608 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var eq = __webpack_require__(467),
-	    isArrayLike = __webpack_require__(538),
-	    isIndex = __webpack_require__(528),
-	    isObject = __webpack_require__(486);
+	var eq = __webpack_require__(489),
+	    isArrayLike = __webpack_require__(566),
+	    isIndex = __webpack_require__(556),
+	    isObject = __webpack_require__(508);
 
 	/**
 	 * Checks if the given arguments are from an iteratee call.
@@ -58029,9 +61253,9 @@
 	module.exports = isIterateeCall;
 
 
-/***/ },
-/* 581 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 609 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -58039,15 +61263,15 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _classnames = __webpack_require__(574);
+	var _classnames = __webpack_require__(602);
 
 	var _classnames2 = _interopRequireDefault(_classnames);
 
-	var _week = __webpack_require__(582);
+	var _week = __webpack_require__(610);
 
 	var _week2 = _interopRequireDefault(_week);
 
-	var _date_utils = __webpack_require__(455);
+	var _date_utils = __webpack_require__(477);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -58172,9 +61396,9 @@
 
 	module.exports = Month;
 
-/***/ },
-/* 582 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 610 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -58182,11 +61406,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _day = __webpack_require__(583);
+	var _day = __webpack_require__(611);
 
 	var _day2 = _interopRequireDefault(_day);
 
-	var _week_number = __webpack_require__(584);
+	var _week_number = __webpack_require__(612);
 
 	var _week_number2 = _interopRequireDefault(_week_number);
 
@@ -58268,13 +61492,13 @@
 
 	module.exports = Week;
 
-/***/ },
-/* 583 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 611 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _momentHijri = __webpack_require__(342);
+	var _momentHijri = __webpack_require__(354);
 
 	var _momentHijri2 = _interopRequireDefault(_momentHijri);
 
@@ -58282,11 +61506,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _classnames = __webpack_require__(574);
+	var _classnames = __webpack_require__(602);
 
 	var _classnames2 = _interopRequireDefault(_classnames);
 
-	var _date_utils = __webpack_require__(455);
+	var _date_utils = __webpack_require__(477);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -58470,9 +61694,9 @@
 
 	module.exports = Day;
 
-/***/ },
-/* 584 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 612 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -58502,12 +61726,12 @@
 
 	module.exports = WeekNumber;
 
-/***/ },
-/* 585 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 613 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var baseDelay = __webpack_require__(586),
-	    baseRest = __webpack_require__(587);
+	var baseDelay = __webpack_require__(614),
+	    baseRest = __webpack_require__(615);
 
 	/**
 	 * Defers invoking the `func` until the current call stack has cleared. Any
@@ -58534,9 +61758,9 @@
 	module.exports = defer;
 
 
-/***/ },
-/* 586 */
-/***/ function(module, exports) {
+/***/ }),
+/* 614 */
+/***/ (function(module, exports) {
 
 	/** Error message constants. */
 	var FUNC_ERROR_TEXT = 'Expected a function';
@@ -58561,13 +61785,13 @@
 	module.exports = baseDelay;
 
 
-/***/ },
-/* 587 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 615 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var identity = __webpack_require__(563),
-	    overRest = __webpack_require__(588),
-	    setToString = __webpack_require__(590);
+	var identity = __webpack_require__(591),
+	    overRest = __webpack_require__(616),
+	    setToString = __webpack_require__(618);
 
 	/**
 	 * The base implementation of `_.rest` which doesn't validate or coerce arguments.
@@ -58584,11 +61808,11 @@
 	module.exports = baseRest;
 
 
-/***/ },
-/* 588 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 616 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var apply = __webpack_require__(589);
+	var apply = __webpack_require__(617);
 
 	/* Built-in method references for those with the same name as other `lodash` methods. */
 	var nativeMax = Math.max;
@@ -58626,9 +61850,9 @@
 	module.exports = overRest;
 
 
-/***/ },
-/* 589 */
-/***/ function(module, exports) {
+/***/ }),
+/* 617 */
+/***/ (function(module, exports) {
 
 	/**
 	 * A faster alternative to `Function#apply`, this function invokes `func`
@@ -58653,12 +61877,12 @@
 	module.exports = apply;
 
 
-/***/ },
-/* 590 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 618 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var baseSetToString = __webpack_require__(591),
-	    shortOut = __webpack_require__(594);
+	var baseSetToString = __webpack_require__(619),
+	    shortOut = __webpack_require__(622);
 
 	/**
 	 * Sets the `toString` method of `func` to return `string`.
@@ -58673,13 +61897,13 @@
 	module.exports = setToString;
 
 
-/***/ },
-/* 591 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 619 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var constant = __webpack_require__(592),
-	    defineProperty = __webpack_require__(593),
-	    identity = __webpack_require__(563);
+	var constant = __webpack_require__(620),
+	    defineProperty = __webpack_require__(621),
+	    identity = __webpack_require__(591);
 
 	/**
 	 * The base implementation of `setToString` without support for hot loop shorting.
@@ -58701,9 +61925,9 @@
 	module.exports = baseSetToString;
 
 
-/***/ },
-/* 592 */
-/***/ function(module, exports) {
+/***/ }),
+/* 620 */
+/***/ (function(module, exports) {
 
 	/**
 	 * Creates a function that returns `value`.
@@ -58733,11 +61957,11 @@
 	module.exports = constant;
 
 
-/***/ },
-/* 593 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 621 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(477);
+	var getNative = __webpack_require__(499);
 
 	var defineProperty = (function() {
 	  try {
@@ -58750,9 +61974,9 @@
 	module.exports = defineProperty;
 
 
-/***/ },
-/* 594 */
-/***/ function(module, exports) {
+/***/ }),
+/* 622 */
+/***/ (function(module, exports) {
 
 	/** Used to detect hot functions by number of calls within a span of milliseconds. */
 	var HOT_COUNT = 800,
@@ -58793,9 +62017,9 @@
 	module.exports = shortOut;
 
 
-/***/ },
-/* 595 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 623 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -58805,11 +62029,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDom = __webpack_require__(29);
+	var _reactDom = __webpack_require__(32);
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
-	var _tether = __webpack_require__(596);
+	var _tether = __webpack_require__(624);
 
 	var _tether2 = _interopRequireDefault(_tether);
 
@@ -58965,11 +62189,11 @@
 
 	module.exports = TetherComponent;
 
-/***/ },
-/* 596 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 624 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*! tether 1.3.7 */
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*! tether 1.4.3 */
 
 	(function(root, factory) {
 	  if (true) {
@@ -59048,7 +62272,7 @@
 	    var overflowX = _style.overflowX;
 	    var overflowY = _style.overflowY;
 
-	    if (/(auto|scroll)/.test(overflow + overflowY + overflowX)) {
+	    if (/(auto|scroll|overlay)/.test(overflow + overflowY + overflowX)) {
 	      if (position !== 'absolute' || ['relative', 'absolute', 'fixed'].indexOf(style.position) >= 0) {
 	        parents.push(parent);
 	      }
@@ -59079,7 +62303,7 @@
 	  // are equivilant or not.  We place an element at the top left of the page that will
 	  // get the same jitter, so we can cancel the two out.
 	  var node = zeroElement;
-	  if (!node) {
+	  if (!node || !document.body.contains(node)) {
 	    node = document.createElement('div');
 	    node.setAttribute('data-tether-id', uniqueId());
 	    extend(node.style, {
@@ -59447,7 +62671,7 @@
 	};
 
 	function now() {
-	  if (typeof performance !== 'undefined' && typeof performance.now !== 'undefined') {
+	  if (typeof performance === 'object' && typeof performance.now === 'function') {
 	    return performance.now();
 	  }
 	  return +new Date();
@@ -60218,20 +63442,26 @@
 	      }
 
 	      if (!moved) {
-	        var offsetParentIsBody = true;
-	        var currentNode = this.element.parentNode;
-	        while (currentNode && currentNode.nodeType === 1 && currentNode.tagName !== 'BODY') {
-	          if (getComputedStyle(currentNode).position !== 'static') {
-	            offsetParentIsBody = false;
-	            break;
+	        if (this.options.bodyElement) {
+	          if (this.element.parentNode !== this.options.bodyElement) {
+	            this.options.bodyElement.appendChild(this.element);
+	          }
+	        } else {
+	          var offsetParentIsBody = true;
+	          var currentNode = this.element.parentNode;
+	          while (currentNode && currentNode.nodeType === 1 && currentNode.tagName !== 'BODY') {
+	            if (getComputedStyle(currentNode).position !== 'static') {
+	              offsetParentIsBody = false;
+	              break;
+	            }
+
+	            currentNode = currentNode.parentNode;
 	          }
 
-	          currentNode = currentNode.parentNode;
-	        }
-
-	        if (!offsetParentIsBody) {
-	          this.element.parentNode.removeChild(this.element);
-	          this.element.ownerDocument.body.appendChild(this.element);
+	          if (!offsetParentIsBody) {
+	            this.element.parentNode.removeChild(this.element);
+	            this.element.ownerDocument.body.appendChild(this.element);
+	          }
 	        }
 	      }
 
@@ -60778,9 +64008,9 @@
 	}));
 
 
-/***/ },
-/* 597 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 625 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -60817,9 +64047,9 @@
 	  }
 	});
 
-/***/ },
-/* 598 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 626 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -60831,11 +64061,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDatepicker = __webpack_require__(340);
+	var _reactDatepicker = __webpack_require__(352);
 
 	var _reactDatepicker2 = _interopRequireDefault(_reactDatepicker);
 
-	var _momentHijri = __webpack_require__(342);
+	var _momentHijri = __webpack_require__(354);
 
 	var _momentHijri2 = _interopRequireDefault(_momentHijri);
 
@@ -60888,9 +64118,9 @@
 	  }
 	});
 
-/***/ },
-/* 599 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 627 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -60902,11 +64132,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDatepicker = __webpack_require__(340);
+	var _reactDatepicker = __webpack_require__(352);
 
 	var _reactDatepicker2 = _interopRequireDefault(_reactDatepicker);
 
-	var _momentHijri = __webpack_require__(342);
+	var _momentHijri = __webpack_require__(354);
 
 	var _momentHijri2 = _interopRequireDefault(_momentHijri);
 
@@ -60957,9 +64187,9 @@
 	  }
 	});
 
-/***/ },
-/* 600 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 628 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -60971,7 +64201,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDatepicker = __webpack_require__(340);
+	var _reactDatepicker = __webpack_require__(352);
 
 	var _reactDatepicker2 = _interopRequireDefault(_reactDatepicker);
 
@@ -61002,9 +64232,9 @@
 	  }
 	});
 
-/***/ },
-/* 601 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 629 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -61016,11 +64246,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDatepicker = __webpack_require__(340);
+	var _reactDatepicker = __webpack_require__(352);
 
 	var _reactDatepicker2 = _interopRequireDefault(_reactDatepicker);
 
-	var _momentHijri = __webpack_require__(342);
+	var _momentHijri = __webpack_require__(354);
 
 	var _momentHijri2 = _interopRequireDefault(_momentHijri);
 
@@ -61085,9 +64315,9 @@
 	  }
 	});
 
-/***/ },
-/* 602 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 630 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -61099,7 +64329,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDatepicker = __webpack_require__(340);
+	var _reactDatepicker = __webpack_require__(352);
 
 	var _reactDatepicker2 = _interopRequireDefault(_reactDatepicker);
 
@@ -61157,9 +64387,9 @@
 	  }
 	});
 
-/***/ },
-/* 603 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 631 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -61171,11 +64401,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDatepicker = __webpack_require__(340);
+	var _reactDatepicker = __webpack_require__(352);
 
 	var _reactDatepicker2 = _interopRequireDefault(_reactDatepicker);
 
-	var _momentHijri = __webpack_require__(342);
+	var _momentHijri = __webpack_require__(354);
 
 	var _momentHijri2 = _interopRequireDefault(_momentHijri);
 
@@ -61233,9 +64463,9 @@
 	  }
 	});
 
-/***/ },
-/* 604 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 632 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -61247,11 +64477,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDatepicker = __webpack_require__(340);
+	var _reactDatepicker = __webpack_require__(352);
 
 	var _reactDatepicker2 = _interopRequireDefault(_reactDatepicker);
 
-	var _momentHijri = __webpack_require__(342);
+	var _momentHijri = __webpack_require__(354);
 
 	var _momentHijri2 = _interopRequireDefault(_momentHijri);
 
@@ -61309,9 +64539,9 @@
 	  }
 	});
 
-/***/ },
-/* 605 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 633 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -61323,11 +64553,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDatepicker = __webpack_require__(340);
+	var _reactDatepicker = __webpack_require__(352);
 
 	var _reactDatepicker2 = _interopRequireDefault(_reactDatepicker);
 
-	var _momentHijri = __webpack_require__(342);
+	var _momentHijri = __webpack_require__(354);
 
 	var _momentHijri2 = _interopRequireDefault(_momentHijri);
 
@@ -61385,9 +64615,9 @@
 	  }
 	});
 
-/***/ },
-/* 606 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 634 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -61399,7 +64629,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDatepicker = __webpack_require__(340);
+	var _reactDatepicker = __webpack_require__(352);
 
 	var _reactDatepicker2 = _interopRequireDefault(_reactDatepicker);
 
@@ -61461,9 +64691,9 @@
 	  }
 	});
 
-/***/ },
-/* 607 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 635 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -61475,7 +64705,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDatepicker = __webpack_require__(340);
+	var _reactDatepicker = __webpack_require__(352);
 
 	var _reactDatepicker2 = _interopRequireDefault(_reactDatepicker);
 
@@ -61534,9 +64764,9 @@
 	  }
 	});
 
-/***/ },
-/* 608 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 636 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -61548,11 +64778,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDatepicker = __webpack_require__(340);
+	var _reactDatepicker = __webpack_require__(352);
 
 	var _reactDatepicker2 = _interopRequireDefault(_reactDatepicker);
 
-	var _momentHijri = __webpack_require__(342);
+	var _momentHijri = __webpack_require__(354);
 
 	var _momentHijri2 = _interopRequireDefault(_momentHijri);
 
@@ -61605,9 +64835,9 @@
 	  }
 	});
 
-/***/ },
-/* 609 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 637 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -61619,7 +64849,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDatepicker = __webpack_require__(340);
+	var _reactDatepicker = __webpack_require__(352);
 
 	var _reactDatepicker2 = _interopRequireDefault(_reactDatepicker);
 
@@ -61711,9 +64941,9 @@
 	  }
 	});
 
-/***/ },
-/* 610 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 638 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -61725,11 +64955,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDatepicker = __webpack_require__(340);
+	var _reactDatepicker = __webpack_require__(352);
 
 	var _reactDatepicker2 = _interopRequireDefault(_reactDatepicker);
 
-	var _momentHijri = __webpack_require__(342);
+	var _momentHijri = __webpack_require__(354);
 
 	var _momentHijri2 = _interopRequireDefault(_momentHijri);
 
@@ -61785,15 +65015,15 @@
 	  }
 	});
 
-/***/ },
-/* 611 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 639 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(2);
-	var DatePicker = __webpack_require__(340);
-	var moment = __webpack_require__(343);
+	var DatePicker = __webpack_require__(352);
+	var moment = __webpack_require__(355);
 
 	var DateRange = React.createClass({
 	  displayName: 'DateRange',
@@ -61887,9 +65117,9 @@
 
 	module.exports = DateRange;
 
-/***/ },
-/* 612 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 640 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -61901,11 +65131,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDatepicker = __webpack_require__(340);
+	var _reactDatepicker = __webpack_require__(352);
 
 	var _reactDatepicker2 = _interopRequireDefault(_reactDatepicker);
 
-	var _momentHijri = __webpack_require__(342);
+	var _momentHijri = __webpack_require__(354);
 
 	var _momentHijri2 = _interopRequireDefault(_momentHijri);
 
@@ -61955,9 +65185,9 @@
 	  }
 	});
 
-/***/ },
-/* 613 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 641 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -61969,11 +65199,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDatepicker = __webpack_require__(340);
+	var _reactDatepicker = __webpack_require__(352);
 
 	var _reactDatepicker2 = _interopRequireDefault(_reactDatepicker);
 
-	var _momentHijri = __webpack_require__(342);
+	var _momentHijri = __webpack_require__(354);
 
 	var _momentHijri2 = _interopRequireDefault(_momentHijri);
 
@@ -62032,9 +65262,9 @@
 	  }
 	});
 
-/***/ },
-/* 614 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 642 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -62046,11 +65276,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDatepicker = __webpack_require__(340);
+	var _reactDatepicker = __webpack_require__(352);
 
 	var _reactDatepicker2 = _interopRequireDefault(_reactDatepicker);
 
-	var _momentHijri = __webpack_require__(342);
+	var _momentHijri = __webpack_require__(354);
 
 	var _momentHijri2 = _interopRequireDefault(_momentHijri);
 
@@ -62114,9 +65344,9 @@
 	  }
 	});
 
-/***/ },
-/* 615 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 643 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -62128,11 +65358,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDatepicker = __webpack_require__(340);
+	var _reactDatepicker = __webpack_require__(352);
 
 	var _reactDatepicker2 = _interopRequireDefault(_reactDatepicker);
 
-	var _momentHijri = __webpack_require__(342);
+	var _momentHijri = __webpack_require__(354);
 
 	var _momentHijri2 = _interopRequireDefault(_momentHijri);
 
@@ -62182,9 +65412,9 @@
 	  }
 	});
 
-/***/ },
-/* 616 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 644 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -62196,7 +65426,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDatepicker = __webpack_require__(340);
+	var _reactDatepicker = __webpack_require__(352);
 
 	var _reactDatepicker2 = _interopRequireDefault(_reactDatepicker);
 
@@ -62248,9 +65478,9 @@
 	  }
 	});
 
-/***/ },
-/* 617 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 645 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -62262,11 +65492,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDatepicker = __webpack_require__(340);
+	var _reactDatepicker = __webpack_require__(352);
 
 	var _reactDatepicker2 = _interopRequireDefault(_reactDatepicker);
 
-	var _momentHijri = __webpack_require__(342);
+	var _momentHijri = __webpack_require__(354);
 
 	var _momentHijri2 = _interopRequireDefault(_momentHijri);
 
@@ -62316,9 +65546,9 @@
 	  }
 	});
 
-/***/ },
-/* 618 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 646 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -62330,11 +65560,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDatepicker = __webpack_require__(340);
+	var _reactDatepicker = __webpack_require__(352);
 
 	var _reactDatepicker2 = _interopRequireDefault(_reactDatepicker);
 
-	var _momentHijri = __webpack_require__(342);
+	var _momentHijri = __webpack_require__(354);
 
 	var _momentHijri2 = _interopRequireDefault(_momentHijri);
 
@@ -62384,9 +65614,9 @@
 	  }
 	});
 
-/***/ },
-/* 619 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 647 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -62398,7 +65628,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDatepicker = __webpack_require__(340);
+	var _reactDatepicker = __webpack_require__(352);
 
 	var _reactDatepicker2 = _interopRequireDefault(_reactDatepicker);
 
@@ -62448,9 +65678,9 @@
 	  }
 	});
 
-/***/ },
-/* 620 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 648 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -62462,11 +65692,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDatepicker = __webpack_require__(340);
+	var _reactDatepicker = __webpack_require__(352);
 
 	var _reactDatepicker2 = _interopRequireDefault(_reactDatepicker);
 
-	var _momentHijri = __webpack_require__(342);
+	var _momentHijri = __webpack_require__(354);
 
 	var _momentHijri2 = _interopRequireDefault(_momentHijri);
 
@@ -62516,9 +65746,9 @@
 	  }
 	});
 
-/***/ },
-/* 621 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 649 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -62530,11 +65760,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDatepicker = __webpack_require__(340);
+	var _reactDatepicker = __webpack_require__(352);
 
 	var _reactDatepicker2 = _interopRequireDefault(_reactDatepicker);
 
-	var _momentHijri = __webpack_require__(342);
+	var _momentHijri = __webpack_require__(354);
 
 	var _momentHijri2 = _interopRequireDefault(_momentHijri);
 
@@ -62644,9 +65874,9 @@
 	  }
 	});
 
-/***/ },
-/* 622 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 650 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -62658,11 +65888,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDatepicker = __webpack_require__(340);
+	var _reactDatepicker = __webpack_require__(352);
 
 	var _reactDatepicker2 = _interopRequireDefault(_reactDatepicker);
 
-	var _momentHijri = __webpack_require__(342);
+	var _momentHijri = __webpack_require__(354);
 
 	var _momentHijri2 = _interopRequireDefault(_momentHijri);
 
@@ -62712,9 +65942,9 @@
 	  }
 	});
 
-/***/ },
-/* 623 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 651 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -62726,11 +65956,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDatepicker = __webpack_require__(340);
+	var _reactDatepicker = __webpack_require__(352);
 
 	var _reactDatepicker2 = _interopRequireDefault(_reactDatepicker);
 
-	var _momentHijri = __webpack_require__(342);
+	var _momentHijri = __webpack_require__(354);
 
 	var _momentHijri2 = _interopRequireDefault(_momentHijri);
 
@@ -62783,9 +66013,9 @@
 	  }
 	});
 
-/***/ },
-/* 624 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 652 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -62799,11 +66029,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDatepicker = __webpack_require__(340);
+	var _reactDatepicker = __webpack_require__(352);
 
 	var _reactDatepicker2 = _interopRequireDefault(_reactDatepicker);
 
-	var _momentHijri = __webpack_require__(342);
+	var _momentHijri = __webpack_require__(354);
 
 	var _momentHijri2 = _interopRequireDefault(_momentHijri);
 
@@ -62869,8 +66099,14 @@
 	        _react2.default.createElement(
 	          'div',
 	          { className: 'column' },
-	          _react2.default.createElement(_reactDatepicker2.default, { calendar: 'hijri', dateFormat: 'YYYY/MM/DD', selected: this.state.startDate,
-	            onChange: this.handleChange })
+	          _react2.default.createElement(_reactDatepicker2.default, {
+	            calendar: 'hijri',
+	            dateFormat: 'YYYY/MM/DD',
+	            selected: this.state.startDate,
+	            onChange: this.handleChange,
+	            showYearDropdown: true,
+	            scrollableYearDropdown: true
+	          })
 	        )
 	      );
 	    }
@@ -62882,17 +66118,17 @@
 	HijriCalendar.displayName = 'HijriCalendar';
 	exports.default = HijriCalendar;
 
-/***/ },
-/* 625 */
-/***/ function(module, exports) {
+/***/ }),
+/* 653 */
+/***/ (function(module, exports) {
 
 	// removed by extract-text-webpack-plugin
 
-/***/ },
-/* 626 */
-625,
-/* 627 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 654 */
+653,
+/* 655 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -62904,11 +66140,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDatepicker = __webpack_require__(340);
+	var _reactDatepicker = __webpack_require__(352);
 
 	var _reactDatepicker2 = _interopRequireDefault(_reactDatepicker);
 
-	var _momentHijri = __webpack_require__(342);
+	var _momentHijri = __webpack_require__(354);
 
 	var _momentHijri2 = _interopRequireDefault(_momentHijri);
 
@@ -62935,17 +66171,15 @@
 	  }
 	});
 
-/***/ },
-/* 628 */
-/***/ function(module, exports, __webpack_require__, __webpack_module_template_argument_0__) {
+/***/ }),
+/* 656 */
+/***/ (function(module, exports, __webpack_require__, __webpack_module_template_argument_0__) {
 
 	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
 	 *
 	 * 
 	 */
@@ -62954,7 +66188,7 @@
 
 	var _prodInvariant = __webpack_require__(__webpack_module_template_argument_0__);
 
-	var invariant = __webpack_require__(8);
+	var invariant = __webpack_require__(12);
 
 	/**
 	 * Static poolers. Several custom versions for each potential number of
@@ -63007,17 +66241,6 @@
 	  }
 	};
 
-	var fiveArgumentPooler = function (a1, a2, a3, a4, a5) {
-	  var Klass = this;
-	  if (Klass.instancePool.length) {
-	    var instance = Klass.instancePool.pop();
-	    Klass.call(instance, a1, a2, a3, a4, a5);
-	    return instance;
-	  } else {
-	    return new Klass(a1, a2, a3, a4, a5);
-	  }
-	};
-
 	var standardReleaser = function (instance) {
 	  var Klass = this;
 	  !(instance instanceof Klass) ?  false ? invariant(false, 'Trying to release an instance into a pool of a different type.') : _prodInvariant('25') : void 0;
@@ -63057,11 +66280,10 @@
 	  oneArgumentPooler: oneArgumentPooler,
 	  twoArgumentPooler: twoArgumentPooler,
 	  threeArgumentPooler: threeArgumentPooler,
-	  fourArgumentPooler: fourArgumentPooler,
-	  fiveArgumentPooler: fiveArgumentPooler
+	  fourArgumentPooler: fourArgumentPooler
 	};
 
 	module.exports = PooledClass;
 
-/***/ }
+/***/ })
 /******/ ])));

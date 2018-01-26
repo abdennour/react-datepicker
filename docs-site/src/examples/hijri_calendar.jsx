@@ -28,8 +28,14 @@ class HijriCalendar extends React.Component {
          </code>
        </pre>
       <div className="column">
-        <DatePicker calendar="hijri" dateFormat="YYYY/MM/DD"  selected={this.state.startDate}
-            onChange={this.handleChange}/>
+        <DatePicker 
+          calendar="hijri" 
+          dateFormat="YYYY/MM/DD"  
+          selected={this.state.startDate}
+          onChange={this.handleChange}
+          showYearDropdown
+          scrollableYearDropdown
+        />
       </div>
     </div>
   }

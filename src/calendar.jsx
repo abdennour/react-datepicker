@@ -1,4 +1,5 @@
 import moment from 'moment-hijri'
+import momentEn from 'moment'
 import find from 'lodash/find'
 import YearDropdown from './year_dropdown'
 import MonthDropdown from './month_dropdown'
@@ -151,8 +152,9 @@ var Calendar = React.createClass({
   },
 
   changeYear (year) {
+    const newYear = moment(year + '/3/10', 'iYYYY/iM/iD')
     this.setState({
-      date: this.state.date.clone().set('year', year)
+      date: this.state.date.clone().set('year', newYear.locale('en').format('YYYY'))
     })
   },
 
@@ -216,7 +218,6 @@ var Calendar = React.createClass({
     if (!this.props.showYearDropdown || overrideHide) {
       return
     }
-
     return (
       <YearDropdown
           dropdownMode={this.props.dropdownMode}
